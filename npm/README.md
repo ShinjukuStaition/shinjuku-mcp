@@ -9,7 +9,7 @@ This package holds one wallet release, unchanged. The `shinjukuRelease` and
 `shinjukuSha256` fields in `package.json` name that release. Compare the hash
 with the Releases table in
 [ShinjukuStaition/shinjuku-shielded](https://github.com/ShinjukuStaition/shinjuku-shielded#releases).
-Each version is published from GitHub Actions with npm provenance.
+Each version holds one served wallet release, byte for byte: `shinjukuRelease` and `shinjukuSha256` in package.json name it, and its SHA-256 is in the Releases table of ShinjukuStaition/shinjuku-shielded. From 0.1.1 on, versions are published from GitHub Actions with npm provenance.
 
 Needs Node.js 22 or later. The package has no install scripts.
 

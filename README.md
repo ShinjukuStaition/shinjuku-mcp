@@ -33,7 +33,7 @@ set.
 Every Shinjuku Shielded service joins this MCP as it ships.
 
 The server is the `mcp` command of `shinjuku-wallet`, one file. This
-repository holds the setup guide only. The wallet file, its SHA-256, and its
+repository holds the setup guide and [examples](examples/). The wallet file, its SHA-256, and its
 release history are in
 [ShinjukuStaition/shinjuku-shielded](https://github.com/ShinjukuStaition/shinjuku-shielded).
 
@@ -100,7 +100,7 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 | Your IP | Payments go to `pay.shinjukustaition.com`, with no CDN in the path. Our server sees your IP. It keeps no access logs. | Hidden from everyone, us included. |
 | The seller | Sees your IP. | Does not see your IP. |
 | Speed | Faster. | About 1-2 s slower per request. |
-| Needs | Nothing extra. | Tor on `127.0.0.1:9050`. |
+| Needs | Nothing extra. | Tor with `HTTPTunnelPort 127.0.0.1:9080 IsolateDestAddr` in `torrc`. |
 
 ## Setup
 
@@ -206,6 +206,20 @@ A send to a new address needs a host that supports MCP elicitation (it shows
 you the confirmation). With a host that does not, name each address with
 `--unshield-to`.
 
+## Examples
+
+[examples/](examples/) has complete configs and a walkthrough:
+
+- [Claude Code](examples/claude-code.md): the `claude mcp add` command with
+  and without Tor, each flag explained, and how to check it works.
+- [Claude Desktop](examples/claude-desktop.json) and
+  [Cursor](examples/cursor.json): complete JSON configs.
+- [Hermes Agent](examples/hermes.md): the `config.yaml` entry.
+- [First 10 minutes](examples/README.md#first-10-minutes): install, make the
+  wallet, fund it, shield, pay, send, and check the balance.
+- [Plain requests](examples/prompts.md): 10 requests, the tool each one
+  calls, and the shape of the answer.
+
 ## Caps and flags
 
 | Flag | |
@@ -220,7 +234,7 @@ you the confirmation). With a host that does not, name each address with
 | `--exit-proof-tools <file>`, `--profile <file>` | Optional. Turn `wallet_unshield` on (with `--proof-tools`). |
 | `--unshield-to <address>` | Optional, repeatable. These addresses receive with no confirmation. Any other address needs your confirmation in the MCP client. The wallet's own key is refused: the server does not start when you name it here. |
 | `--max-unshield <atomic>` | Optional. The most one unshield call may move, and the most this process may unshield in total. Without it, a send you confirm can move the whole shielded balance. |
-| `--tor` | Optional. Every request goes through Tor; our facilitator is reached over its onion service. Needs Tor on `127.0.0.1:9050`. See Privacy modes. |
+| `--tor` | Optional. Every request goes through Tor; our facilitator is reached over its onion service. Needs Tor with `HTTPTunnelPort 127.0.0.1:9080` in `torrc`. See Privacy modes. |
 | `--rpc-file <file>` | Optional. Your own Solana RPC URL. Without it, reads go to our relay, which sees which accounts the wallet reads. |
 
 The passphrase comes from `--passphrase-file` or `SHIELDED_WALLET_PASSPHRASE`

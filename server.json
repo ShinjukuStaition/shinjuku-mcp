@@ -1,0 +1,142 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ShinjukuStaition/shinjuku-mcp",
+  "title": "Shinjuku Shielded",
+  "description": "Private x402 payments on Solana: shield, pay, and unshield USDC under caps you set.",
+  "version": "0.1.1",
+  "websiteUrl": "https://shinjukustaition.com",
+  "repository": {
+    "url": "https://github.com/ShinjukuStaition/shinjuku-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "shinjuku-shielded",
+      "version": "0.1.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "valueHint": "command",
+          "value": "mcp",
+          "description": "The wallet command that runs the MCP server on stdio."
+        },
+        {
+          "type": "named",
+          "name": "--max-payment",
+          "description": "The most one payment may cost, in atomic USDC (50000 = 0.05 USDC). The server does not start without it.",
+          "format": "number",
+          "placeholder": "50000",
+          "isRequired": true
+        },
+        {
+          "type": "named",
+          "name": "--max-session",
+          "description": "The most this server process may pay in total, in atomic USDC. At least --max-payment.",
+          "format": "number",
+          "placeholder": "200000",
+          "isRequired": true
+        },
+        {
+          "type": "named",
+          "name": "--pool",
+          "description": "The shielded pool. The wallet file is $SHIELDED_WALLET_HOME/<pool>/wallet.json.",
+          "default": "AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8",
+          "isRequired": true
+        },
+        {
+          "type": "named",
+          "name": "--program",
+          "description": "The shielded pool program.",
+          "default": "8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1",
+          "isRequired": true
+        },
+        {
+          "type": "named",
+          "name": "--memo-service",
+          "description": "The facilitator that serves the encrypted memos. Its RPC relay serves reads without --rpc-file.",
+          "default": "https://pay.shinjukustaition.com",
+          "isRequired": true
+        },
+        {
+          "type": "named",
+          "name": "--passphrase-file",
+          "description": "Absolute path of a private file that holds the wallet passphrase. Without it, SHIELDED_WALLET_PASSPHRASE.",
+          "format": "filepath"
+        },
+        {
+          "type": "named",
+          "name": "--proof-tools",
+          "description": "Absolute path of proof-tools.json. Turns wallet_shield on and is needed to pay shielded-exact.",
+          "format": "filepath"
+        },
+        {
+          "type": "named",
+          "name": "--exit-proof-tools",
+          "description": "Absolute path of exit-proof-tools.json. With --profile and --proof-tools, turns wallet_unshield on.",
+          "format": "filepath"
+        },
+        {
+          "type": "named",
+          "name": "--profile",
+          "description": "Absolute path of public-profile.json (the facilitator's public profile). Needed for wallet_unshield.",
+          "format": "filepath"
+        },
+        {
+          "type": "named",
+          "name": "--unshield-to",
+          "description": "A public Solana address that wallet_unshield sends to with no confirmation. Never the wallet's own key.",
+          "isRepeated": true
+        },
+        {
+          "type": "named",
+          "name": "--max-unshield",
+          "description": "The most one wallet_unshield call, and this process in total, may send, in atomic USDC.",
+          "format": "number"
+        },
+        {
+          "type": "named",
+          "name": "--max-shield",
+          "description": "The most one wallet_shield call, and this process in total, may move, in atomic USDC.",
+          "format": "number"
+        },
+        {
+          "type": "named",
+          "name": "--max-per-host-day",
+          "description": "The most one seller host may receive in 24 hours, in atomic USDC.",
+          "format": "number"
+        },
+        {
+          "type": "named",
+          "name": "--allow-host",
+          "description": "Pay only this seller host (host or host:port).",
+          "isRepeated": true
+        },
+        {
+          "type": "named",
+          "name": "--rpc-file",
+          "description": "Absolute path of a private file with your own Solana RPC URL. Without it, reads go to the facilitator relay.",
+          "format": "filepath"
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "SHIELDED_WALLET_HOME",
+          "description": "The private folder that holds the encrypted wallet (the folder that init used).",
+          "format": "filepath",
+          "isRequired": true
+        },
+        {
+          "name": "SHIELDED_WALLET_PASSPHRASE",
+          "description": "The wallet passphrase, if you do not use --passphrase-file.",
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

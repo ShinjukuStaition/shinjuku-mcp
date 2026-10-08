@@ -43,6 +43,9 @@ jobs:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
+      - name: npm with trusted publishing (OIDC needs npm 11.5.1 or later)
+        run: npm install -g npm@11.13.0 && npm --version
+
       - name: Check inputs
         run: |
           set -euo pipefail
@@ -109,7 +112,5 @@ jobs:
           node shinjuku-wallet.mjs help mcp > /dev/null
           npm pack --dry-run
 
-      - name: Publish with provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish with provenance (npm trusted publishing; no token)
         run: npm publish --provenance --access public
