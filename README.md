@@ -279,6 +279,10 @@ one to another place.
 
 ## Status
 
+Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.ShinjukuStaition/shinjuku-mcp)
+as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
+published from this repository's workflow with npm provenance (from 0.1.1).
+
 Live on Solana mainnet with wallet release `1a336885` (2026-10-08). Proven
 with real money through this MCP server, against our production facilitator:
 
