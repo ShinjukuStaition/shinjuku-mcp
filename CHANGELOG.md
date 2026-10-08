@@ -5,6 +5,14 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-08: wallet release `d2a7291f`, npm `shinjuku-shielded@0.3.2`
+
+- When the facilitator is short of network-fee funds, the agent hears
+  `p03_facilitator_underfunded`: nothing was spent; try again later with a new
+  request_id.
+- A seller that closes a payment request now tells the agent to pay again with
+  a NEW request_id.
+
 ## 2026-10-08: wallet release `a8516e49`, npm `shinjuku-shielded@0.3.1`
 
 - A shield call made right after the MCP server starts now waits for the

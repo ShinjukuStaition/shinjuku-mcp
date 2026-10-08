@@ -132,11 +132,11 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`a8516e49` (npm `shinjuku-shielded@0.3.1`).
+`d2a7291f` (npm `shinjuku-shielded@0.3.2`).
 
 Update from 0.2.0. The pool program was upgraded on 2026-10-08. Setup from
 npm 0.2.0 pins the program from before the upgrade, so it now refuses
-production. 0.3.1 pins the new program.
+production. 0.3.2 pins the new program.
 
 ### 1. Add the server to your agent
 
@@ -212,14 +212,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/a8516e49/shinjuku-wallet.mjs
-echo "a8516e499a99fb8c0157cbdf5321ed3e9352d4511707b5ccc39e12277771c529  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/d2a7291f/shinjuku-wallet.mjs
+echo "d2a7291f11d583fab55b39ab67cc820808e5c7607618d1456c70cda34eb3450f  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.1`.
+`shinjuku-shielded@0.3.2`.
 
 ### Advanced: flags instead of config.json
 
@@ -337,11 +337,11 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `a8516e49` (npm
-0.3.1). These transactions were made with real money through this MCP
+Live on Solana mainnet. The current wallet release is `d2a7291f` (npm
+0.3.2). These transactions were made with real money through this MCP
 server, against our production facilitator. The first two came from a new
 wallet with the default setup and no SOL at any time (wallet release
-`94a357bc`, the same code path as `a8516e49`). The others used wallet release `1a336885` (2026-10-08).
+`94a357bc`, the same code path as `d2a7291f`). The others used wallet release `1a336885` (2026-10-08).
 
 | Tool | Transaction |
 |---|---|

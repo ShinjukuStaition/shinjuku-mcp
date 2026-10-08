@@ -12,7 +12,7 @@ claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.1` to pin it. |
+| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.2` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
 ## The first start
