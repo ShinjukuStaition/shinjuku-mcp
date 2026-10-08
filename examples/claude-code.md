@@ -130,8 +130,9 @@ Or give every flag yourself, as in the
 ## Check that it works
 
 1. Type `/mcp`. The list shows `shinjuku-shielded` as connected. After setup
-   it has 8 tools: `x402_discover`, `x402_preview`, `x402_pay`, `wallet_balance`,
-   `wallet_receipts`, `wallet_cancel`, `wallet_shield`, `wallet_unshield`.
+   it has 9 tools: `x402_discover`, `x402_preview`, `x402_pay`, `wallet_balance`,
+   `wallet_receipts`, `wallet_cancel`, `wallet_shield`, `wallet_unshield`,
+   `wallet_shield_from_elsewhere`.
 2. Ask: "what is my shielded balance". Claude calls `wallet_balance`. The
    answer has `shieldedAtomic` (what the agent can pay with),
    `unshieldedAtomic` (plain USDC on the wallet's own key), `ownAddress`,

@@ -29,39 +29,39 @@
         {
           "type": "named",
           "name": "--max-payment",
-          "description": "The most one payment may cost, in atomic USDC (50000 = 0.05 USDC). The server does not start without it.",
+          "description": "The most one payment may cost, in atomic USDC (50000 = 0.05 USDC). Optional: setup writes the caps to config.json.",
           "format": "number",
           "placeholder": "50000",
-          "isRequired": true
+          "isRequired": false
         },
         {
           "type": "named",
           "name": "--max-session",
-          "description": "The most this server process may pay in total, in atomic USDC. At least --max-payment.",
+          "description": "The most this server process may pay in total, in atomic USDC. Optional: setup writes the caps to config.json.",
           "format": "number",
           "placeholder": "200000",
-          "isRequired": true
+          "isRequired": false
         },
         {
           "type": "named",
           "name": "--pool",
           "description": "The shielded pool. The wallet file is $SHIELDED_WALLET_HOME/<pool>/wallet.json.",
           "default": "AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8",
-          "isRequired": true
+          "isRequired": false
         },
         {
           "type": "named",
           "name": "--program",
           "description": "The shielded pool program.",
           "default": "8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1",
-          "isRequired": true
+          "isRequired": false
         },
         {
           "type": "named",
           "name": "--memo-service",
           "description": "The facilitator that serves the encrypted memos. Its RPC relay serves reads without --rpc-file.",
           "default": "https://pay.shinjukustaition.com",
-          "isRequired": true
+          "isRequired": false
         },
         {
           "type": "named",
@@ -122,6 +122,18 @@
           "name": "--rpc-file",
           "description": "Absolute path of a private file with your own Solana RPC URL. Without it, reads go to the facilitator relay.",
           "format": "filepath"
+        },
+        {
+          "type": "named",
+          "name": "--ready-pockets",
+          "description": "How many 1 USDC pockets the wallet keeps ready for standard exact sellers (0-5).",
+          "format": "number",
+          "default": "1"
+        },
+        {
+          "type": "named",
+          "name": "--no-auto-pockets",
+          "description": "Turn off automatic pockets: x402_pay then pays standard exact sellers only from pockets you fill yourself."
         }
       ],
       "environmentVariables": [
