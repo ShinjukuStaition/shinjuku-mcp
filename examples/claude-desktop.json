@@ -1,25 +1,8 @@
 {
   "mcpServers": {
-    "shinjuku": {
+    "shinjuku-shielded": {
       "command": "npx",
-      "args": [
-        "-y",
-        "shinjuku-shielded@0.1.1",
-        "mcp",
-        "--max-payment", "50000",
-        "--max-session", "200000",
-        "--tor",
-        "--pool", "AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8",
-        "--program", "8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1",
-        "--memo-service", "https://pay.shinjukustaition.com",
-        "--passphrase-file", "/home/you/shinjuku/passphrase.txt",
-        "--proof-tools", "/home/you/shinjuku/shinjuku-proof-tools/proof-tools.json",
-        "--exit-proof-tools", "/home/you/shinjuku/shinjuku-proof-tools/exit-proof-tools.json",
-        "--profile", "/home/you/shinjuku/shinjuku-proof-tools/public-profile.json"
-      ],
-      "env": {
-        "SHIELDED_WALLET_HOME": "/home/you/.shielded-wallet"
-      }
+      "args": ["-y", "shinjuku-shielded", "mcp"]
     }
   }
 }

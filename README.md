@@ -21,8 +21,12 @@ set.
   it. We never run it, and we never hold your money.
 - **Shielded payments.** Your agent pays from a shielded balance. Add `--tor`
   and no server sees your IP.
-- **Caps that only you set.** `--max-payment` and `--max-session` are
-  required at launch. A tool call can only lower them, never raise them.
+- **One command to set up.** `npx -y shinjuku-shielded mcp` offers the
+  setup on a machine with no wallet. It makes the wallet, a private
+  passphrase file, and the checked proof tools.
+- **Caps that only you set.** Setup records them (default: 0.05 USDC per
+  payment, 1 USDC per session). A tool call can only lower them, never raise
+  them.
 - **Look before you pay.** `x402_preview` shows the price and whether your
   caps allow it. It pays nothing.
 - **Never twice.** A retry with the same `request_id` resumes the same
@@ -53,6 +57,18 @@ and writes an encrypted backup by itself, so you never run a command for
 upkeep.
 
 ## Tools
+
+### SETUP
+
+On a machine with no wallet, the server starts in setup mode.
+
+| Tool | What it does |
+|---|---|
+| `shinjuku_setup` | Asks you to confirm in your MCP client that it may create a Shinjuku Shielded wallet on this machine, and shows the caps. Then it runs the setup and switches the same server to the wallet tools. It never asks for a secret. A client that cannot ask is told to run `npx -y shinjuku-shielded setup` in a terminal. |
+| `wallet_status` | Says whether the wallet is set up, and what to do next. |
+
+In setup mode, every money tool answers `wallet_not_set_up` and does
+nothing.
 
 ### SHIELD
 
@@ -104,19 +120,77 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 ## Setup
 
-You need Node.js 22 or later. The current wallet release is `1a336885`.
+You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
+supported: the provers are Linux programs. The current wallet release is
+`11fe6b40` (npm `shinjuku-shielded@0.2.0`).
 
-### Fastest install (npm)
+### 1. Add the server to your agent
 
-The npm package `shinjuku-shielded@0.1.1` is wallet release `1a336885`. It
-has two commands: `shinjuku-shielded` and `shinjuku-wallet`. `npx` gets it
-for you:
+Claude Code:
 
 ```sh
-npx -y shinjuku-shielded help mcp
+claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 ```
 
-### Or download the file and check it
+Claude Desktop (`claude_desktop_config.json`), Cursor (`~/.cursor/mcp.json`),
+and other JSON-config hosts:
+
+```json
+{
+  "mcpServers": {
+    "shinjuku-shielded": {
+      "command": "npx",
+      "args": ["-y", "shinjuku-shielded", "mcp"]
+    }
+  }
+}
+```
+
+### 2. Start it and accept the setup
+
+The first time, the server has no wallet, so it starts in setup mode. Ask
+your agent "what is my balance". Your MCP client asks you to confirm: create
+a Shinjuku Shielded wallet on this machine. Accept, and the setup runs (about
+25 s in our test, with the proof-tool download of about 150 MB). Then the
+same server switches to the wallet tools. You do not restart it.
+
+In a terminal, `npx -y shinjuku-shielded mcp` asks
+"Set up Shinjuku Shielded now? (y/n)". Or run the setup by itself:
+
+```sh
+npx -y shinjuku-shielded setup
+```
+
+It asks for the caps (Enter keeps the default) and Tor. `--yes` asks
+nothing. `--add-to claude-code` (or `claude-desktop`, `cursor`) also adds
+the server to that host's config.
+
+Setup writes to `~/.carbon-shielded-wallet` (or `SHIELDED_WALLET_HOME`):
+
+- The wallet, and a recovery file with the seed and the key. Copy the
+  recovery file to two offline places, then delete it from this machine.
+- `passphrase.txt`: a new random passphrase, readable by you alone. It is
+  never printed, and no tool takes or returns it.
+- The proof tools. Setup checks every file against the set that this wallet
+  release pins.
+- `config.json`: the caps, the paths, and Tor. With it, `mcp` needs no
+  flags. A flag on the command line still wins.
+
+Default caps: 0.05 USDC per payment, 1 USDC per session, and 20 USDC for the
+life of the wallet (`--max-payment`, `--max-session`, `--max-total`, in
+atomic USDC: `50000` = 0.05 USDC). `--prefer-tor` records Tor (see Privacy
+modes).
+
+You can run `setup` again at any time. It never changes an existing wallet,
+and it checks every proof-tool file again.
+
+### 3. Fund it
+
+Ask your agent "what is my wallet address?". Send USDC (Solana SPL) and about
+0.01 SOL to that address. Then say "shield 1 USDC". The steps are in
+[First 10 minutes](examples/README.md#first-10-minutes).
+
+### Advanced: download the file and check it
 
 Download the release file and check its SHA-256 before you run it. The
 current file and hash are also in the
@@ -124,45 +198,23 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/1a336885/shinjuku-wallet.mjs
-echo "1a3368854f4bdfe185a2ac398106c9b39a7148225f1a3ec6a6dcead563c7ed53  shinjuku-wallet.mjs" | sha256sum -c -
-node shinjuku-wallet.mjs help mcp
+curl -fsSLO https://shinjukustaition.com/wallet/11fe6b40/shinjuku-wallet.mjs
+echo "11fe6b40661d3af5e7fe50a20603a1efde4d0997fc243fb16709daad94fd8d29  shinjuku-wallet.mjs" | sha256sum -c -
+node shinjuku-wallet.mjs setup
 ```
 
-With the file, replace `npx -y shinjuku-shielded` below with
-`node /abs/path/shinjuku-wallet.mjs`.
+With the file, replace `npx -y shinjuku-shielded` with
+`node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
+`shinjuku-shielded@0.2.0`.
 
-### Make and fund the wallet
+### Advanced: flags instead of config.json
 
-Follow https://shinjukustaition.com/skill.md section 7b: `init`, the proof
-tools, and funding your shielded balance. The proof tools are a separate
-download with both install options (Linux, or WSL on Windows; about 144 MB,
-every file hash-checked). `help init` and `help add-funds` say the same on
-your machine. Your agent can also fund the shielded balance itself with
-`wallet_shield`.
-
-### Add it to your agent
-
-The session flags for the production pool:
-
-```
---pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8
---program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1
---memo-service https://pay.shinjukustaition.com
---proof-tools /abs/path/shinjuku-proof-tools/proof-tools.json
---exit-proof-tools /abs/path/shinjuku-proof-tools/exit-proof-tools.json
---profile /abs/path/shinjuku-proof-tools/public-profile.json
---passphrase-file /abs/path/passphrase.txt
-```
-
-Caps are in atomic USDC units: `50000` = 0.05 USDC. `--proof-tools` turns
-`wallet_shield` on. `--exit-proof-tools` and `--profile` (both in the
-`shinjuku-proof-tools` folder) turn `wallet_unshield` on.
-
-#### Claude Code
+`mcp` reads `config.json` only when you give no `--pool` and no `--wallet`.
+To set every flag yourself (for example, for a wallet that you made with
+`init` before 0.2.0):
 
 ```sh
-claude mcp add shinjuku -- npx -y shinjuku-shielded mcp \
+claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
   --max-payment 50000 --max-session 200000 --tor \
   --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
   --program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1 \
@@ -173,34 +225,14 @@ claude mcp add shinjuku -- npx -y shinjuku-shielded mcp \
   --passphrase-file /abs/path/passphrase.txt
 ```
 
-#### Claude Desktop, Cursor, and other JSON-config hosts
-
 Use absolute paths: a host starts the server from its own folder. On Windows,
-write `C:/Users/you/...`.
+write `C:/Users/you/...`. `--proof-tools` turns `wallet_shield` on.
+`--exit-proof-tools` and `--profile` turn `wallet_unshield` on.
 
-```json
-{
-  "mcpServers": {
-    "shinjuku": {
-      "command": "npx",
-      "args": [
-        "-y", "shinjuku-shielded", "mcp",
-        "--max-payment", "50000", "--max-session", "200000", "--tor",
-        "--pool", "AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8",
-        "--program", "8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1",
-        "--memo-service", "https://pay.shinjukustaition.com",
-        "--proof-tools", "/home/you/shinjuku/shinjuku-proof-tools/proof-tools.json",
-        "--exit-proof-tools", "/home/you/shinjuku/shinjuku-proof-tools/exit-proof-tools.json",
-        "--profile", "/home/you/shinjuku/shinjuku-proof-tools/public-profile.json",
-        "--passphrase-file", "/home/you/shinjuku/passphrase.txt"
-      ],
-      "env": { "SHIELDED_WALLET_HOME": "/home/you/.shielded-wallet" }
-    }
-  }
-}
-```
-
-Claude Desktop: `claude_desktop_config.json`. Cursor: `~/.cursor/mcp.json`.
+For an older wallet, you can also run `setup` once with
+`SHIELDED_WALLET_HOME` set to your wallet folder and `--passphrase-file`
+set to your passphrase file. It keeps your wallet and writes `config.json`
+beside it.
 
 A send to a new address needs a host that supports MCP elicitation (it shows
 you the confirmation). With a host that does not, name each address with
@@ -210,22 +242,25 @@ you the confirmation). With a host that does not, name each address with
 
 [examples/](examples/) has complete configs and a walkthrough:
 
-- [Claude Code](examples/claude-code.md): the `claude mcp add` command with
-  and without Tor, each flag explained, and how to check it works.
+- [Claude Code](examples/claude-code.md): the `claude mcp add` command, the
+  first start, Tor, each flag explained, and how to check it works.
 - [Claude Desktop](examples/claude-desktop.json) and
   [Cursor](examples/cursor.json): complete JSON configs.
 - [Hermes Agent](examples/hermes.md): the `config.yaml` entry.
-- [First 10 minutes](examples/README.md#first-10-minutes): install, make the
-  wallet, fund it, shield, pay, send, and check the balance.
+- [First 10 minutes](examples/README.md#first-10-minutes): add the server,
+  set it up, fund it, shield, pay, send, and check the balance.
 - [Plain requests](examples/prompts.md): 10 requests, the tool each one
   calls, and the shape of the answer.
 
 ## Caps and flags
 
+After setup, `config.json` holds the caps and the paths. You can add any of
+these flags to the `mcp` command. A flag wins over `config.json`.
+
 | Flag | |
 |---|---|
-| `--max-payment <atomic>` | Required. The most one payment may cost. Without it the server does not start (`mcp_cap_required`). |
-| `--max-session <atomic>` | Required. The most this server process may pay in total. Must be at least `--max-payment`. |
+| `--max-payment <atomic>` | The most one payment may cost. Setup records it. With no `config.json` and no flag, the server does not start (`mcp_cap_required`). |
+| `--max-session <atomic>` | The most this server process may pay in total. Must be at least `--max-payment`. Setup records it. |
 | `--max-per-host-day <atomic>` | Optional. The most one seller host may receive in 24 hours. |
 | `--allow-host <host>` | Optional, repeatable. Pay only these seller hosts. |
 | `--no-shield` | Optional. Turns `wallet_shield` off. It is on with `--proof-tools`. |
@@ -234,6 +269,7 @@ you the confirmation). With a host that does not, name each address with
 | `--exit-proof-tools <file>`, `--profile <file>` | Optional. Turn `wallet_unshield` on (with `--proof-tools`). |
 | `--unshield-to <address>` | Optional, repeatable. These addresses receive with no confirmation. Any other address needs your confirmation in the MCP client. The wallet's own key is refused: the server does not start when you name it here. |
 | `--max-unshield <atomic>` | Optional. The most one unshield call may move, and the most this process may unshield in total. Without it, a send you confirm can move the whole shielded balance. |
+| `--no-tor` | Optional. This run does not use the Tor that setup recorded. |
 | `--tor` | Optional. Every request goes through Tor; our facilitator is reached over its onion service. Needs Tor with `HTTPTunnelPort 127.0.0.1:9080` in `torrc`. See Privacy modes. |
 | `--rpc-file <file>` | Optional. Your own Solana RPC URL. Without it, reads go to our relay, which sees which accounts the wallet reads. |
 
@@ -283,8 +319,10 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet with wallet release `1a336885` (2026-10-08). Proven
-with real money through this MCP server, against our production facilitator:
+Live on Solana mainnet. The current wallet release is `11fe6b40` (npm
+0.2.0, one-command setup). These transactions were made with real money
+through this MCP server (wallet release `1a336885`, 2026-10-08), against our
+production facilitator:
 
 | Tool | Transaction |
 |---|---|

@@ -5,32 +5,25 @@ x402 facilitator on Solana, inside your agent.
 
 | File | What it is |
 |---|---|
-| [claude-code.md](claude-code.md) | The `claude mcp add` command, with and without Tor. Each flag explained. How to check it works. |
+| [claude-code.md](claude-code.md) | The `claude mcp add` command, the first start, Tor, the caps, and how to check it works. |
 | [claude-desktop.json](claude-desktop.json) | A complete `claude_desktop_config.json`. |
 | [cursor.json](cursor.json) | A complete `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project). |
 | [hermes.md](hermes.md) | The Hermes Agent `config.yaml` entry (stdio). |
 | [prompts.md](prompts.md) | 10 plain requests, the tool that each one calls, and the shape of the answer. |
 
-All examples use the npm package `shinjuku-shielded@0.1.1`, which is wallet
-release `1a336885`. The commands and flags come from `help mcp` of that
+All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
+(0.2.0, wallet release `11fe6b40`). Write `shinjuku-shielded@0.2.0` to pin
+it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
-## Paths in the JSON configs
+## Where it runs
 
-The JSON files use placeholder paths under `/home/you/`. Replace each one
-with your own absolute path. An MCP host starts the server from its own
-folder, so a relative path does not work.
-
-On Windows:
-
-- Write paths with forward slashes: `C:/Users/you/shinjuku/passphrase.txt`.
-- Set `SHIELDED_WALLET_HOME` to a folder such as `C:/Users/you/.shielded-wallet`.
-- If the host cannot find `npx`, use `"command": "cmd"` and put `"/c", "npx"`
-  at the start of `args`.
-- The proof tools are Linux programs. Install them in WSL, in a folder on a
-  Windows drive (for example `/mnt/c/Users/you/shinjuku/shinjuku-proof-tools`),
-  and give the wallet the `C:/` paths. The wallet runs each prover through
-  `wsl.exe`.
+- Linux: ready.
+- Windows: the wallet runs the provers through WSL. Setup checks that
+  `wsl.exe` runs; if it does not, run `wsl --install -d Ubuntu`. If the host
+  cannot find `npx`, use `"command": "cmd"` and put `"/c", "npx"` at the
+  start of `args`.
+- macOS: not supported. Setup says so and creates nothing.
 
 ## First 10 minutes
 
@@ -45,67 +38,41 @@ node --version
 
 The output must be `v22` or higher.
 
-### 2. Get the proof tools (Linux, or WSL on Windows)
-
-The proof tools are 26 files, about 144 MB. Every file is hash-checked.
-macOS is not supported: use a Linux machine or a Linux container.
-
-```sh
-mkdir -p ~/shinjuku && cd ~/shinjuku
-mkdir shinjuku-proof-tools && cd shinjuku-proof-tools
-base=https://shinjukustaition.com/proof-tools/82b2d870
-curl -fsSO "$base/SHA256SUMS"
-echo "82b2d8709f28cfdd65c9a03707af4811b8d6e77b1231b4e1de6dd2d84f209c3b  SHA256SUMS" | sha256sum -c -
-while read -r sum path; do mkdir -p "$(dirname "$path")"; curl -fsS -o "$path" "$base/$path"; done < SHA256SUMS
-sha256sum -c --strict --quiet SHA256SUMS && echo ALL_OK
-chmod +x bin/* house/bin/*
-```
-
-Go on only when the first check prints `OK` and the last check prints
-`ALL_OK`. A match proves that your copy is complete, not who made the files.
-The current set is also in section 7b of https://shinjukustaition.com/skill.md.
-
-### 3. Make the wallet
-
-Make a private wallet folder and a passphrase file (8 or more characters).
-`read -rs` keeps the passphrase out of your shell history.
-
-```sh
-cd ~/shinjuku
-mkdir -p ~/.shielded-wallet && chmod 700 ~/.shielded-wallet ~/shinjuku
-read -rs -p "Wallet passphrase: " P && (umask 077; printf '%s\n' "$P" > passphrase.txt) && unset P
-export SHIELDED_WALLET_HOME=~/.shielded-wallet
-SHIELDED_WALLET_PASSPHRASE="$(cat passphrase.txt)" npx -y shinjuku-shielded@0.1.1 init \
-  --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
-  --network solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp \
-  --asset EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v \
-  --max-payment 50000 --max-cumulative 1000000 \
-  --backup-out recovery.txt
-```
-
-- `init` prints `solanaFeePayer`: the wallet's own public Solana address.
-  You fund it in step 5.
-- `recovery.txt` holds the seed and the Solana secret key. Copy it to two
-  offline places, then delete it from this machine. Keep `solanaFeePayer`
-  and `seedFingerprint` beside it.
-- `--max-payment` and `--max-cumulative` are the wallet file's own budget
-  for payments to sellers: the most one payment may cost, and the most all
-  payments may cost together. Without them the defaults are 0.10 and
-  0.30 USDC. Pick your own numbers. The MCP caps of step 4 apply as well.
-- `npx -y shinjuku-shielded@0.1.1 help init` shows every flag.
-
-### 4. Add the server to your agent
+### 2. Add the server to your agent
 
 Use one of [claude-code.md](claude-code.md), [claude-desktop.json](claude-desktop.json),
-[cursor.json](cursor.json), or [hermes.md](hermes.md). Set
-`SHIELDED_WALLET_HOME` to the same folder as in step 3. Restart the agent
+[cursor.json](cursor.json), or [hermes.md](hermes.md). Restart the agent
 host after you change its config.
 
-### 5. Fund the wallet
+### 3. Set it up
 
 | You say | The agent calls |
 |---|---|
-| "what is my wallet address?" | `wallet_balance`. The answer has `ownAddress` (the same as `solanaFeePayer`). |
+| "what is my balance" | `shinjuku_setup`. Your client asks you to confirm that it may create a Shinjuku Shielded wallet on this machine, with the caps. |
+
+Accept. The setup runs (about 25 s in our test, with the proof-tool
+download of about 150 MB) and the same server switches to the wallet
+tools. If your client cannot show the question, run `npx -y shinjuku-shielded setup` in a
+terminal, then restart the agent host.
+
+Setup writes to `~/.carbon-shielded-wallet`:
+
+- The wallet, a random passphrase file (readable by you alone, never
+  printed), the proof tools (every file checked), and `config.json`.
+- A recovery file with the seed and the Solana secret key. Copy it to two
+  offline places, then delete it from this machine.
+- The default caps: 0.05 USDC per payment, 1 USDC per session, and 20 USDC
+  for the life of the wallet. To pick your own, run the setup in a terminal
+  with `--max-payment`, `--max-session`, and `--max-total`
+  (`npx -y shinjuku-shielded help setup`).
+
+### 4. Get the wallet address
+
+| You say | The agent calls |
+|---|---|
+| "what is my wallet address?" | `wallet_balance`. The answer has `ownAddress`: the wallet's own public Solana address. |
+
+### 5. Fund the wallet
 
 Send USDC (Solana SPL) and about 0.01 SOL to that address from your own
 wallet or an exchange. The SOL pays the Solana fee and rent of the deposit.
@@ -125,7 +92,7 @@ Use a whole number of USDC.
 A shield is a public step. The chain shows USDC leave the wallet's own
 address, the amount, and the time. Payments from the shielded balance after
 that do not show this wallet. For a funding path that does not start from
-your own address, see `npx -y shinjuku-shielded@0.1.1 help add-funds`.
+your own address, see `npx -y shinjuku-shielded help add-funds`.
 
 ### 6. Pay a URL
 
