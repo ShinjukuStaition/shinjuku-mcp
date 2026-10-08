@@ -70,10 +70,20 @@ your own, give them to the first setup (in atomic USDC: `50000` = 0.05 USDC):
 npx -y shinjuku-shielded setup --max-payment 100000 --max-session 2000000 --max-total 50000000
 ```
 
-When setup creates the wallet, it also writes `--max-payment` and
-`--max-total` into the wallet file. Those two limits stay fixed. A later
-setup can change the caps in `config.json`, but a payment above the wallet
-file's own limits is still refused.
+When setup creates the wallet, it also writes `--max-payment` (the most one
+payment may cost) and `--max-total` (the most all payments may cost
+together) into the wallet file. A later setup never changes the wallet file:
+
+- It records new caps in `config.json`, and `mcp` uses them as its session
+  caps. So a rerun can change `--max-payment` and `--max-session` for the
+  server.
+- A payment above the wallet file's own per-payment limit is still refused,
+  and the lifetime total stays as it was created.
+- To raise those two limits, restore the recovery file into a new wallet
+  home with higher `--max-payment` and `--max-cumulative`
+  (`npx -y shinjuku-shielded help restore`).
+- Money that you send to yourself or others with `wallet_unshield` does not
+  count against the lifetime total.
 
 Or add a flag to the server command. A flag wins over `config.json`:
 
