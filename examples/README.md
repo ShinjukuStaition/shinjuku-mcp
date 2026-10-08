@@ -9,10 +9,10 @@ x402 facilitator on Solana, inside your agent.
 | [claude-desktop.json](claude-desktop.json) | A complete `claude_desktop_config.json`. |
 | [cursor.json](cursor.json) | A complete `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project). |
 | [hermes.md](hermes.md) | The Hermes Agent `config.yaml` entry (stdio). |
-| [prompts.md](prompts.md) | 10 plain requests, the tool that each one calls, and the shape of the answer. |
+| [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.2.0, wallet release `11fe6b40`). Write `shinjuku-shielded@0.2.0` to pin
+(0.3.0, wallet release `94a357bc`). Write `shinjuku-shielded@0.3.0` to pin
 it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
@@ -74,9 +74,9 @@ Setup writes to `~/.carbon-shielded-wallet`:
 
 ### 5. Fund the wallet
 
-Send USDC (Solana SPL) and about 0.01 SOL to that address from your own
-wallet or an exchange. The SOL pays the Solana fee and rent of the deposit.
-Most of it comes back.
+Send USDC (Solana SPL) to that address from your own wallet or an
+exchange. You do not need SOL: our facilitator's relayer pays the network
+fee of the shield, and you pay the shield cost.
 
 | You say | The agent calls |
 |---|---|
@@ -98,13 +98,16 @@ your own address, see `npx -y shinjuku-shielded help add-funds`.
 
 | You say | The agent calls |
 |---|---|
+| "find a seller of weather data" | `x402_discover`. It searches public x402 listings on your machine and pays nothing. The first call takes about 15 s. |
 | "what does https://seller.example/report cost?" | `x402_preview {url}`. It pays nothing. It shows the seller's price and whether your caps allow it. |
 | "pay it" | `x402_pay {url}`. It pays the seller's price from your shielded balance and returns the answer. |
 
 A paid answer has `paid: true` and a `transaction`. The agent must not say
 that a payment happened without a `transaction`. A URL that does not answer
 HTTP 402 is fetched once, and nothing is paid. A price above your caps is
-refused before anything is signed.
+refused before anything is signed. For a standard `exact` seller, `x402_pay`
+fills a 1 USDC pocket from your shielded balance when it needs one. An image
+answer comes back as an image, and the file is saved.
 
 ### 7. Send USDC to an address, with your confirmation
 

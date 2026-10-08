@@ -12,7 +12,7 @@ claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.2.0` to pin it. |
+| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.0` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
 ## The first start
@@ -93,6 +93,8 @@ Or add a flag to the server command. A flag wins over `config.json`:
 | `--max-session <atomic>` | The most this server process may pay in total. It must be at least `--max-payment` (`mcp_cap_invalid`). |
 | `--max-per-host-day <atomic>` | The most one seller host may receive in 24 hours. |
 | `--allow-host <host>` | Pay only this seller host. Repeat it for more hosts. |
+| `--ready-pockets <0-5>` | How many 1 USDC pockets stay ready for standard `exact` sellers. Default 1. |
+| `--no-auto-pockets` | `x402_pay` does not fill a pocket by itself. |
 | `--max-shield <atomic>` | The most one `wallet_shield` call, and this process in total, may move. |
 | `--no-shield` | Turns `wallet_shield` off. |
 | `--unshield-to <address>` | A public Solana address that `wallet_unshield` sends to with no question. Repeat it for more. The wallet's own key is refused. |
@@ -128,16 +130,17 @@ Or give every flag yourself, as in the
 ## Check that it works
 
 1. Type `/mcp`. The list shows `shinjuku-shielded` as connected. After setup
-   it has 7 tools: `x402_preview`, `x402_pay`, `wallet_balance`,
+   it has 8 tools: `x402_discover`, `x402_preview`, `x402_pay`, `wallet_balance`,
    `wallet_receipts`, `wallet_cancel`, `wallet_shield`, `wallet_unshield`.
 2. Ask: "what is my shielded balance". Claude calls `wallet_balance`. The
    answer has `shieldedAtomic` (what the agent can pay with),
    `unshieldedAtomic` (plain USDC on the wallet's own key), `ownAddress`,
    and `session` (the caps and what this process may still pay).
 3. A first balance on a new wallet can take some time: the server reads the
-   pool history from the chain. After about 20 s it answers the last balance
-   with `refreshing: true` and finishes in the background. Ask again after
-   30 s.
+   pool history (through our facilitator's https history proxy by default,
+   about 60 s for a new wallet). After about 20 s it answers the last
+   balance with `refreshing: true` and finishes in the background. Ask
+   again after 60 s.
 
 If `shinjuku-shielded` shows as failed in `/mcp`, run
 `npx -y shinjuku-shielded mcp` in a terminal. The server writes every log

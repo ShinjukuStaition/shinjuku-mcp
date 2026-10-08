@@ -27,8 +27,12 @@ set.
 - **Caps that only you set.** Setup records them (default: 0.05 USDC per
   payment, 1 USDC per session). A tool call can only lower them, never raise
   them.
+- **Find sellers.** `x402_discover` searches public x402 listings
+  (Coinbase x402 Bazaar, PayAI, Dexter, and others) on your machine.
 - **Look before you pay.** `x402_preview` shows the price and whether your
   caps allow it. It pays nothing.
+- **No SOL.** `wallet_shield` needs only USDC. Our facilitator's relayer
+  pays the network fee.
 - **Never twice.** A retry with the same `request_id` resumes the same
   payment, deposit, or unshield. It never starts a second one.
 - **No RPC, no account, no API key.** Reads go through our relay by default.
@@ -49,6 +53,7 @@ Ask your agent the way you would ask a person:
 |---|---|
 | "what is my balance" | `wallet_balance` |
 | "shield 5 USDC" | `wallet_shield` |
+| "find a seller of satellite images" | `x402_discover` |
 | "pay this URL" | `x402_preview`, then `x402_pay` |
 | "send 2 USDC privately to <address>" | `wallet_unshield` |
 
@@ -74,14 +79,15 @@ nothing.
 
 | Tool | What it does |
 |---|---|
-| `wallet_shield` | Moves USDC from the wallet's own Solana key into your shielded balance. It is on with `--proof-tools`. `--no-shield` turns it off. Funding takes minutes: the first call starts it and returns a stage. Call again with the same `request_id` to see the stage. It never starts a second deposit. When the deposit lands, the wallet reads it from the chain and writes an encrypted backup. The wallet's own key needs the USDC and about 0.01 SOL. |
+| `wallet_shield` | Moves USDC from the wallet's own Solana key into your shielded balance. It is on with `--proof-tools`. `--no-shield` turns it off. Funding takes minutes: the first call starts it and returns a stage. Call again with the same `request_id` to see the stage. It never starts a second deposit. When the deposit lands, the wallet reads it from the chain and writes an encrypted backup. The wallet's own key needs the USDC and no SOL: our facilitator's relayer pays the network fee, and you pay the shield cost. |
 
 ### PAY
 
 | Tool | What it does |
 |---|---|
-| `x402_preview` | One unpaid request. Returns the seller's price, the scheme, and whether your caps allow it. Pays nothing. |
-| `x402_pay` | Pays the URL (if it asks for payment) and returns the answer. A URL that does not answer 402 is fetched once and nothing is paid. Alias: `fetch_paid`. |
+| `x402_discover` | Searches public x402 listings (Coinbase x402 Bazaar, PayAI, Dexter, and others) on your machine and returns the sellers that match. Pays nothing. The first call takes about 15 s. |
+| `x402_preview` | One unpaid request. Returns the seller's price, the scheme, and whether your caps allow it. Pays nothing. A seller that lists several networks is priced from its Solana offer. |
+| `x402_pay` | Pays the URL (if it asks for payment) and returns the answer. A URL that does not answer 402 is fetched once and nothing is paid. An image answer (image bytes, or JSON `image_base64`) comes back as an MCP image block, and the file is saved. A payment that landed, from a seller that gives no answer, closes as paid. Alias: `fetch_paid`. |
 
 ### UNSHIELD
 
@@ -105,7 +111,11 @@ what to ask you.
 
 What it pays: x402 scheme `shielded-exact` from your shielded balance, and
 standard Solana `exact` from a ready pocket. A ready pocket pays any Solana
-x402 `exact` seller, whichever facilitator settles it. For sellers that
+x402 `exact` seller, whichever facilitator settles it. Pockets are automatic:
+when a standard `exact` seller needs one, `x402_pay` fills a 1 USDC pocket
+from your shielded balance. `--ready-pockets` sets how many stay ready, and
+`--no-auto-pockets` turns this off. A seller receipt that names another
+payer is checked on chain. For sellers that
 offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 ## Privacy modes
@@ -122,7 +132,11 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`11fe6b40` (npm `shinjuku-shielded@0.2.0`).
+`94a357bc` (npm `shinjuku-shielded@0.3.0`).
+
+Update from 0.2.0. The pool program was upgraded on 2026-10-08. Setup from
+npm 0.2.0 pins the program from before the upgrade, so it now refuses
+production. 0.3.0 pins the new program.
 
 ### 1. Add the server to your agent
 
@@ -186,8 +200,8 @@ and it checks every proof-tool file again.
 
 ### 3. Fund it
 
-Ask your agent "what is my wallet address?". Send USDC (Solana SPL) and about
-0.01 SOL to that address. Then say "shield 1 USDC". The steps are in
+Ask your agent "what is my wallet address?". Send USDC (Solana SPL) to that
+address. You do not need SOL. Then say "shield 1 USDC". The steps are in
 [First 10 minutes](examples/README.md#first-10-minutes).
 
 ### Advanced: download the file and check it
@@ -198,14 +212,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/11fe6b40/shinjuku-wallet.mjs
-echo "11fe6b40661d3af5e7fe50a20603a1efde4d0997fc243fb16709daad94fd8d29  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/94a357bc/shinjuku-wallet.mjs
+echo "94a357bc22e57592fde37c3a98a4a79a79d031ea5f1ab90261d2f25d7ad85aec  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.2.0`.
+`shinjuku-shielded@0.3.0`.
 
 ### Advanced: flags instead of config.json
 
@@ -249,7 +263,7 @@ you the confirmation). With a host that does not, name each address with
 - [Hermes Agent](examples/hermes.md): the `config.yaml` entry.
 - [First 10 minutes](examples/README.md#first-10-minutes): add the server,
   set it up, fund it, shield, pay, send, and check the balance.
-- [Plain requests](examples/prompts.md): 10 requests, the tool each one
+- [Plain requests](examples/prompts.md): 11 requests, the tool each one
   calls, and the shape of the answer.
 
 ## Caps and flags
@@ -268,6 +282,8 @@ these flags to the `mcp` command. A flag wins over `config.json`.
 | `--allow-shield` | Accepted for older configs. `wallet_shield` is on without it. |
 | `--exit-proof-tools <file>`, `--profile <file>` | Optional. Turn `wallet_unshield` on (with `--proof-tools`). |
 | `--unshield-to <address>` | Optional, repeatable. These addresses receive with no confirmation. Any other address needs your confirmation in the MCP client. The wallet's own key is refused: the server does not start when you name it here. |
+| `--ready-pockets <0-5>` | Optional. How many 1 USDC pockets stay ready for standard `exact` sellers. Default 1. |
+| `--no-auto-pockets` | Optional. `x402_pay` does not fill a pocket by itself. |
 | `--max-unshield <atomic>` | Optional. The most one unshield call may move, and the most this process may unshield in total. Without it, a send you confirm can move the whole shielded balance. |
 | `--no-tor` | Optional. This run does not use the Tor that setup recorded. |
 | `--tor` | Optional. Every request goes through Tor; our facilitator is reached over its onion service. Needs Tor with `HTTPTunnelPort 127.0.0.1:9080` in `torrc`. See Privacy modes. |
@@ -283,7 +299,9 @@ budget of the wallet file (`init --max-payment`, `--max-cumulative`).
 Payments to sellers still count.
 
 Upkeep is automatic. After a deposit lands, and before a payment or unshield
-when the local balance is stale, the server reads the chain itself. After
+when the local balance is stale, the server reads the chain itself. By
+default it reads the pool history through our facilitator's https history
+proxy: a new wallet is ready in about 60 s. After
 each shield and unshield, the wallet writes an encrypted backup to
 `<SHIELDED_WALLET_HOME>/auto-backups/<pool>/`. It keeps the newest 5
 complete, verified backups. They are on the same disk as the wallet: copy
@@ -319,13 +337,16 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `11fe6b40` (npm
-0.2.0, one-command setup). These transactions were made with real money
-through this MCP server (wallet release `1a336885`, 2026-10-08), against our
-production facilitator:
+Live on Solana mainnet. The current wallet release is `94a357bc` (npm
+0.3.0). These transactions were made with real money through this MCP
+server, against our production facilitator. The first two came from a new
+wallet with the default setup and no SOL at any time (wallet release
+`94a357bc`). The others used wallet release `1a336885` (2026-10-08).
 
 | Tool | Transaction |
 |---|---|
+| `wallet_shield` (no SOL) | [`5np1EYjN…fH2`](https://solscan.io/tx/5np1EYjNkr5w7Tt6ng2KQ9cp7RgNkhpwAKtzkm2nyRKMgi1FsmM3TMZMx8EkyiAV4sUtoQ3mTtTbuehas1qV3fH2) |
+| `x402_pay` to a public satellite-imagery seller (0.013 USDC, JPEG answer in 8 s) | [`iC6gnjFM…DHwC`](https://solscan.io/tx/iC6gnjFMBwHaqArgcRL6C5GdNbcWMom82cZqcQ2C2xup9aXJX91HXmWozQcVvAyTSTZsRptynfdbBPjjxG9DHwC) |
 | `wallet_shield` (1 USDC in) | [`hWzDiR1R…izn`](https://solscan.io/tx/hWzDiR1RnC1gFXMMrCxRBCZ4R5dgMreWGX7vyQCTUTWkKaKnYvxmro6PQuE9KMYVbrq3NkNu9YaJzj7XaqrDizn) |
 | `wallet_unshield` (0.5 USDC out) | self-pay [`5evVHz8X…r9uv`](https://solscan.io/tx/5evVHz8XvMdSYF76BQ1xv3TazwS9P38FEXp81gipNMMSqn61Rj7EUc1DdgpYz591wQbBZMWcpNVznixXPsfZr9uv) · exit [`4yY2YXLS…pgF2i`](https://solscan.io/tx/4yY2YXLSj1EyUWDb7X9985KmyeNGQieF8skg3uN3sv3Pds3zSb42J5owDWMUTshui6XACkP4zwGxUmXXTVapgF2i) |
 | `wallet_unshield` with your confirmation (0.25 USDC, release `1a336885`) | self-pay [`3jQyPgrA…QEWw`](https://solscan.io/tx/3jQyPgrA5AtFcqzyWHDWRcfNv66sM5qfCStxsByYDqGm7W5uRWkUMHpLoFUFm2jc98Aor7CXSToAChSHD7dWQEWw) · exit [`4yA3qkHU…jCoh`](https://solscan.io/tx/4yA3qkHUto7e7iUGM9q6321avTm8aZQJ6zNMMh18SoAACnvgtvbWpVydry3mCq9iKaSZv92FfH43NJu557zjCoh) |

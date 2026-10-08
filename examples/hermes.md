@@ -24,7 +24,8 @@ Then start a new chat: `hermes chat -t mcp-shinjuku`.
   "what is my balance". The agent calls `shinjuku_setup`, and Hermes asks
   you to confirm that it may create a Shinjuku Shielded wallet on this
   machine (MCP elicitation, on by default). Accept, and the setup runs. Then
-  the same server switches to the wallet tools.
+  the same server switches to the wallet tools. Hermes shows an Approve
+  button with an empty form: Approve counts as accept.
 - You can also run the setup in a terminal first:
   `npx -y shinjuku-shielded setup`.
 - `timeout: 600`. A payment, a shield, or an unshield can take minutes (the
