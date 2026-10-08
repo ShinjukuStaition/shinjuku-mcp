@@ -5,6 +5,13 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-08: wallet release `a8516e49`, npm `shinjuku-shielded@0.3.1`
+
+- A shield call made right after the MCP server starts now waits for the
+  server's own background pocket check instead of failing `wallet_locked`.
+- Tool texts name fewer third-party wallets.
+- Otherwise the same as 0.3.0 (wallet release `94a357bc`, no longer served).
+
 ## 2026-10-08: wallet release `94a357bc`, npm `shinjuku-shielded@0.3.0`
 
 Update from 0.2.0. The pool program was upgraded on 2026-10-08. The proof

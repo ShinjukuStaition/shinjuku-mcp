@@ -12,7 +12,7 @@ x402 facilitator on Solana, inside your agent.
 | [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.3.0, wallet release `94a357bc`). Write `shinjuku-shielded@0.3.0` to pin
+(0.3.1, wallet release `a8516e49`). Write `shinjuku-shielded@0.3.1` to pin
 it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
