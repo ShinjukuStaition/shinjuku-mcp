@@ -12,7 +12,7 @@ server from its own folder, so a relative path does not work.
 ```sh
 claude mcp add shinjuku -s user \
   -e SHIELDED_WALLET_HOME=/home/you/.shielded-wallet \
-  -- npx -y shinjuku-shielded@0.1.0 mcp \
+  -- npx -y shinjuku-shielded@0.1.1 mcp \
   --max-payment 50000 --max-session 200000 \
   --tor \
   --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
@@ -41,7 +41,7 @@ The same command without `--tor`:
 ```sh
 claude mcp add shinjuku -s user \
   -e SHIELDED_WALLET_HOME=/home/you/.shielded-wallet \
-  -- npx -y shinjuku-shielded@0.1.0 mcp \
+  -- npx -y shinjuku-shielded@0.1.1 mcp \
   --max-payment 50000 --max-session 200000 \
   --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
   --program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1 \
@@ -65,7 +65,7 @@ both modes.
 | `-s user` | no | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `-e SHIELDED_WALLET_HOME=...` | yes, in practice | The private folder that holds the encrypted wallet. Use the same folder that `init` used. |
 | `--` | yes | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded@0.1.0` | yes | Gets and runs the npm package. `@0.1.0` pins the version, so each start runs the same wallet file (release `1a336885`). |
+| `npx -y shinjuku-shielded@0.1.1` | yes | Gets and runs the npm package. `@0.1.1` pins the version, so each start runs the same wallet file (release `1a336885`). |
 | `mcp` | yes | The wallet command that runs the MCP server on stdio. |
 | `--max-payment 50000` | yes | The most one payment to a seller may cost, in atomic USDC (50000 = 0.05 USDC). Without it, the server does not start (`mcp_cap_required`). A tool call can only lower it. |
 | `--max-session 200000` | yes | The most this server process may pay in total (200000 = 0.20 USDC). It must be at least `--max-payment` (`mcp_cap_invalid`). |
@@ -90,7 +90,7 @@ Optional flags that you can add:
 | `--max-unshield <atomic>` | The most one `wallet_unshield` call, and this process in total, may send. Without it, a send that you confirm can move the whole shielded balance. |
 | `--rpc-file <file>` | Your own Solana RPC URL on the first line of a private file. Without it, reads go through our relay, which sees which accounts the wallet reads. |
 
-`node shinjuku-wallet.mjs help mcp` (or `npx -y shinjuku-shielded@0.1.0 help mcp`)
+`node shinjuku-wallet.mjs help mcp` (or `npx -y shinjuku-shielded@0.1.1 help mcp`)
 prints the full flag list on your machine.
 
 ## Check that it works

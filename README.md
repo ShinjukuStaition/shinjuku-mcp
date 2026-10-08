@@ -108,7 +108,7 @@ You need Node.js 22 or later. The current wallet release is `1a336885`.
 
 ### Fastest install (npm)
 
-The npm package `shinjuku-shielded@0.1.0` is wallet release `1a336885`. It
+The npm package `shinjuku-shielded@0.1.1` is wallet release `1a336885`. It
 has two commands: `shinjuku-shielded` and `shinjuku-wallet`. `npx` gets it
 for you:
 

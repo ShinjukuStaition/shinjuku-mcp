@@ -13,7 +13,7 @@ mcp_servers:
     command: npx
     args:
       - "-y"
-      - "shinjuku-shielded@0.1.0"
+      - "shinjuku-shielded@0.1.1"
       - "mcp"
       - "--max-payment"
       - "50000"

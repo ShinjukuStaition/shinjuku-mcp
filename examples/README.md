@@ -11,7 +11,7 @@ x402 facilitator on Solana, inside your agent.
 | [hermes.md](hermes.md) | The Hermes Agent `config.yaml` entry (stdio). |
 | [prompts.md](prompts.md) | 10 plain requests, the tool that each one calls, and the shape of the answer. |
 
-All examples use the npm package `shinjuku-shielded@0.1.0`, which is wallet
+All examples use the npm package `shinjuku-shielded@0.1.1`, which is wallet
 release `1a336885`. The commands and flags come from `help mcp` of that
 release.
 
@@ -75,7 +75,7 @@ cd ~/shinjuku
 mkdir -p ~/.shielded-wallet && chmod 700 ~/.shielded-wallet ~/shinjuku
 read -rs -p "Wallet passphrase: " P && (umask 077; printf '%s\n' "$P" > passphrase.txt) && unset P
 export SHIELDED_WALLET_HOME=~/.shielded-wallet
-SHIELDED_WALLET_PASSPHRASE="$(cat passphrase.txt)" npx -y shinjuku-shielded@0.1.0 init \
+SHIELDED_WALLET_PASSPHRASE="$(cat passphrase.txt)" npx -y shinjuku-shielded@0.1.1 init \
   --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
   --network solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp \
   --asset EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v \
@@ -92,7 +92,7 @@ SHIELDED_WALLET_PASSPHRASE="$(cat passphrase.txt)" npx -y shinjuku-shielded@0.1.
   for payments to sellers: the most one payment may cost, and the most all
   payments may cost together. Without them the defaults are 0.10 and
   0.30 USDC. Pick your own numbers. The MCP caps of step 4 apply as well.
-- `npx -y shinjuku-shielded@0.1.0 help init` shows every flag.
+- `npx -y shinjuku-shielded@0.1.1 help init` shows every flag.
 
 ### 4. Add the server to your agent
 
@@ -125,7 +125,7 @@ Use a whole number of USDC.
 A shield is a public step. The chain shows USDC leave the wallet's own
 address, the amount, and the time. Payments from the shielded balance after
 that do not show this wallet. For a funding path that does not start from
-your own address, see `npx -y shinjuku-shielded@0.1.0 help add-funds`.
+your own address, see `npx -y shinjuku-shielded@0.1.1 help add-funds`.
 
 ### 6. Pay a URL
 
