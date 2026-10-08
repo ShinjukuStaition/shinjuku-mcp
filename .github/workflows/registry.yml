@@ -1,0 +1,33 @@
+name: Publish to the MCP Registry
+
+# Manual only. Run after the npm version named in server.json is live:
+# the registry checks that the npm package carries the same mcpName.
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write # GitHub OIDC: proves this repo's owner (ShinjukuStaition) to the registry
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install mcp-publisher
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+          ./mcp-publisher --help | head -1
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+
+      - name: Log in with GitHub OIDC
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish
+        run: ./mcp-publisher publish
