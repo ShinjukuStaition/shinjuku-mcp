@@ -1,0 +1,115 @@
+name: Publish shinjuku-shielded to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Wallet release (sha8). Must be the release that /api/wallet/release serves now."
+        required: true
+        type: string
+      version:
+        description: "npm version for this release (x.y.z, higher than the last published version)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+        working-directory: npm
+    env:
+      RELEASE: ${{ inputs.release }}
+      VERSION: ${{ inputs.version }}
+      SITE: https://shinjukustaition.com
+      HASH_README_API: https://api.github.com/repos/ShinjukuStaition/shinjuku-shielded/readme
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Check inputs
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE" =~ ^[0-9a-f]{8}$ ]] || { echo "::error::release must be 8 lowercase hex characters"; exit 1; }
+          [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || { echo "::error::version must be x.y.z"; exit 1; }
+          if npm view "shinjuku-shielded@$VERSION" version >/dev/null 2>&1; then
+            echo "::error::shinjuku-shielded@$VERSION is already published"; exit 1
+          fi
+
+      - name: Read the hash from the facilitator and from the GitHub Releases table
+        id: hash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl -fsS --proto '=https' --tlsv1.2 "$SITE/api/wallet/release" -o "$RUNNER_TEMP/release.json"
+          served_dir=$(jq -r '.wallet.dir' "$RUNNER_TEMP/release.json")
+          served_sha=$(jq -r '.wallet.sha256' "$RUNNER_TEMP/release.json")
+          served_bytes=$(jq -r '.wallet.bytes' "$RUNNER_TEMP/release.json")
+          [[ "$served_dir" == "$RELEASE" ]] || { echo "::error::the site serves release $served_dir, not $RELEASE"; exit 1; }
+          [[ "$served_sha" =~ ^[0-9a-f]{64}$ && "$served_sha" == "$RELEASE"* ]] || { echo "::error::site sha256 $served_sha does not start with $RELEASE"; exit 1; }
+          [[ "$served_bytes" =~ ^[0-9]+$ ]] || { echo "::error::site bytes is not a number"; exit 1; }
+
+          curl -fsS --proto '=https' --tlsv1.2 \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw" \
+            "$HASH_README_API" -o "$RUNNER_TEMP/hash-readme.md"
+          # Releases table row: | date | `sha8` or [`sha8`](url) | `sha256` | bytes | ...
+          rows=$(awk -F'|' -v tag="\`$RELEASE\`" '/^\|/ && index($3, tag) { print $4 }' "$RUNNER_TEMP/hash-readme.md")
+          count=$(printf '%s' "$rows" | grep -c . || true)
+          [[ "$count" == "1" ]] || { echo "::error::expected 1 row for $RELEASE in the shinjuku-shielded Releases table, found $count"; exit 1; }
+          readme_sha=$(printf '%s' "$rows" | grep -oE '[0-9a-f]{64}' || true)
+          [[ "$readme_sha" == "$served_sha" ]] || { echo "::error::GitHub table sha256 '$readme_sha' differs from site sha256 $served_sha"; exit 1; }
+
+          echo "sha256=$served_sha" >> "$GITHUB_OUTPUT"
+          echo "bytes=$served_bytes" >> "$GITHUB_OUTPUT"
+
+      - name: Download the release files and verify them
+        env:
+          SHA256: ${{ steps.hash.outputs.sha256 }}
+          BYTES: ${{ steps.hash.outputs.bytes }}
+        run: |
+          set -euo pipefail
+          for f in shinjuku-wallet.mjs LICENSE.txt THIRD_PARTY_NOTICES.txt manifest.json; do
+            curl -fsS --proto '=https' --tlsv1.2 "$SITE/wallet/$RELEASE/$f" -o "$f"
+          done
+          echo "$SHA256  shinjuku-wallet.mjs" | sha256sum -c -
+          [[ "$(stat -c %s shinjuku-wallet.mjs)" == "$BYTES" ]] || { echo "::error::wallet size differs from the site"; exit 1; }
+          [[ "$(jq -r '.sha256' manifest.json)" == "$SHA256" ]] || { echo "::error::manifest.json sha256 differs"; exit 1; }
+          [[ "$(jq -r '.license' manifest.json)" == "LicenseRef-Shinjuku-Shielded-Wallet" ]] || { echo "::error::manifest.json license changed"; exit 1; }
+          echo "$(jq -r '.notices.sha256' manifest.json)  THIRD_PARTY_NOTICES.txt" | sha256sum -c -
+          head -n 1 shinjuku-wallet.mjs | grep -qx '#!/usr/bin/env node' || { echo "::error::wallet file has no node shebang"; exit 1; }
+
+      - name: Stamp package.json
+        env:
+          SHA256: ${{ steps.hash.outputs.sha256 }}
+        run: |
+          set -euo pipefail
+          npm pkg set "version=$VERSION" "shinjukuRelease=$RELEASE" "shinjukuSha256=$SHA256"
+          jq '{name, version, shinjukuRelease, shinjukuSha256, bin}' package.json
+
+      - name: Smoke test and pack list
+        run: |
+          set -euo pipefail
+          node shinjuku-wallet.mjs help mcp > /dev/null
+          npm pack --dry-run
+
+      - name: Publish with provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
