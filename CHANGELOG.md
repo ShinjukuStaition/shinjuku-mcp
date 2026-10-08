@@ -5,6 +5,38 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-08: wallet release `94a357bc`, npm `shinjuku-shielded@0.3.0`
+
+Update from 0.2.0. The pool program was upgraded on 2026-10-08. The proof
+tools that 0.2.0 pins (`24e819a8`) name the program from before the upgrade,
+so setup from 0.2.0 now refuses production. 0.3.0 pins the new set
+`262e1e98`.
+
+- `x402_discover`: searches public x402 listings (Coinbase x402 Bazaar,
+  PayAI, Dexter, and others) on your machine. The first call takes about
+  15 s.
+- Automatic pockets: for a standard `exact` seller, `x402_pay` fills a
+  1 USDC pocket from the shielded balance when it needs one.
+  `--ready-pockets 0-5` (default 1) sets how many stay ready.
+  `--no-auto-pockets` turns this off.
+- Image answers: `x402_pay` returns image bytes (also JSON `image_base64`)
+  as an MCP image block and saves the file.
+- `wallet_shield` needs no SOL. Our facilitator's relayer pays the network
+  fee; you pay the shield cost.
+- An Approve button with an empty form (Hermes) counts as accept.
+- `x402_preview` and `x402_pay` price a seller that lists several networks
+  from its Solana offer.
+- The pool history comes through our facilitator's https history proxy by
+  default. A new wallet is ready in about 60 s instead of about 220 s.
+- A seller receipt that names another payer is checked on chain.
+- A payment that landed, from a seller that gives no answer, closes as paid.
+- Verified on production with a new wallet, the default setup, and no SOL at
+  any time: a shield
+  ([`5np1EYjN…fH2`](https://solscan.io/tx/5np1EYjNkr5w7Tt6ng2KQ9cp7RgNkhpwAKtzkm2nyRKMgi1FsmM3TMZMx8EkyiAV4sUtoQ3mTtTbuehas1qV3fH2)),
+  then `x402_pay` to a public satellite-imagery seller: 0.013 USDC, HTTP 200
+  in 8 s, a JPEG answer
+  ([`iC6gnjFM…DHwC`](https://solscan.io/tx/iC6gnjFMBwHaqArgcRL6C5GdNbcWMom82cZqcQ2C2xup9aXJX91HXmWozQcVvAyTSTZsRptynfdbBPjjxG9DHwC)).
+
 ## 2026-10-08: wallet release `11fe6b40`, npm `shinjuku-shielded@0.2.0`
 
 One command installs and runs it: `npx -y shinjuku-shielded mcp`.
