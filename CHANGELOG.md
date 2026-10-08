@@ -5,7 +5,32 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
-## Unreleased
+## 2026-10-08: wallet release `11fe6b40`, npm `shinjuku-shielded@0.2.0`
+
+One command installs and runs it: `npx -y shinjuku-shielded mcp`.
+
+- First run with no wallet: in a terminal it asks "Set up Shinjuku Shielded
+  now? (y/n)". Started by an agent app, it serves a setup mode: the tools
+  `shinjuku_setup` and `wallet_status`, and the app asks you "Create a
+  Shinjuku Shielded wallet on this machine?" (MCP elicitation). Nothing is
+  created until you accept. The money tools answer `wallet_not_set_up`.
+- `setup` (also run by the first start): creates the wallet with a
+  generated passphrase in a private file, shows the recovery file to back
+  up, downloads the proof tools and checks every file against a set pinned
+  inside the wallet (the server alone cannot change it), and writes
+  `config.json`. `--add-to claude-code|claude-desktop|cursor` adds the server
+  to your agent app. `--yes` asks nothing.
+- `mcp` with no flags reads `config.json`. Flags on the command line still
+  win.
+- Linux, or Windows with WSL. macOS is not supported (the provers are Linux
+  programs).
+- In the official MCP Registry as `io.github.ShinjukuStaition/shinjuku-mcp`
+  0.2.0. npm versions are published from this repository's workflow with
+  npm provenance (from 0.1.1).
+- Verified on production: an end-to-end run from the published package
+  (setup in 25 s, `mcp` with no flags, a balance read).
+
+## 2026-10-08: npm `shinjuku-shielded@0.1.1` (same wallet release `1a336885`)
 
 - `server.json` for the official MCP Registry
   (`io.github.ShinjukuStaition/shinjuku-mcp`).
