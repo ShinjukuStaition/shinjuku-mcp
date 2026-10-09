@@ -132,7 +132,7 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`36d0219d` (npm `shinjuku-shielded@0.3.3`).
+`14dd9efa` (npm `shinjuku-shielded@0.3.4`).
 
 Update from an earlier version. The pool program was upgraded on 2026-10-08
 and again on 2026-10-09. Earlier versions pin the program from before the
@@ -213,14 +213,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/36d0219d/shinjuku-wallet.mjs
-echo "36d0219d0ccb169ff0dc6d81d60a0437c10e7c26d9878fe673d86cc4043fb581  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/14dd9efa/shinjuku-wallet.mjs
+echo "14dd9efa7c6bbd2906a56e732a4aff9d23c7b867b6fd9fec4f005494acc3823b  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.3`.
+`shinjuku-shielded@0.3.4`.
 
 ### Advanced: flags instead of config.json
 
@@ -338,8 +338,8 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `36d0219d` (npm
-0.3.3). These transactions were made with real money through this MCP
+Live on Solana mainnet. The current wallet release is `14dd9efa` (npm
+0.3.4). These transactions were made with real money through this MCP
 server, against our production facilitator. The first two came from a new
 wallet with the default setup and no SOL at any time (wallet release
 `94a357bc`, an earlier release). The others used wallet release `1a336885` (2026-10-08).
