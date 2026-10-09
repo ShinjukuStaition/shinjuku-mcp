@@ -5,6 +5,12 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-09: wallet release `36d0219d`, npm `shinjuku-shielded@0.3.3`
+
+- Required after the pool program upgrade of 2026-10-09: earlier releases
+  refuse payments. Run `npx -y shinjuku-shielded@latest setup` once; it keeps
+  your wallet and downloads proof tools `a9f18f88`.
+
 ## 2026-10-08: wallet release `d2a7291f`, npm `shinjuku-shielded@0.3.2`
 
 - When the facilitator is short of network-fee funds, the agent hears
