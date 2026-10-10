@@ -24,9 +24,9 @@ set.
 - **One command to set up.** `npx -y shinjuku-shielded mcp` offers the
   setup on a machine with no wallet. It makes the wallet, a private
   passphrase file, and the checked proof tools.
-- **Caps that only you set.** Setup records them (default: 0.05 USDC per
-  payment, 1 USDC per session). A tool call can only lower them, never raise
-  them.
+- **Caps that only you set.** Spending limits are optional; by default there
+  is none (only the balance bounds a payment). Setup records the ones you set.
+  A tool call can only lower them, never raise them.
 - **Find sellers.** `x402_discover` searches public x402 listings
   (Coinbase x402 Bazaar, PayAI, Dexter, and others) on your machine.
 - **Look before you pay.** `x402_preview` shows the price and whether your
@@ -132,12 +132,14 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`14dd9efa` (npm `shinjuku-shielded@0.3.4`).
+`f2ea6840` (npm `shinjuku-shielded@0.3.5`).
 
-Update from an earlier version. The pool program was upgraded on 2026-10-08
-and again on 2026-10-09. Earlier versions pin the program from before the
-upgrade, so they now refuse payments. Run `npx -y shinjuku-shielded@latest setup`
-once: it keeps your wallet and pins the new program.
+Update from an earlier version. On 2026-10-10 the pool program was upgraded
+and the shielded pool moved to `45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR`.
+The old pool `AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8` is retired, and
+earlier versions refuse payments. Run `npx -y shinjuku-shielded@latest setup`
+once: it pins the new program and sets up a wallet for the new pool. That
+wallet has a new address: ask your agent for it before you send USDC.
 
 ### 1. Add the server to your agent
 
@@ -191,10 +193,11 @@ Setup writes to `~/.carbon-shielded-wallet` (or `SHIELDED_WALLET_HOME`):
 - `config.json`: the caps, the paths, and Tor. With it, `mcp` needs no
   flags. A flag on the command line still wins.
 
-Default caps: 0.05 USDC per payment, 1 USDC per session, and 20 USDC for the
-life of the wallet (`--max-payment`, `--max-session`, `--max-total`, in
-atomic USDC: `50000` = 0.05 USDC). `--prefer-tor` records Tor (see Privacy
-modes).
+Spending limits are optional and off by default: with none, only the balance
+bounds a payment. To set them, give `--max-payment`, `--max-session`, or
+`--max-total` (in atomic USDC: `50000` = 0.05 USDC). A setup rerun lifts the
+old default caps (0.05 / 1 / 20 USDC) of earlier versions. `--prefer-tor`
+records Tor (see Privacy modes).
 
 You can run `setup` again at any time. It never changes an existing wallet,
 and it checks every proof-tool file again.
@@ -213,14 +216,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/14dd9efa/shinjuku-wallet.mjs
-echo "14dd9efa7c6bbd2906a56e732a4aff9d23c7b867b6fd9fec4f005494acc3823b  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/f2ea6840/shinjuku-wallet.mjs
+echo "f2ea684051a96e03ea86d998ad5b2f4033de55fce3a4f9695376e611884fdbc6  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.4`.
+`shinjuku-shielded@0.3.5`.
 
 ### Advanced: flags instead of config.json
 
@@ -231,7 +234,7 @@ To set every flag yourself (for example, for a wallet that you made with
 ```sh
 claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
   --max-payment 50000 --max-session 200000 --tor \
-  --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
+  --pool 45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR \
   --program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1 \
   --memo-service https://pay.shinjukustaition.com \
   --proof-tools /abs/path/shinjuku-proof-tools/proof-tools.json \
@@ -274,8 +277,8 @@ these flags to the `mcp` command. A flag wins over `config.json`.
 
 | Flag | |
 |---|---|
-| `--max-payment <atomic>` | The most one payment may cost. Setup records it. With no `config.json` and no flag, the server does not start (`mcp_cap_required`). |
-| `--max-session <atomic>` | The most this server process may pay in total. Must be at least `--max-payment`. Setup records it. |
+| `--max-payment <atomic>` | Optional. The most one payment may cost. Setup records it. Default: no limit. |
+| `--max-session <atomic>` | Optional. The most this server process may pay in total. When you set both, it must be at least `--max-payment`. Setup records it. Default: no limit. |
 | `--max-per-host-day <atomic>` | Optional. The most one seller host may receive in 24 hours. |
 | `--allow-host <host>` | Optional, repeatable. Pay only these seller hosts. |
 | `--no-shield` | Optional. Turns `wallet_shield` off. It is on with `--proof-tools`. |
@@ -338,11 +341,12 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `14dd9efa` (npm
-0.3.4). These transactions were made with real money through this MCP
-server, against our production facilitator. The first two came from a new
-wallet with the default setup and no SOL at any time (wallet release
-`94a357bc`, an earlier release). The others used wallet release `1a336885` (2026-10-08).
+Live on Solana mainnet. The current wallet release is `f2ea6840` (npm
+0.3.5). These transactions were made with real money through this MCP
+server, against our production facilitator, on the earlier pool `AAG16…3kV8`
+(retired 2026-10-10). The first two came from a new wallet with the default
+setup and no SOL at any time (wallet release `94a357bc`). The others used
+wallet release `1a336885` (2026-10-08).
 
 | Tool | Transaction |
 |---|---|

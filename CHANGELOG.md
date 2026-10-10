@@ -5,6 +5,20 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-10: wallet release `f2ea6840`, npm `shinjuku-shielded@0.3.5`
+
+- The pool program was upgraded, and the shielded pool moved to
+  `45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR`. The old pool
+  `AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8` is retired; earlier releases
+  refuse payments. Run `npx -y shinjuku-shielded@latest setup` once: it keeps
+  the old wallet file, makes a wallet for the new pool (a new address), and
+  downloads proof tools `ad860e62`.
+- No spending limit by default. `--max-payment`, `--max-session`, and
+  `--max-total` are optional; a setup rerun lifts the old default caps.
+- The first deposit into an empty pool works.
+- A pocket fill for a split shielded balance says why it fails: each part is
+  smaller than one pocket. Shield 1 more USDC so one part holds a full pocket.
+
 ## 2026-10-09: wallet release `14dd9efa`, npm `shinjuku-shielded@0.3.4`
 
 - Proof tools `9975fdf8` pin the upgraded pool program. With 0.3.3, setup

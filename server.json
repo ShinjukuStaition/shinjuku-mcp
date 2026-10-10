@@ -3,7 +3,7 @@
   "name": "io.github.ShinjukuStaition/shinjuku-mcp",
   "title": "Shinjuku Shielded",
   "description": "Private x402 payments on Solana: shield, pay, and unshield USDC under caps you set.",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "websiteUrl": "https://shinjukustaition.com",
   "repository": {
     "url": "https://github.com/ShinjukuStaition/shinjuku-mcp",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "shinjuku-shielded",
-      "version": "0.3.4",
+      "version": "0.3.5",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -29,7 +29,7 @@
         {
           "type": "named",
           "name": "--max-payment",
-          "description": "The most one payment may cost, in atomic USDC (50000 = 0.05 USDC). Optional: setup writes the caps to config.json.",
+          "description": "The most one payment may cost, in atomic USDC (50000 = 0.05 USDC). Optional (default: no limit); setup writes the caps you set to config.json.",
           "format": "number",
           "placeholder": "50000",
           "isRequired": false
@@ -37,7 +37,7 @@
         {
           "type": "named",
           "name": "--max-session",
-          "description": "The most this server process may pay in total, in atomic USDC. Optional: setup writes the caps to config.json.",
+          "description": "The most this server process may pay in total, in atomic USDC. Optional (default: no limit); setup writes the caps you set to config.json.",
           "format": "number",
           "placeholder": "200000",
           "isRequired": false
@@ -46,7 +46,7 @@
           "type": "named",
           "name": "--pool",
           "description": "The shielded pool. The wallet file is $SHIELDED_WALLET_HOME/<pool>/wallet.json.",
-          "default": "AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8",
+          "default": "45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR",
           "isRequired": false
         },
         {

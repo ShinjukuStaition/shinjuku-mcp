@@ -35,8 +35,8 @@ Then start a new chat: `hermes chat -t mcp-shinjuku`.
   `HTTPTunnelPort 127.0.0.1:9080 IsolateDestAddr` in `torrc`. Hermes itself
   needs no proxy for this server: it talks to the server on stdio. Without
   Tor, the seller and our facilitator see your IP.
-- Caps: setup records them in `config.json` (default 0.05 USDC per payment
-  and 1 USDC per session). Add a flag such as `"--max-payment"`, `"20000"`
+- Caps: optional; by default there is no limit. Setup records the caps you
+  set in `config.json`. Add a flag such as `"--max-payment"`, `"20000"`
   after `"mcp"` to change one for this server. A tool call can only lower
   them.
 - A send to an address that is not in `--unshield-to` asks you to confirm.

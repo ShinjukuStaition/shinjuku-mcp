@@ -12,7 +12,7 @@ claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.4` to pin it. |
+| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.5` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
 ## The first start
@@ -62,9 +62,9 @@ both modes.
 
 ## Caps
 
-Setup records the caps in `config.json`. The defaults are 0.05 USDC per
-payment, 1 USDC per session, and 20 USDC for the life of the wallet. To pick
-your own, give them to the first setup (in atomic USDC: `50000` = 0.05 USDC):
+Caps are optional. By default there is no limit: only the balance bounds a
+payment. Setup records the caps you set in `config.json`. To set them, give
+them to the first setup (in atomic USDC: `50000` = 0.05 USDC):
 
 ```sh
 npx -y shinjuku-shielded setup --max-payment 100000 --max-session 2000000 --max-total 50000000
@@ -89,8 +89,8 @@ Or add a flag to the server command. A flag wins over `config.json`:
 
 | Flag | What it does |
 |---|---|
-| `--max-payment <atomic>` | The most one payment to a seller may cost. A tool call can only lower it. |
-| `--max-session <atomic>` | The most this server process may pay in total. It must be at least `--max-payment` (`mcp_cap_invalid`). |
+| `--max-payment <atomic>` | Optional. The most one payment to a seller may cost. A tool call can only lower it. Default: no limit. |
+| `--max-session <atomic>` | Optional. The most this server process may pay in total. When you set both, it must be at least `--max-payment` (`mcp_cap_invalid`). Default: no limit. |
 | `--max-per-host-day <atomic>` | The most one seller host may receive in 24 hours. |
 | `--allow-host <host>` | Pay only this seller host. Repeat it for more hosts. |
 | `--ready-pockets <0-5>` | How many 1 USDC pockets stay ready for standard `exact` sellers. Default 1. |

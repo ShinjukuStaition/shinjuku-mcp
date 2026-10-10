@@ -12,7 +12,7 @@ x402 facilitator on Solana, inside your agent.
 | [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.3.4, wallet release `14dd9efa`). Write `shinjuku-shielded@0.3.4` to pin
+(0.3.5, wallet release `f2ea6840`). Write `shinjuku-shielded@0.3.5` to pin
 it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
@@ -61,10 +61,9 @@ Setup writes to `~/.carbon-shielded-wallet`:
   printed), the proof tools (every file checked), and `config.json`.
 - A recovery file with the seed and the Solana secret key. Copy it to two
   offline places, then delete it from this machine.
-- The default caps: 0.05 USDC per payment, 1 USDC per session, and 20 USDC
-  for the life of the wallet. To pick your own, run the setup in a terminal
-  with `--max-payment`, `--max-session`, and `--max-total`
-  (`npx -y shinjuku-shielded help setup`).
+- No spending limit by default: only the balance bounds a payment. To set
+  limits, run the setup in a terminal with `--max-payment`, `--max-session`,
+  and `--max-total` (`npx -y shinjuku-shielded help setup`).
 
 ### 4. Get the wallet address
 

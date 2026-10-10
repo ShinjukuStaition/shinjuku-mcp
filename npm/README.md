@@ -30,8 +30,8 @@ Pin the version in your agent config, so that each start runs the same file.
 Set up the wallet first (passphrase, deposit, `rpc.txt`, `proof-tools.json`).
 The full setup guide is
 [ShinjukuStaition/shinjuku-mcp](https://github.com/ShinjukuStaition/shinjuku-mcp).
-`--max-payment` and `--max-session` are required, in atomic USDC units
-(50000 = 0.05 USDC). An MCP host starts the server from its own folder: use
+`--max-payment` and `--max-session` are optional caps, in atomic USDC units
+(50000 = 0.05 USDC); without them there is no limit. An MCP host starts the server from its own folder: use
 absolute paths.
 
 Claude Code:
@@ -39,7 +39,7 @@ Claude Code:
 ```sh
 claude mcp add shinjuku-pay -- npx -y shinjuku-shielded@<version> mcp \
   --max-payment 50000 --max-session 200000 --tor \
-  --pool AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8 \
+  --pool 45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR \
   --passphrase-file /home/you/shinjuku/passphrase.txt \
   --rpc-file /home/you/shinjuku/rpc.txt \
   --proof-tools /home/you/shinjuku/proof-tools.json \
@@ -58,7 +58,7 @@ or `~/.cursor/mcp.json`) use the same JSON:
       "args": [
         "-y", "shinjuku-shielded@<version>", "mcp",
         "--max-payment", "50000", "--max-session", "200000", "--tor",
-        "--pool", "AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8",
+        "--pool", "45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR",
         "--passphrase-file", "/home/you/shinjuku/passphrase.txt",
         "--rpc-file", "/home/you/shinjuku/rpc.txt",
         "--proof-tools", "/home/you/shinjuku/proof-tools.json",
