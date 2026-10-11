@@ -154,7 +154,7 @@ and names `shinjuku-wallet merge` for you to run. After it, and the next
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`e3348092` (npm `shinjuku-shielded@0.3.6`). It keeps the pool and the proof
+`488372b4` (npm `shinjuku-shielded@0.3.7`). It keeps the pool and the proof
 tools of 0.3.5.
 
 Update from a version before 0.3.5. On 2026-10-10 the pool program was upgraded
@@ -239,14 +239,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/e3348092/shinjuku-wallet.mjs
-echo "e3348092deb29664a3496827f72bdd6dafc9f5f67f41b463da4c2bc84432cfac  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/488372b4/shinjuku-wallet.mjs
+echo "488372b4f12886748870eb5fb6d5f25eb42a43b6ddc6f74c20cac033fe5f6927  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.6`.
+`shinjuku-shielded@0.3.7`.
 
 ### Advanced: flags instead of config.json
 
@@ -372,9 +372,10 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `e3348092` (npm
-0.3.6). Float pay paid two stock sellers on the PayAI facilitator on
-production on 2026-10-11, 0.10 USDC and 1.50 USDC: the transactions are in
+Live on Solana mainnet. The current wallet release is `488372b4` (npm
+0.3.7). Float pay paid two stock sellers on the PayAI facilitator on
+production on 2026-10-11, 0.10 USDC and 1.50 USDC, and a stock seller on our
+own facilitator, 0.01 USDC twice: the transactions are in
 [proof.md](https://github.com/ShinjukuStaition/shinjuku-shielded/blob/main/docs/proof.md).
 
 These transactions were made with real money through this MCP

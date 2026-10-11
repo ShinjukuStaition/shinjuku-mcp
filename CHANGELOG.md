@@ -5,6 +5,26 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-11: wallet release `488372b4`, npm `shinjuku-shielded@0.3.7`
+
+- `x402_pay` also pays a stock `exact` seller that settles on our own
+  facilitator (`https://shinjukustaition.com/api/x402`), through float pay.
+  0.3.6 refused it with `p03_float_seller_uses_our_facilitator`.
+- A refund (`p03_float_refund_pending`) comes back within about 7 minutes,
+  not 2: it waits for the next pool anchor. `wallet_balance` counts it in
+  `refundsInFlightAtomic` for 8 minutes.
+- A seller that offers only scheme `confidential` is refused with
+  `confidential_retired` by `x402_preview` and `x402_pay`, and nothing is
+  paid. `--play-token-file` is accepted and ignored.
+- An error answers its code by name: 91 float pay, refund, and seller codes
+  answered `unknown_error` before. An error answer carries only the wallet's
+  own text.
+- The wallet spends the oldest account that pays, so fresh change is not
+  tied to your next payment.
+- The wallet reads the faster pool anchors (one about every 30 s) that a
+  coming upgrade of the pool program adds. Until that upgrade, nothing
+  changes.
+
 ## 2026-10-11: wallet release `e3348092`, npm `shinjuku-shielded@0.3.6`
 
 - Float pay. `x402_pay` pays a seller that takes only standard `exact`

@@ -12,7 +12,7 @@ x402 facilitator on Solana, inside your agent.
 | [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.3.6, wallet release `e3348092`). Write `shinjuku-shielded@0.3.6` to pin
+(0.3.7, wallet release `488372b4`). Write `shinjuku-shielded@0.3.7` to pin
 it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
@@ -109,7 +109,7 @@ PayAI, or any other facilitator) is paid through Shinjuku: the wallet pays
 us privately, the price plus a flat fee (`x402_preview` shows `feeAtomic`
 and `totalAtomic`), and we pay the seller from our own float. If that seller
 does not take the payment, the refund comes back to your balance by itself
-within about 2 minutes. An image answer comes back as an image, and the file
+within about 7 minutes. An image answer comes back as an image, and the file
 is saved.
 
 ### 7. Send USDC to an address, with your confirmation

@@ -44,7 +44,8 @@ The agent does what `next` says. Some codes that you can see:
 | `mcp_tool_disabled` | The tool is off. `next` says which flag turns it on. |
 | `mcp_unshield_declined` | You did not confirm a send (decline, cancel, or 5 minutes with no answer). Nothing was signed. |
 | `mcp_unshield_to_not_allowed` | The address is the wallet's own address, or your client cannot ask you and the address is not in `--unshield-to`. |
-| `p03_float_refund_pending` | A standard `exact` seller did not take our payment. The refund comes back to the balance by itself within about 2 minutes. Use a new `request_id` to try again. |
+| `p03_float_refund_pending` | A standard `exact` seller did not take our payment. The refund comes back to the balance by itself within about 7 minutes (it waits for the next pool anchor). Use a new `request_id` to try again. |
+| `confidential_retired` | The seller offers only scheme `confidential` (hidden amounts). Those payments are retired. Nothing was paid. |
 | `p03_float_price_above_capacity` | The price is above the largest price that our float pays for one request. Nothing was paid. |
 | `p03_float_busy_retry_later`, `p03_float_not_ready_retry_later` | Our float is busy or is being filled. Nothing was paid. Call again later with the same `request_id`. |
 | `p03_merchant_respend_insufficient_recovered_value` | With "merge" in `next`: the balance covers the price only in total, over several accounts. Run `shinjuku-wallet merge`, wait for the next 5-minute pool anchor, then pay again. |
