@@ -138,7 +138,7 @@ it returns that value to the shielded balance by itself while it is idle.
 A balance split over several accounts: one payment spends one account plus
 at most 3 notes. When no single account covers a price, `x402_pay` says so
 and names `shinjuku-wallet merge` for you to run. After it, and the next
-5-minute pool anchor, the agent pays again.
+pool anchor (usually within a minute), the agent pays again.
 
 ## Privacy modes
 
@@ -154,8 +154,14 @@ and names `shinjuku-wallet merge` for you to run. After it, and the next
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`488372b4` (npm `shinjuku-shielded@0.3.7`). It keeps the pool and the proof
-tools of 0.3.5.
+`08a4b56f` (npm `shinjuku-shielded@0.3.8`). It keeps the pool of 0.3.5 and
+uses proof tools `47678912`.
+
+Update from 0.3.7 or earlier. On 2026-10-11 the pool program was upgraded
+(faster pool anchors), and 0.3.7 and earlier refuse payments. Run
+`npx -y shinjuku-shielded@latest setup` once: it pins the new program and
+gets the new proof tools. Your wallet, its address, and its balance stay the
+same.
 
 Update from a version before 0.3.5. On 2026-10-10 the pool program was upgraded
 and the shielded pool moved to `45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR`.
@@ -239,14 +245,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/488372b4/shinjuku-wallet.mjs
-echo "488372b4f12886748870eb5fb6d5f25eb42a43b6ddc6f74c20cac033fe5f6927  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/08a4b56f/shinjuku-wallet.mjs
+echo "08a4b56f6452268ffdd513e67326de8782b53dcec16ba88adaddf16793581206  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.7`.
+`shinjuku-shielded@0.3.8`.
 
 ### Advanced: flags instead of config.json
 
@@ -372,8 +378,8 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `488372b4` (npm
-0.3.7). Float pay paid two stock sellers on the PayAI facilitator on
+Live on Solana mainnet. The current wallet release is `08a4b56f` (npm
+0.3.8). Float pay paid two stock sellers on the PayAI facilitator on
 production on 2026-10-11, 0.10 USDC and 1.50 USDC, and a stock seller on our
 own facilitator, 0.01 USDC twice: the transactions are in
 [proof.md](https://github.com/ShinjukuStaition/shinjuku-shielded/blob/main/docs/proof.md).

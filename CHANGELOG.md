@@ -5,6 +5,21 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-11: wallet release `08a4b56f`, npm `shinjuku-shielded@0.3.8`
+
+- Update now. On 2026-10-11 the pool program was upgraded (faster pool
+  anchors). 0.3.7 and earlier pin the old program and proof tools
+  `ad860e62`, and cannot pay. Run `npx -y shinjuku-shielded@latest setup`
+  once: it pins the new program and gets proof tools `47678912`. Your
+  wallet, its address, and its balance stay the same.
+- A new account pays sooner: the pool takes an anchor about every 30 s when
+  it grew, not only every 5 minutes. In our test on 2026-10-11, 12 of 12 new
+  accounts could pay within 45 s (median 18 s).
+- When an earlier payment is not finished, `x402_pay` names its
+  `request_id` (`p03_resource_payment_another_request_unresolved`). Call
+  `x402_pay` again with that `request_id` to finish it; it never pays twice.
+  `wallet_balance` lists it with its `requestId`.
+
 ## 2026-10-11: wallet release `488372b4`, npm `shinjuku-shielded@0.3.7`
 
 - `x402_pay` also pays a stock `exact` seller that settles on our own
