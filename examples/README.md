@@ -12,7 +12,7 @@ x402 facilitator on Solana, inside your agent.
 | [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.3.5, wallet release `f2ea6840`). Write `shinjuku-shielded@0.3.5` to pin
+(0.3.6, wallet release `e3348092`). Write `shinjuku-shielded@0.3.6` to pin
 it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
@@ -104,9 +104,13 @@ your own address, see `npx -y shinjuku-shielded help add-funds`.
 A paid answer has `paid: true` and a `transaction`. The agent must not say
 that a payment happened without a `transaction`. A URL that does not answer
 HTTP 402 is fetched once, and nothing is paid. A price above your caps is
-refused before anything is signed. For a standard `exact` seller, `x402_pay`
-fills a 1 USDC pocket from your shielded balance when it needs one. An image
-answer comes back as an image, and the file is saved.
+refused before anything is signed. A standard `exact` seller (Coinbase CDP,
+PayAI, or any other facilitator) is paid through Shinjuku: the wallet pays
+us privately, the price plus a flat fee (`x402_preview` shows `feeAtomic`
+and `totalAtomic`), and we pay the seller from our own float. If that seller
+does not take the payment, the refund comes back to your balance by itself
+within about 2 minutes. An image answer comes back as an image, and the file
+is saved.
 
 ### 7. Send USDC to an address, with your confirmation
 
@@ -133,10 +137,11 @@ cannot answer this question; your client app asks you.
 |---|---|
 | "what is my balance" | `wallet_balance` |
 
-The answer shows SHIELDED (`shieldedAtomic`, what the agent can pay and
-send with) and UNSHIELDED (`unshieldedAtomic`, plain USDC on the wallet's
-own address), the pockets, unfinished payments, and `session` (what this
-server process may still pay).
+The answer shows one balance (`balanceAtomic`, what the agent can pay with)
+and UNSHIELDED (`unshieldedAtomic`, plain USDC on the wallet's own address).
+`breakdown` names the parts of the one balance: `shieldedAtomic` (what the
+agent can send with `wallet_unshield`), `refundsInFlightAtomic`, and
+`setAsideAtomic` (pockets of an older version).
 
 More requests: [prompts.md](prompts.md).
 

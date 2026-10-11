@@ -12,7 +12,7 @@ claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.5` to pin it. |
+| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.6` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
 ## The first start
@@ -79,9 +79,10 @@ together) into the wallet file. A later setup never changes the wallet file:
   server.
 - A payment above the wallet file's own per-payment limit is still refused,
   and the lifetime total stays as it was created.
-- To raise those two limits, restore the recovery file into a new wallet
-  home with higher `--max-payment` and `--max-cumulative`
-  (`npx -y shinjuku-shielded help restore`).
+- To show, change, or remove those two limits, run
+  `npx -y shinjuku-shielded limits --pool <pool>` with `--max-payment` or
+  `--max-cumulative` (`none` removes a limit;
+  `npx -y shinjuku-shielded help limits`).
 - Money that you send to yourself or others with `wallet_unshield` does not
   count against the lifetime total.
 
@@ -93,8 +94,8 @@ Or add a flag to the server command. A flag wins over `config.json`:
 | `--max-session <atomic>` | Optional. The most this server process may pay in total. When you set both, it must be at least `--max-payment` (`mcp_cap_invalid`). Default: no limit. |
 | `--max-per-host-day <atomic>` | The most one seller host may receive in 24 hours. |
 | `--allow-host <host>` | Pay only this seller host. Repeat it for more hosts. |
-| `--ready-pockets <0-5>` | How many 1 USDC pockets stay ready for standard `exact` sellers. Default 1. |
-| `--no-auto-pockets` | `x402_pay` does not fill a pocket by itself. |
+| `--ready-pockets <0-5>` | Accepted for older configs and ignored. Standard `exact` sellers are paid through Shinjuku, and no pocket is filled. |
+| `--no-auto-pockets` | Accepted for older configs. It also stops the idle return of old pockets to the shielded balance. |
 | `--max-shield <atomic>` | The most one `wallet_shield` call, and this process in total, may move. |
 | `--no-shield` | Turns `wallet_shield` off. |
 | `--unshield-to <address>` | A public Solana address that `wallet_unshield` sends to with no question. Repeat it for more. The wallet's own key is refused. |
@@ -133,10 +134,10 @@ Or give every flag yourself, as in the
    it has 9 tools: `x402_discover`, `x402_preview`, `x402_pay`, `wallet_balance`,
    `wallet_receipts`, `wallet_cancel`, `wallet_shield`, `wallet_unshield`,
    `wallet_shield_from_elsewhere`.
-2. Ask: "what is my shielded balance". Claude calls `wallet_balance`. The
-   answer has `shieldedAtomic` (what the agent can pay with),
-   `unshieldedAtomic` (plain USDC on the wallet's own key), `ownAddress`,
-   and `session` (the caps and what this process may still pay).
+2. Ask: "what is my balance". Claude calls `wallet_balance`. The answer
+   has `balanceAtomic` (what the agent can pay with) with its `breakdown`,
+   `unshieldedAtomic` (plain USDC on the wallet's own key), and
+   `ownAddress`.
 3. A first balance on a new wallet can take some time: the server reads the
    pool history (through our facilitator's https history proxy by default,
    about 60 s for a new wallet). After about 20 s it answers the last

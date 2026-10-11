@@ -5,6 +5,31 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-11: wallet release `e3348092`, npm `shinjuku-shielded@0.3.6`
+
+- Float pay. `x402_pay` pays a seller that takes only standard `exact`
+  (Coinbase CDP, PayAI, any Solana `exact` seller that takes USDC) through
+  Shinjuku: the wallet pays us privately from the shielded balance, the
+  seller's price plus a flat fee (0.001 USDC), and we pay the seller from our
+  own shared float. `x402_preview` shows `feeAtomic` and `totalAtomic`.
+  `max_payment_atomic` must cover the total.
+- Automatic pockets are off: the wallet fills no pocket. `--ready-pockets`
+  is accepted and ignored. With `--proof-tools`, `--exit-proof-tools`, and
+  `--profile`, the server returns old pockets to the shielded balance by
+  itself while it is idle; `--no-auto-pockets` stops that.
+- If a seller does not take our payment, `x402_pay` answers
+  `p03_float_refund_pending`: the refund comes back to the balance by itself
+  within about 2 minutes.
+- `wallet_balance` answers one balance (`balanceAtomic`) with a
+  `breakdown`: `shieldedAtomic`, `refundsInFlightAtomic`, and
+  `setAsideAtomic`.
+- A balance split over several accounts: `x402_pay` names the new CLI
+  command `shinjuku-wallet merge`, which joins them.
+- A refusal by a wallet-file cap names the new CLI command
+  `shinjuku-wallet limits`, which changes or removes the cap.
+- Hidden amounts (scheme `confidential`, the V0b vault) are retired: the V0b
+  program was closed on chain on 2026-10-11.
+
 ## 2026-10-10: wallet release `f2ea6840`, npm `shinjuku-shielded@0.3.5`
 
 - The pool program was upgraded, and the shielded pool moved to

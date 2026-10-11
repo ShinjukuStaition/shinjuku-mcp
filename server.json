@@ -3,7 +3,7 @@
   "name": "io.github.ShinjukuStaition/shinjuku-mcp",
   "title": "Shinjuku Shielded",
   "description": "Private x402 payments on Solana: shield, pay, and unshield USDC under caps you set.",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "websiteUrl": "https://shinjukustaition.com",
   "repository": {
     "url": "https://github.com/ShinjukuStaition/shinjuku-mcp",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "shinjuku-shielded",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -125,15 +125,8 @@
         },
         {
           "type": "named",
-          "name": "--ready-pockets",
-          "description": "How many 1 USDC pockets the wallet keeps ready for standard exact sellers (0-5).",
-          "format": "number",
-          "default": "1"
-        },
-        {
-          "type": "named",
           "name": "--no-auto-pockets",
-          "description": "Turn off automatic pockets: x402_pay then pays standard exact sellers only from pockets you fill yourself."
+          "description": "Stop the idle return of pockets that an older version filled to the shielded balance. Standard exact sellers are paid through Shinjuku (float pay); no pocket is filled."
         }
       ],
       "environmentVariables": [

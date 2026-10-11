@@ -9,11 +9,11 @@ placeholders, not real values.
 
 | # | You say | The agent calls | The answer |
 |---|---|---|---|
-| 1 | "what is my balance" | `wallet_balance {}` | `shieldedAtomic` (private, what the agent pays and sends with), `unshieldedAtomic` (plain USDC on the wallet's own address), `pocketsAtomic`, `session` (the caps, what this process paid, what it may still pay), and `next`. |
+| 1 | "what is my balance" | `wallet_balance {}` | `balanceAtomic` (one number, what the agent pays with), `breakdown` (`shieldedAtomic`, what the agent sends with; `refundsInFlightAtomic`; `setAsideAtomic`), `unshieldedAtomic` (plain USDC on the wallet's own address), and `next`. |
 | 2 | "what address do I fund?" | `wallet_balance {}` | `ownAddress`: the wallet's own public Solana address. `unshieldedSolLamports` shows its SOL. A shield needs no SOL: send only USDC. |
 | 3 | "shield 5 USDC" | `wallet_shield {amount_atomic: "5000000", request_id: "shield-1"}` | A `stage` (`proving`, `sending`, `done`). The first call starts the deposit. `next` says to call again with the same `request_id` in 30 s. |
 | 4 | "is the shield done?" | `wallet_shield` with the same `request_id` and `amount_atomic` | The current `stage`. At `done`, `refreshing: true` until the balance is read from the chain, then `backupPath` (the encrypted backup). |
-| 5 | "what does https://seller.example/report cost?" | `x402_preview {url}` | For an x402 seller: the offers (scheme, network, `amountAtomic`, asset), the rail the wallet would use, the price, and whether your caps allow it. It pays nothing. For a URL that is not x402: `paymentRequired: false` and the HTTP status. |
+| 5 | "what does https://seller.example/report cost?" | `x402_preview {url}` | For an x402 seller: the offers (scheme, network, `amountAtomic`, asset), the rail the wallet would use, the price, and whether your caps allow it. For a standard `exact` seller also `feeAtomic` (our fee) and `totalAtomic` (price plus fee). It pays nothing. For a URL that is not x402: `paymentRequired: false` and the HTTP status. |
 | 6 | "pay it" | `x402_pay {url}` | `{ok, paid, requestId, transaction, scheme, amountAtomic, ...}` and the seller's answer in `body`. A large or binary answer goes to a file, and `bodyFile` names it. An image answer also comes back as an MCP image block. |
 | 7 | "get that report, but pay at most 0.01 USDC" | `x402_pay {url, max_payment_atomic: "10000"}` | The same as 6. A higher price is refused before anything is signed. An argument can only lower the launch cap, never raise it. |
 | 8 | "send 2 USDC to <address>" | `wallet_unshield {amount_atomic: "2000000", to: "<address>", request_id: "send-1"}` | Your client asks you first: "Send 2 USDC from your shielded balance to <address>?" (not for an `--unshield-to` address). Then a `stage` (`confirming`, `queued`, `refreshing`, `self-pay`, `exit`, `done`). At `done`: `exitTransaction` and `backupPath`. |
@@ -44,5 +44,9 @@ The agent does what `next` says. Some codes that you can see:
 | `mcp_tool_disabled` | The tool is off. `next` says which flag turns it on. |
 | `mcp_unshield_declined` | You did not confirm a send (decline, cancel, or 5 minutes with no answer). Nothing was signed. |
 | `mcp_unshield_to_not_allowed` | The address is the wallet's own address, or your client cannot ask you and the address is not in `--unshield-to`. |
-| `fetch_offer_confidential` | The seller offers only `confidential` (hidden amounts). The MCP does not pay it. Use `shinjuku-wallet laneb pay-url`. |
+| `p03_float_refund_pending` | A standard `exact` seller did not take our payment. The refund comes back to the balance by itself within about 2 minutes. Use a new `request_id` to try again. |
+| `p03_float_price_above_capacity` | The price is above the largest price that our float pays for one request. Nothing was paid. |
+| `p03_float_busy_retry_later`, `p03_float_not_ready_retry_later` | Our float is busy or is being filled. Nothing was paid. Call again later with the same `request_id`. |
+| `p03_merchant_respend_insufficient_recovered_value` | With "merge" in `next`: the balance covers the price only in total, over several accounts. Run `shinjuku-wallet merge`, wait for the next 5-minute pool anchor, then pay again. |
+| `wallet_spend_refused_per_payment_cap_exceeded` | A cap in the wallet file refused it. You change it with `shinjuku-wallet limits`. |
 | a code that ends in `_retry_same_request` | Call `x402_pay` again with the same `request_id`. It never pays twice. |

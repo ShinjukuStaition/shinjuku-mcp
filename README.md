@@ -29,6 +29,9 @@ set.
   A tool call can only lower them, never raise them.
 - **Find sellers.** `x402_discover` searches public x402 listings
   (Coinbase x402 Bazaar, PayAI, Dexter, and others) on your machine.
+- **Pay any Solana `exact` seller.** A seller on Coinbase CDP, PayAI, or any
+  other facilitator is paid through Shinjuku: your wallet pays us privately,
+  and we pay the seller from our own float. Nothing to fill or set aside.
 - **Look before you pay.** `x402_preview` shows the price and whether your
   caps allow it. It pays nothing.
 - **No SOL.** `wallet_shield` needs only USDC. Our facilitator's relayer
@@ -86,8 +89,8 @@ nothing.
 | Tool | What it does |
 |---|---|
 | `x402_discover` | Searches public x402 listings (Coinbase x402 Bazaar, PayAI, Dexter, and others) on your machine and returns the sellers that match. Pays nothing. The first call takes about 15 s. |
-| `x402_preview` | One unpaid request. Returns the seller's price, the scheme, and whether your caps allow it. Pays nothing. A seller that lists several networks is priced from its Solana offer. |
-| `x402_pay` | Pays the URL (if it asks for payment) and returns the answer. A URL that does not answer 402 is fetched once and nothing is paid. An image answer (image bytes, or JSON `image_base64`) comes back as an MCP image block, and the file is saved. A payment that landed, from a seller that gives no answer, closes as paid. Alias: `fetch_paid`. |
+| `x402_preview` | One unpaid request. Returns the seller's price, the scheme, and whether your caps allow it. Pays nothing. For a standard `exact` seller it adds `feeAtomic` (our fee) and `totalAtomic` (price plus fee, what leaves your balance). A seller that lists several networks is priced from its Solana offer. |
+| `x402_pay` | Pays the URL (if it asks for payment) and returns the answer. A URL that does not answer 402 is fetched once and nothing is paid. An image answer (image bytes, or JSON `image_base64`) comes back as an MCP image block, and the file is saved. A payment that landed, from a seller that gives no answer, closes as paid. If a standard `exact` seller does not take our payment, the answer is `p03_float_refund_pending`: price and fee come back to your balance by themselves within about 2 minutes. Alias: `fetch_paid`. |
 
 ### UNSHIELD
 
@@ -99,7 +102,7 @@ nothing.
 
 | Tool | What it does |
 |---|---|
-| `wallet_balance` | SHIELDED (what your agent can pay with) and UNSHIELDED (plain USDC on the wallet's own Solana key), each on its own line, plus pockets, unfinished payments, and what this session may still pay. A stale balance is read from the chain first. UNSHIELDED is one network read; if it fails, that line is empty and says why. |
+| `wallet_balance` | ONE balance (`balanceAtomic`, what `x402_pay` can spend) and UNSHIELDED (plain USDC on the wallet's own Solana key). `breakdown` names the parts of the one balance: `shieldedAtomic` (what `wallet_unshield` can send), `refundsInFlightAtomic` (a Shinjuku refund on its way back), and `setAsideAtomic` (value in pockets of an older version). A stale balance is read from the chain first. UNSHIELDED is one network read; if it fails, that line is empty and says why. |
 | `wallet_receipts` | Your most recent paid receipts: host (never the full URL), amount, transaction, time. |
 
 Also: `wallet_cancel` closes one unfinished payment, so its reserved balance
@@ -109,14 +112,33 @@ comes back.
 one is off, it answers `"error": "mcp_tool_disabled"` and tells the agent
 what to ask you.
 
-What it pays: x402 scheme `shielded-exact` from your shielded balance, and
-standard Solana `exact` from a ready pocket. A ready pocket pays any Solana
-x402 `exact` seller, whichever facilitator settles it. Pockets are automatic:
-when a standard `exact` seller needs one, `x402_pay` fills a 1 USDC pocket
-from your shielded balance. `--ready-pockets` sets how many stay ready, and
-`--no-auto-pockets` turns this off. A seller receipt that names another
-payer is checked on chain. For sellers that
-offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
+What it pays:
+
+- **`shielded-exact`**, from your shielded balance, whenever the seller
+  offers it.
+- **Standard Solana `exact`, through Shinjuku (float pay).** For a seller on
+  any facilitator (Coinbase CDP, PayAI, or any other), `x402_pay` pays us
+  privately from your shielded balance: the seller's price plus a flat fee
+  (`feeAtomic`, 0.001 USDC on 2026-10-11). We pay the seller at once from our
+  own shared float. The chain shows Shinjuku paying the seller, never your
+  wallet. `max_payment_atomic` must cover price plus fee. The largest price
+  that one request can pay is our largest float pocket: `largestAtomic` in
+  `GET https://pay.shinjukustaition.com/api/x402/float/config` (3 USDC on
+  2026-10-11).
+- A retry with the same `request_id` never pays twice.
+
+Hidden amounts (scheme `confidential`, the V0b vault) are retired: the V0b
+program was closed on chain on 2026-10-11.
+
+Value that an older version put in pockets still counts in the one balance.
+When the server has `--proof-tools`, `--exit-proof-tools`, and `--profile`,
+it returns that value to the shielded balance by itself while it is idle.
+`shinjuku-wallet pocket reshield` does the same by hand.
+
+A balance split over several accounts: one payment spends one account plus
+at most 3 notes. When no single account covers a price, `x402_pay` says so
+and names `shinjuku-wallet merge` for you to run. After it, and the next
+5-minute pool anchor, the agent pays again.
 
 ## Privacy modes
 
@@ -132,9 +154,10 @@ offer only `confidential` (hidden amounts), use `shinjuku-wallet laneb pay-url`.
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs. The current wallet release is
-`f2ea6840` (npm `shinjuku-shielded@0.3.5`).
+`e3348092` (npm `shinjuku-shielded@0.3.6`). It keeps the pool and the proof
+tools of 0.3.5.
 
-Update from an earlier version. On 2026-10-10 the pool program was upgraded
+Update from a version before 0.3.5. On 2026-10-10 the pool program was upgraded
 and the shielded pool moved to `45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR`.
 The old pool `AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8` is retired, and
 earlier versions refuse payments. Run `npx -y shinjuku-shielded@latest setup`
@@ -216,14 +239,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/f2ea6840/shinjuku-wallet.mjs
-echo "f2ea684051a96e03ea86d998ad5b2f4033de55fce3a4f9695376e611884fdbc6  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/e3348092/shinjuku-wallet.mjs
+echo "e3348092deb29664a3496827f72bdd6dafc9f5f67f41b463da4c2bc84432cfac  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.5`.
+`shinjuku-shielded@0.3.6`.
 
 ### Advanced: flags instead of config.json
 
@@ -286,8 +309,8 @@ these flags to the `mcp` command. A flag wins over `config.json`.
 | `--allow-shield` | Accepted for older configs. `wallet_shield` is on without it. |
 | `--exit-proof-tools <file>`, `--profile <file>` | Optional. Turn `wallet_unshield` on (with `--proof-tools`). |
 | `--unshield-to <address>` | Optional, repeatable. These addresses receive with no confirmation. Any other address needs your confirmation in the MCP client. The wallet's own key is refused: the server does not start when you name it here. |
-| `--ready-pockets <0-5>` | Optional. How many 1 USDC pockets stay ready for standard `exact` sellers. Default 1. |
-| `--no-auto-pockets` | Optional. `x402_pay` does not fill a pocket by itself. |
+| `--ready-pockets <0-5>` | Accepted for older configs and ignored. Standard `exact` sellers are paid through Shinjuku, and the wallet fills no pocket. |
+| `--no-auto-pockets` | Accepted for older configs. It also stops the idle return of old pockets to the shielded balance. |
 | `--max-unshield <atomic>` | Optional. The most one unshield call may move, and the most this process may unshield in total. Without it, a send you confirm can move the whole shielded balance. |
 | `--no-tor` | Optional. This run does not use the Tor that setup recorded. |
 | `--tor` | Optional. Every request goes through Tor; our facilitator is reached over its onion service. Needs Tor with `HTTPTunnelPort 127.0.0.1:9080` in `torrc`. See Privacy modes. |
@@ -300,7 +323,9 @@ says. A cap refusal tells the agent to ask you: only you set the caps.
 
 An unshield is your own money, so it does not count against the payment
 budget of the wallet file (`init --max-payment`, `--max-cumulative`).
-Payments to sellers still count.
+Payments to sellers still count. To show, change, or remove those
+wallet-file caps, run `shinjuku-wallet limits` (`none` removes a cap). A
+refusal by one of them tells the agent to ask you for this.
 
 Upkeep is automatic. After a deposit lands, and before a payment or unshield
 when the local balance is stale, the server reads the chain itself. By
@@ -325,8 +350,14 @@ one to another place.
   For a strict setup, name your addresses with `--unshield-to` and use a
   client without elicitation. Then any other address is refused.
 - Our facilitator processes your payment. It keeps no access logs.
-- On chain, a `shielded-exact` payment does not show who paid. A pocket
-  `exact` payment is a normal USDC transfer from the pocket address.
+- On chain, a `shielded-exact` payment does not show who paid. A float pay
+  payment is a pool payment to us (the payer hidden), then a normal USDC
+  transfer from a Shinjuku float pocket to the seller. Many buyers pay from
+  the same float pockets. The transfer lands seconds after the pool payment,
+  so time can pair the two.
+- For a float payment, our server sees which private payment paid which
+  seller, the price, the URL, and the time, until the payment is final or
+  refunded. It does not see your wallet.
 - `wallet_shield` is a public step: the chain shows USDC leave the wallet's
   own key, the amount, and the time.
 - `wallet_unshield` is a public step: the chain shows the amount, the
@@ -341,8 +372,12 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `f2ea6840` (npm
-0.3.5). These transactions were made with real money through this MCP
+Live on Solana mainnet. The current wallet release is `e3348092` (npm
+0.3.6). Float pay paid two stock sellers on the PayAI facilitator on
+production on 2026-10-11, 0.10 USDC and 1.50 USDC: the transactions are in
+[proof.md](https://github.com/ShinjukuStaition/shinjuku-shielded/blob/main/docs/proof.md).
+
+These transactions were made with real money through this MCP
 server, against our production facilitator, on the earlier pool `AAG16…3kV8`
 (retired 2026-10-10). The first two came from a new wallet with the default
 setup and no SOL at any time (wallet release `94a357bc`). The others used
@@ -355,7 +390,7 @@ wallet release `1a336885` (2026-10-08).
 | `wallet_shield` (1 USDC in) | [`hWzDiR1R…izn`](https://solscan.io/tx/hWzDiR1RnC1gFXMMrCxRBCZ4R5dgMreWGX7vyQCTUTWkKaKnYvxmro6PQuE9KMYVbrq3NkNu9YaJzj7XaqrDizn) |
 | `wallet_unshield` (0.5 USDC out) | self-pay [`5evVHz8X…r9uv`](https://solscan.io/tx/5evVHz8XvMdSYF76BQ1xv3TazwS9P38FEXp81gipNMMSqn61Rj7EUc1DdgpYz591wQbBZMWcpNVznixXPsfZr9uv) · exit [`4yY2YXLS…pgF2i`](https://solscan.io/tx/4yY2YXLSj1EyUWDb7X9985KmyeNGQieF8skg3uN3sv3Pds3zSb42J5owDWMUTshui6XACkP4zwGxUmXXTVapgF2i) |
 | `wallet_unshield` with your confirmation (0.25 USDC, release `1a336885`) | self-pay [`3jQyPgrA…QEWw`](https://solscan.io/tx/3jQyPgrA5AtFcqzyWHDWRcfNv66sM5qfCStxsByYDqGm7W5uRWkUMHpLoFUFm2jc98Aor7CXSToAChSHD7dWQEWw) · exit [`4yA3qkHU…jCoh`](https://solscan.io/tx/4yA3qkHUto7e7iUGM9q6321avTm8aZQJ6zNMMh18SoAACnvgtvbWpVydry3mCq9iKaSZv92FfH43NJu557zjCoh) |
-| `x402_pay` (pocket `exact`) | [`kX2zbbuR…8wW`](https://solscan.io/tx/kX2zbbuRbskBQ2EnazyDBu7oZ7BtySVT7zDmtBn7ZivMm3guhLWrJGiPFFLzTEyxwTKUkeSAJjTJLSWLHYP48wW) |
+| `x402_pay` (pocket `exact`, before float pay) | [`kX2zbbuR…8wW`](https://solscan.io/tx/kX2zbbuRbskBQ2EnazyDBu7oZ7BtySVT7zDmtBn7ZivMm3guhLWrJGiPFFLzTEyxwTKUkeSAJjTJLSWLHYP48wW) |
 
 No unshield transaction contains the wallet that shielded; our facilitator
 paid every network fee of each unshield.
