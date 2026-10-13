@@ -3,7 +3,7 @@
   "name": "io.github.ShinjukuStaition/shinjuku-mcp",
   "title": "Shinjuku Shielded",
   "description": "Private x402 payments on Solana: shield, pay, and unshield USDC under caps you set.",
-  "version": "0.3.8",
+  "version": "0.3.15",
   "websiteUrl": "https://shinjukustaition.com",
   "repository": {
     "url": "https://github.com/ShinjukuStaition/shinjuku-mcp",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "shinjuku-shielded",
-      "version": "0.3.8",
+      "version": "0.3.15",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -46,7 +46,7 @@
           "type": "named",
           "name": "--pool",
           "description": "The shielded pool. The wallet file is $SHIELDED_WALLET_HOME/<pool>/wallet.json.",
-          "default": "45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR",
+          "default": "F7MWGF8vG8Bv3Y4pRRFqky5YzZndGtQaUXbMMvpmtoRV",
           "isRequired": false
         },
         {
