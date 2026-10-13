@@ -9,6 +9,7 @@ x402 facilitator on Solana, inside your agent.
 | [claude-desktop.json](claude-desktop.json) | A complete `claude_desktop_config.json`. |
 | [cursor.json](cursor.json) | A complete `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project). |
 | [hermes.md](hermes.md) | The Hermes Agent `config.yaml` entry (stdio). |
+| [vercel-ai-sdk.md](vercel-ai-sdk.md) | The Vercel AI SDK: connect the server's tools to `generateText` through `@ai-sdk/mcp`. |
 | [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
