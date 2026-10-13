@@ -10,6 +10,7 @@ x402 facilitator on Solana, inside your agent.
 | [cursor.json](cursor.json) | A complete `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project). |
 | [hermes.md](hermes.md) | The Hermes Agent `config.yaml` entry (stdio). |
 | [vercel-ai-sdk.md](vercel-ai-sdk.md) | The Vercel AI SDK: connect the server's tools to `generateText` through `@ai-sdk/mcp`. |
+| [Solana Agent Kit plugin](https://github.com/ShinjukuStaition/shinjuku-sak-plugin) | npm `solana-agent-kit-plugin-shinjuku`: the wallet as Solana Agent Kit v2 actions (`SHINJUKU_X402_PAY` and others). |
 | [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version

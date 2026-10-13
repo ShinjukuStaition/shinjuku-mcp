@@ -296,6 +296,9 @@ you the confirmation). With a host that does not, name each address with
 - [Hermes Agent](examples/hermes.md): the `config.yaml` entry.
 - [Vercel AI SDK](examples/vercel-ai-sdk.md): the server's tools in
   `generateText` through `@ai-sdk/mcp`, with no other package.
+- [Solana Agent Kit](https://github.com/ShinjukuStaition/shinjuku-sak-plugin):
+  npm `solana-agent-kit-plugin-shinjuku`, the wallet as Solana Agent Kit v2
+  actions.
 - [First 10 minutes](examples/README.md#first-10-minutes): add the server,
   set it up, fund it, shield, pay, send, and check the balance.
 - [Plain requests](examples/prompts.md): 11 requests, the tool each one
