@@ -21,7 +21,9 @@ jobs:
         run: |
           set -euo pipefail
           curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
-          ./mcp-publisher --help | head -1
+          # The whole help text, then its first line: "| head -1" under pipefail fails 141 (SIGPIPE) when head exits first.
+          ./mcp-publisher --help > help.txt
+          sed -n 1p help.txt
 
       - name: Validate server.json
         run: ./mcp-publisher validate
