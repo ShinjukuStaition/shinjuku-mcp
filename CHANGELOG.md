@@ -5,6 +5,34 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-20: wallet release `667ac38b`, npm `shinjuku-shielded@0.3.53`
+
+- Simpler start. `npx -y shinjuku-shielded setup` prints the host line to
+  paste and how to add funds. Ask your agent to add funds:
+  `wallet_add_funds` gives a one-time address, and amounts from 0.01 USDC
+  become private by themselves.
+- Plain answers. Every tool answer starts with a `say` line in plain words,
+  and amounts also show as USDC text beside the atomic fields. No field was
+  renamed or removed.
+- A slow seller no longer holds your agent. After 25 s, `x402_pay` answers
+  `seller_working` with its `request_id`. Call `x402_pay` again with that
+  `request_id` to get the answer; it never pays twice. `inference_chat` does
+  the same.
+- A seller that stops answering after the payment: from 45 s the wallet
+  reads our payment state, and it stops when the seller is dead (73 s in our
+  test, where the old wait took 122 s).
+- Faster first payment from a fresh process: the wallet hashes the pool
+  roots on worker threads, so it reads your call at once.
+- `--tor` runs try both of our onion addresses and keep the first that
+  answers.
+- New tools: `wallet_receive_shielded` (a one-time private address of this
+  wallet), `wallet_transfer_token` and `wallet_transfer_token_status` (sell a
+  Solana token for USDC, make it private, and send it privately). The tool
+  list shows 13 tools.
+- `wallet_receipts` gives `{ok, count, total, facilitatorNote, receipts}`;
+  each row has `kind`. The old row fields stay.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-11: wallet release `08a4b56f`, npm `shinjuku-shielded@0.3.8`
 
 - Update now. On 2026-10-11 the pool program was upgraded (faster pool

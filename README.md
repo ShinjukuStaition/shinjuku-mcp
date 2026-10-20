@@ -21,9 +21,12 @@ set.
   it. We never run it, and we never hold your money.
 - **Shielded payments.** Your agent pays from a shielded balance. Add `--tor`
   and no server sees your IP.
-- **One command to set up.** `npx -y shinjuku-shielded mcp` offers the
-  setup on a machine with no wallet. It makes the wallet, a private
-  passphrase file, and the checked proof tools.
+- **One command to set up.** `npx -y shinjuku-shielded setup` makes the
+  wallet, a private passphrase file, and the checked proof tools, and writes
+  `config.json`. Then your agent host starts `npx -y shinjuku-shielded mcp`.
+- **Add funds from 0.01 USDC.** Ask your agent to add funds.
+  `wallet_add_funds` gives a one-time address. Send USDC to it from any
+  wallet or exchange, and it becomes private by itself.
 - **Caps that only you set.** Spending limits are optional; by default there
   is none (only the balance bounds a payment). Setup records the ones you set.
   A tool call can only lower them, never raise them.
@@ -34,8 +37,8 @@ set.
   and we pay the seller from our own float. Nothing to fill or set aside.
 - **Look before you pay.** `x402_preview` shows the price and whether your
   caps allow it. It pays nothing.
-- **No SOL.** `wallet_shield` needs only USDC. Our facilitator's relayer
-  pays the network fee.
+- **No SOL.** `wallet_add_funds` and `wallet_shield` need only USDC. Our
+  facilitator's relayer pays the network fee.
 - **Never twice.** A retry with the same `request_id` resumes the same
   payment, deposit, or unshield. It never starts a second one.
 - **No RPC, no account, no API key.** Reads go through our relay by default.
@@ -55,10 +58,14 @@ Ask your agent the way you would ask a person:
 | You say | Your agent calls |
 |---|---|
 | "what is my balance" | `wallet_balance` |
+| "add 0.50 USDC to my shielded balance" | `wallet_add_funds` |
 | "shield 5 USDC" | `wallet_shield` |
 | "find a seller of satellite images" | `x402_discover` |
 | "pay this URL" | `x402_preview`, then `x402_pay` |
+| "ask an AI model privately" | `inference_chat` |
 | "send 2 USDC privately to <address>" | `wallet_unshield` |
+| "give me a private address to get paid" | `wallet_receive_shielded` |
+| "sell my JUP and send the value privately to <address>" | `wallet_transfer_token` |
 
 Each answer tells the agent the exact next call. The wallet reads the chain
 and writes an encrypted backup by itself, so you never run a command for
@@ -78,11 +85,12 @@ On a machine with no wallet, the server starts in setup mode.
 In setup mode, every money tool answers `wallet_not_set_up` and does
 nothing.
 
-### SHIELD
+### FUND
 
 | Tool | What it does |
 |---|---|
-| `wallet_shield` | Moves USDC from the wallet's own Solana key into your shielded balance. It is on with `--proof-tools`. `--no-shield` turns it off. Funding takes minutes: the first call starts it and returns a stage. Call again with the same `request_id` to see the stage. It never starts a second deposit. When the deposit lands, the wallet reads it from the chain and writes an encrypted backup. The wallet's own key needs the USDC and no SOL: our facilitator's relayer pays the network fee, and you pay the shield cost. |
+| `wallet_add_funds` | Gives a new one-time Solana address of this wallet and a `solana:` pay link. Send USDC to it from any wallet or exchange, from 0.01 USDC. You need no SOL. A few minutes after the USDC arrives, it becomes private by itself while the MCP server runs. One round takes up to 5 USDC; a larger amount goes in by rounds. Use each address for one payer. The call itself moves no money. |
+| `wallet_shield` | Moves USDC that is already on the wallet's own Solana key into your shielded balance: any amount from 0.01 USDC, while the shielded balance stays at most 5 USDC. It is a public step: the chain shows the wallet's own key. It is on with `--proof-tools`. `--no-shield` turns it off. Funding takes minutes: the first call starts it and returns a stage. Call again with the same `request_id` to see the stage. It never starts a second deposit. When the deposit lands, the wallet reads it from the chain and writes an encrypted backup. The wallet's own key needs the USDC and no SOL: our facilitator's relayer pays the network fee, and you pay the shield cost. |
 
 ### PAY
 
@@ -90,7 +98,8 @@ nothing.
 |---|---|
 | `x402_discover` | Searches public x402 listings (Coinbase x402 Bazaar, PayAI, Dexter, and others) on your machine and returns the sellers that match. Pays nothing. The first call takes about 15 s. |
 | `x402_preview` | One unpaid request. Returns the seller's price, the scheme, and whether your caps allow it. Pays nothing. For a standard `exact` seller it adds `feeAtomic` (our fee) and `totalAtomic` (price plus fee, what leaves your balance). A seller that lists several networks is priced from its Solana offer. |
-| `x402_pay` | Pays the URL (if it asks for payment) and returns the answer. A URL that does not answer 402 is fetched once and nothing is paid. An image answer (image bytes, or JSON `image_base64`) comes back as an MCP image block, and the file is saved. A payment that landed, from a seller that gives no answer, closes as paid. If a standard `exact` seller does not take our payment, the answer is `p03_float_refund_pending`: price and fee come back to your balance by themselves within about 2 minutes. Alias: `fetch_paid`. |
+| `x402_pay` | Pays the URL (if it asks for payment) and returns the answer. A URL that does not answer 402 is fetched once and nothing is paid. An image answer (image bytes, or JSON `image_base64`) comes back as an MCP image block, and the file is saved. A payment that landed, from a seller that gives no answer, closes as paid. If a standard `exact` seller does not take our payment, the answer is `p03_float_refund_pending`: price and fee come back to your balance by themselves within about 7 minutes. Alias: `fetch_paid`. |
+| `inference_chat` | One AI answer from usePod's x402 chat endpoint, paid privately from your shielded balance. A short `qwen3-8-flash` answer costs about 0.0011 USDC: the provider price plus the 0.001 USDC Shinjuku fee. It needs `--tor` or a proxy. |
 
 ### UNSHIELD
 
@@ -102,15 +111,26 @@ nothing.
 
 | Tool | What it does |
 |---|---|
-| `wallet_balance` | ONE balance (`balanceAtomic`, what `x402_pay` can spend) and UNSHIELDED (plain USDC on the wallet's own Solana key). `breakdown` names the parts of the one balance: `shieldedAtomic` (what `wallet_unshield` can send), `refundsInFlightAtomic` (a Shinjuku refund on its way back), and `setAsideAtomic` (value in pockets of an older version). A stale balance is read from the chain first. UNSHIELDED is one network read; if it fails, that line is empty and says why. |
-| `wallet_receipts` | Your most recent paid receipts: host (never the full URL), amount, transaction, time. |
+| `wallet_balance` | ONE balance (`balanceAtomic`, what `x402_pay` can spend) and UNSHIELDED (`unshieldedAtomic`, plain USDC on the wallet's own Solana key), with `ownAddress` and `status` (`"current"` when the balance is read). `breakdown` names the parts of the one balance: `shieldedAtomic` (what `wallet_unshield` can send), `refundsInFlightAtomic` (a Shinjuku refund on its way back), and `setAsideAtomic` (value in pockets of an older version). A stale balance is read from the chain first. UNSHIELDED is one network read; if it fails, that line is empty and says why. |
+| `wallet_receipts` | Your most recent paid receipts: `{ok, count, total, facilitatorNote, receipts}`. Each receipt has `kind` (`x402`, `inference`, or a move), the host (never the full URL), `amountAtomic`, and `transaction`. |
+| `wallet_cancel` | Closes one unfinished payment (its reserved balance comes back), the parts of a private send that did not start, or an add-funds link that no USDC reached. |
 
-Also: `wallet_cancel` closes one unfinished payment, so its reserved balance
-comes back.
+### RECEIVE AND TRADE
+
+| Tool | What it does |
+|---|---|
+| `wallet_receive_shielded` | Gives a new one-time private (shielded) address of this wallet, for a Shinjuku Shielded payer in the same pool. It stores, signs, and moves nothing. A wallet that never shielded can spend what it receives only after one shield; the answer says so in `notice`. |
+| `wallet_transfer_token` | Sells a Solana token for USDC (on Jupiter), makes the USDC private, and sends it privately to an address. The address gets USDC, not the token. It takes minutes. The stages are `selling`, `shielding`, `sending`, and `done`. |
+| `wallet_transfer_token_status` | Shows the stage of one transfer by `request_id`, or the list of transfers. |
 
 `wallet_shield` and `wallet_unshield` always appear in the tool list. When
 one is off, it answers `"error": "mcp_tool_disabled"` and tells the agent
 what to ask you.
+
+The tool list shows the 13 tools above. Some older tools are not in the
+list, but they still answer when an agent calls them by name:
+`wallet_shield_from_elsewhere`, `wallet_pay_me`, `wallet_pay_me_status`,
+`wallet_unshield_cancel`, `wallet_move_status`, and `inference_models`.
 
 What it pays:
 
@@ -119,12 +139,12 @@ What it pays:
 - **Standard Solana `exact`, through Shinjuku (float pay).** For a seller on
   any facilitator (Coinbase CDP, PayAI, or any other), `x402_pay` pays us
   privately from your shielded balance: the seller's price plus a flat fee
-  (`feeAtomic`, 0.001 USDC on 2026-10-11). We pay the seller at once from our
+  (`feeAtomic`, 0.001 USDC on 2026-10-20). We pay the seller at once from our
   own shared float. The chain shows Shinjuku paying the seller, never your
   wallet. `max_payment_atomic` must cover price plus fee. The largest price
-  that one request can pay is our largest float pocket: `largestAtomic` in
-  `GET https://pay.shinjukustaition.com/api/x402/float/config` (3 USDC on
-  2026-10-11).
+  that one request can pay is `largestAtomic` in
+  `GET https://pay.shinjukustaition.com/api/x402/float/config` (10 USDC on
+  2026-10-20).
 - A retry with the same `request_id` never pays twice.
 
 Hidden amounts (scheme `confidential`, the V0b vault) are retired: the V0b
@@ -136,9 +156,11 @@ it returns that value to the shielded balance by itself while it is idle.
 `shinjuku-wallet pocket reshield` does the same by hand.
 
 A balance split over several accounts: one payment spends one account plus
-at most 3 notes. When no single account covers a price, `x402_pay` says so
-and names `shinjuku-wallet merge` for you to run. After it, and the next
-pool anchor (usually within a minute), the agent pays again.
+at most 3 notes. The server joins the accounts into one by itself (a private
+payment to itself; nothing leaves the shielded balance, and our facilitator
+pays the network fee). When no single account covers a price yet, `x402_pay`
+says so, the join starts within about a minute, and the answer says when to
+pay again.
 
 ## Privacy modes
 
@@ -153,30 +175,67 @@ pool anchor (usually within a minute), the agent pays again.
 ## Setup
 
 You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
-supported: the provers are Linux programs. The current wallet release is
-`08a4b56f` (npm `shinjuku-shielded@0.3.8`). It keeps the pool of 0.3.5 and
-uses proof tools `47678912`.
+supported: the provers are Linux programs.
 
-Update from 0.3.7 or earlier. On 2026-10-11 the pool program was upgraded
-(faster pool anchors), and 0.3.7 and earlier refuse payments. Run
-`npx -y shinjuku-shielded@latest setup` once: it pins the new program and
-gets the new proof tools. Your wallet, its address, and its balance stay the
-same.
+To update, run `npx -y shinjuku-shielded@latest setup` once; your wallet, its
+address, and its balance stay the same.
 
-Update from a version before 0.3.5. On 2026-10-10 the pool program was upgraded
-and the shielded pool moved to `45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR`.
-The old pool `AAG16mNWTtC1sBeu2tTVTwWjqWXCefLTCByVPj5X3kV8` is retired, and
-earlier versions refuse payments. Run `npx -y shinjuku-shielded@latest setup`
-once: it pins the new program and sets up a wallet for the new pool. That
-wallet has a new address: ask your agent for it before you send USDC.
+### 1. Run the setup in a terminal
 
-### 1. Add the server to your agent
+```sh
+npx -y shinjuku-shielded setup
+```
+
+It asks for the caps (Enter keeps the default) and Tor. `--yes` asks
+nothing. `--add-to claude-code` (or `claude-desktop`, `cursor`) also adds
+the server to that host's config. In our runs, setup took about 10-16 s on a
+fast line, with the proof-tool download of about 191 MB. At the end it
+prints a summary, for example:
+
+```
+Shinjuku Shielded is set up.
+  limits       no limit per payment, no limit per session, no limit for the life of the wallet
+  config       <home>/config.json
+  passphrase   <home>/passphrase.txt (a new random passphrase; only you can read the file; it is never printed)
+  proof tools  <home>/proof-tools/a9af32df (29 files downloaded, every hash checked)
+  wallet       created; your public address (solanaFeePayer): <address>
+  recovery     <home>/recovery-<time>.txt
+```
+
+Setup writes to `~/.carbon-shielded-wallet` (or `SHIELDED_WALLET_HOME`):
+
+- The wallet, and a recovery file with the seed and the key. Copy the
+  recovery file to two offline places, then delete it from this machine.
+- `passphrase.txt`: a new random passphrase, readable by you alone. It is
+  never printed, and no tool takes or returns it. Keep it: the wallet file
+  opens only with it.
+- The proof tools. Setup checks every file against the set that this wallet
+  release pins.
+- `config.json`: the caps, the paths, and Tor. With it, `mcp` needs no
+  flags. A flag on the command line still wins.
+
+Spending limits are optional and off by default: with none, only the balance
+bounds a payment. To set them, give `--max-payment`, `--max-session`, or
+`--max-total` (in atomic USDC: `50000` = 0.05 USDC). A setup rerun lifts the
+old default caps (0.05 / 1 / 20 USDC) of earlier versions. `--prefer-tor`
+records Tor (see Privacy modes).
+
+You can run `setup` again at any time. It never changes an existing wallet,
+and it checks every proof-tool file again.
+
+### 2. Add the server to your agent host
+
+If you gave `--add-to`, this step is done. Setup also prints these lines.
 
 Claude Code:
 
 ```sh
 claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 ```
+
+On native Windows, the line that setup prints puts `cmd /c` before `npx`.
+With a wallet folder that is not the default, it adds
+`-e SHIELDED_WALLET_HOME=<home>` (or an `"env"` block in JSON).
 
 Claude Desktop (`claude_desktop_config.json`), Cursor (`~/.cursor/mcp.json`),
 and other JSON-config hosts:
@@ -192,49 +251,39 @@ and other JSON-config hosts:
 }
 ```
 
-### 2. Start it and accept the setup
+### Or: start the server first and accept the setup
 
-The first time, the server has no wallet, so it starts in setup mode. Ask
-your agent "what is my balance". Your MCP client asks you to confirm: create
-a Shinjuku Shielded wallet on this machine. Accept, and the setup runs (about
-25 s in our test, with the proof-tool download of about 150 MB). Then the
-same server switches to the wallet tools. You do not restart it.
+You can also add the server first, with no wallet on the machine. Then the
+server starts in setup mode. Ask your agent "what is my balance". Your MCP
+client asks you to confirm: create a Shinjuku Shielded wallet on this
+machine. Accept, and the setup runs (with the proof-tool download of about
+191 MB). Then the same server switches to the wallet tools. You do not
+restart it. A client that cannot ask is told to run
+`npx -y shinjuku-shielded setup` in a terminal.
 
 In a terminal, `npx -y shinjuku-shielded mcp` asks
-"Set up Shinjuku Shielded now? (y/n)". Or run the setup by itself:
+"Set up Shinjuku Shielded now? (y/n)".
+
+### 3. Add funds
+
+The wallet starts empty. Ask your agent "Add 0.50 USDC to my shielded
+balance". It calls `wallet_add_funds` and gives a one-time address. Send
+that USDC on Solana from any wallet or exchange. Amounts from 0.01 USDC
+work, and you need no SOL. The USDC becomes private by itself while the MCP
+server runs: our relayer pays every fee.
+
+From an exchange, in a terminal, whole USDC only:
 
 ```sh
-npx -y shinjuku-shielded setup
+npx -y shinjuku-shielded add-funds --route exchange --amount 2000000
 ```
 
-It asks for the caps (Enter keeps the default) and Tor. `--yes` asks
-nothing. `--add-to claude-code` (or `claude-desktop`, `cursor`) also adds
-the server to that host's config.
+It prints a one-time address. Withdraw exactly that amount of USDC (Solana
+SPL) from the exchange to it, and it shields the USDC by itself. `--amount`
+is in atomic units (`2000000` = 2 USDC).
 
-Setup writes to `~/.carbon-shielded-wallet` (or `SHIELDED_WALLET_HOME`):
-
-- The wallet, and a recovery file with the seed and the key. Copy the
-  recovery file to two offline places, then delete it from this machine.
-- `passphrase.txt`: a new random passphrase, readable by you alone. It is
-  never printed, and no tool takes or returns it.
-- The proof tools. Setup checks every file against the set that this wallet
-  release pins.
-- `config.json`: the caps, the paths, and Tor. With it, `mcp` needs no
-  flags. A flag on the command line still wins.
-
-Spending limits are optional and off by default: with none, only the balance
-bounds a payment. To set them, give `--max-payment`, `--max-session`, or
-`--max-total` (in atomic USDC: `50000` = 0.05 USDC). A setup rerun lifts the
-old default caps (0.05 / 1 / 20 USDC) of earlier versions. `--prefer-tor`
-records Tor (see Privacy modes).
-
-You can run `setup` again at any time. It never changes an existing wallet,
-and it checks every proof-tool file again.
-
-### 3. Fund it
-
-Ask your agent "what is my wallet address?". Send USDC (Solana SPL) to that
-address. You do not need SOL. Then say "shield 1 USDC". The steps are in
+USDC that is already on the wallet's own address (`ownAddress` in
+`wallet_balance`) goes in with `wallet_shield`. The steps are in
 [First 10 minutes](examples/README.md#first-10-minutes).
 
 ### Advanced: download the file and check it
@@ -245,25 +294,25 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/08a4b56f/shinjuku-wallet.mjs
-echo "08a4b56f6452268ffdd513e67326de8782b53dcec16ba88adaddf16793581206  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/667ac38b/shinjuku-wallet.mjs
+echo "667ac38b9b42b60853ea07024e81b1074105b3dbfba4346d61d86ef3aabef1b3  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.8`.
+`shinjuku-shielded@0.3.53`.
 
 ### Advanced: flags instead of config.json
 
 `mcp` reads `config.json` only when you give no `--pool` and no `--wallet`.
-To set every flag yourself (for example, for a wallet that you made with
+To give the flags yourself (for example, for a wallet that you made with
 `init` before 0.2.0):
 
 ```sh
 claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
   --max-payment 50000 --max-session 200000 --tor \
-  --pool 45mhosfA2MuygZWeqYRVcEZX2Q3gA8KR8FwP6AZkK1zR \
+  --pool <pool> \
   --program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1 \
   --memo-service https://pay.shinjukustaition.com \
   --proof-tools /abs/path/shinjuku-proof-tools/proof-tools.json \
@@ -271,6 +320,10 @@ claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
   --profile /abs/path/shinjuku-proof-tools/public-profile.json \
   --passphrase-file /abs/path/passphrase.txt
 ```
+
+With `--pool`, `--program` and `--memo-service` are required. Setup writes the pool, the program, and the
+facilitator into `config.json`: `<pool>` is the pool in your `config.json`.
+`npx -y shinjuku-shielded help mcp` prints every flag.
 
 Use absolute paths: a host starts the server from its own folder. On Windows,
 write `C:/Users/you/...`. `--proof-tools` turns `wallet_shield` on.
@@ -289,8 +342,9 @@ you the confirmation). With a host that does not, name each address with
 
 [examples/](examples/) has complete configs and a walkthrough:
 
-- [Claude Code](examples/claude-code.md): the `claude mcp add` command, the
-  first start, Tor, each flag explained, and how to check it works.
+- [Claude Code](examples/claude-code.md): the setup command, the
+  `claude mcp add` command, Tor, each flag explained, and how to check it
+  works.
 - [Claude Desktop](examples/claude-desktop.json) and
   [Cursor](examples/cursor.json): complete JSON configs.
 - [Hermes Agent](examples/hermes.md): the `config.yaml` entry.
@@ -299,9 +353,9 @@ you the confirmation). With a host that does not, name each address with
 - [Solana Agent Kit](https://github.com/ShinjukuStaition/shinjuku-sak-plugin):
   npm `solana-agent-kit-plugin-shinjuku`, the wallet as Solana Agent Kit v2
   actions.
-- [First 10 minutes](examples/README.md#first-10-minutes): add the server,
-  set it up, fund it, shield, pay, send, and check the balance.
-- [Plain requests](examples/prompts.md): 11 requests, the tool each one
+- [First 10 minutes](examples/README.md#first-10-minutes): set it up, add
+  the server, add funds, pay, send, and check the balance.
+- [Plain requests](examples/prompts.md): 13 requests, the tool each one
   calls, and the shape of the answer.
 
 ## Caps and flags
@@ -369,10 +423,14 @@ one to another place.
 - For a float payment, our server sees which private payment paid which
   seller, the price, the URL, and the time, until the payment is final or
   refunded. It does not see your wallet.
+- `wallet_add_funds`: the chain shows the USDC that arrives at the one-time
+  address, the amount, and the time. Use each address for one payer.
 - `wallet_shield` is a public step: the chain shows USDC leave the wallet's
   own key, the amount, and the time.
 - `wallet_unshield` is a public step: the chain shows the amount, the
   address that receives it, and the time.
+- `inference_chat`: usePod and the model provider see the prompt and the
+  answer.
 - The UNSHIELDED line of `wallet_balance` reads the wallet's own key. The RPC
   (our relay by default) sees which key it reads.
 - Privacy needs a crowd. With few users, timing can still link payments.
@@ -383,15 +441,15 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `08a4b56f` (npm
-0.3.8). Float pay paid two stock sellers on the PayAI facilitator on
+Live on Solana mainnet. The current wallet release is `667ac38b` (npm
+0.3.53). Float pay paid two stock sellers on the PayAI facilitator on
 production on 2026-10-11, 0.10 USDC and 1.50 USDC, and a stock seller on our
 own facilitator, 0.01 USDC twice: the transactions are in
 [proof.md](https://github.com/ShinjukuStaition/shinjuku-shielded/blob/main/docs/proof.md).
 
 These transactions were made with real money through this MCP
-server, against our production facilitator, on the earlier pool `AAG16…3kV8`
-(retired 2026-10-10). The first two came from a new wallet with the default
+server, against our production facilitator, on an earlier pool (retired
+2026-10-10). The first two came from a new wallet with the default
 setup and no SOL at any time (wallet release `94a357bc`). The others used
 wallet release `1a336885` (2026-10-08).
 

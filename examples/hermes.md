@@ -4,7 +4,17 @@ Hermes Agent starts Shinjuku Shielded as a stdio MCP server. You need
 Node.js 22 or later, on Linux or on Windows with WSL. macOS is not
 supported.
 
-Add this to your Hermes `config.yaml`:
+First, run the setup in a terminal:
+
+```sh
+npx -y shinjuku-shielded setup
+```
+
+It makes the wallet, a random passphrase file, the checked proof tools
+(about 191 MB), and `config.json`. It also writes a recovery file: copy it
+to two offline places, then delete it from this machine.
+
+Then add this to your Hermes `config.yaml`:
 
 ```yaml
 mcp_servers:
@@ -20,14 +30,15 @@ mcp_servers:
 
 Then start a new chat: `hermes chat -t mcp-shinjuku`.
 
-- The first time, the server has no wallet and starts in setup mode. Ask
-  "what is my balance". The agent calls `shinjuku_setup`, and Hermes asks
-  you to confirm that it may create a Shinjuku Shielded wallet on this
-  machine (MCP elicitation, on by default). Accept, and the setup runs. Then
-  the same server switches to the wallet tools. Hermes shows an Approve
-  button with an empty form: Approve counts as accept.
-- You can also run the setup in a terminal first:
-  `npx -y shinjuku-shielded setup`.
+- Add funds: ask "add 0.50 USDC to my shielded balance". The agent calls
+  `wallet_add_funds` and gives a one-time address. Send USDC to it from any
+  wallet or exchange, from 0.01 USDC. You need no SOL.
+- Without a terminal setup, the server has no wallet and starts in setup
+  mode. Ask "what is my balance". The agent calls `shinjuku_setup`, and
+  Hermes asks you to confirm that it may create a Shinjuku Shielded wallet
+  on this machine (MCP elicitation, on by default). Accept, and the setup
+  runs. Then the same server switches to the wallet tools. Hermes shows an
+  Approve button with an empty form: Approve counts as accept.
 - `timeout: 600`. A payment, a shield, or an unshield can take minutes (the
   proof and the settle). The Hermes default is 300 s per tool call.
 - Tor: run the setup with `--prefer-tor`. The wallet server then makes its

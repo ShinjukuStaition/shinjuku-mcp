@@ -54,7 +54,7 @@ try {
 ```
 
 - `shinjuku.tools()` returns all the server's tools: `x402_pay`,
-  `wallet_balance`, `wallet_shield`, `wallet_unshield`, and the others. To
+  `wallet_balance`, `wallet_add_funds`, `wallet_unshield`, and the others. To
   give the model only some of them, pick them by name, for example
   `{ x402_pay: tools.x402_pay, wallet_balance: tools.wallet_balance }`.
 - Every flag of `help mcp` goes in `args`. The caps (`--max-payment`,

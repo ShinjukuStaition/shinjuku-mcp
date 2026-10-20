@@ -5,17 +5,17 @@ x402 facilitator on Solana, inside your agent.
 
 | File | What it is |
 |---|---|
-| [claude-code.md](claude-code.md) | The `claude mcp add` command, the first start, Tor, the caps, and how to check it works. |
+| [claude-code.md](claude-code.md) | The setup command, the `claude mcp add` command, Tor, the caps, and how to check it works. |
 | [claude-desktop.json](claude-desktop.json) | A complete `claude_desktop_config.json`. |
 | [cursor.json](cursor.json) | A complete `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project). |
 | [hermes.md](hermes.md) | The Hermes Agent `config.yaml` entry (stdio). |
 | [vercel-ai-sdk.md](vercel-ai-sdk.md) | The Vercel AI SDK: connect the server's tools to `generateText` through `@ai-sdk/mcp`. |
 | [Solana Agent Kit plugin](https://github.com/ShinjukuStaition/shinjuku-sak-plugin) | npm `solana-agent-kit-plugin-shinjuku`: the wallet as Solana Agent Kit v2 actions (`SHINJUKU_X402_PAY` and others). |
-| [prompts.md](prompts.md) | 11 plain requests, the tool that each one calls, and the shape of the answer. |
+| [prompts.md](prompts.md) | 13 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.3.8, wallet release `08a4b56f`). Write `shinjuku-shielded@0.3.8` to pin
-it. The commands and flags come from `help mcp` and `help setup` of that
+(0.3.53, wallet release `667ac38b`). Write `shinjuku-shielded@0.3.53` to
+pin it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
 ## Where it runs
@@ -40,22 +40,15 @@ node --version
 
 The output must be `v22` or higher.
 
-### 2. Add the server to your agent
+### 2. Set it up in a terminal
 
-Use one of [claude-code.md](claude-code.md), [claude-desktop.json](claude-desktop.json),
-[cursor.json](cursor.json), or [hermes.md](hermes.md). Restart the agent
-host after you change its config.
+```sh
+npx -y shinjuku-shielded setup
+```
 
-### 3. Set it up
-
-| You say | The agent calls |
-|---|---|
-| "what is my balance" | `shinjuku_setup`. Your client asks you to confirm that it may create a Shinjuku Shielded wallet on this machine, with the caps. |
-
-Accept. The setup runs (about 25 s in our test, with the proof-tool
-download of about 150 MB) and the same server switches to the wallet
-tools. If your client cannot show the question, run `npx -y shinjuku-shielded setup` in a
-terminal, then restart the agent host.
+In our runs, setup took about 10-16 s on a fast line, with the proof-tool
+download of about 191 MB. Add `--add-to claude-code` (or `claude-desktop`,
+`cursor`) to also add the server to that host's config.
 
 Setup writes to `~/.carbon-shielded-wallet`:
 
@@ -64,38 +57,61 @@ Setup writes to `~/.carbon-shielded-wallet`:
 - A recovery file with the seed and the Solana secret key. Copy it to two
   offline places, then delete it from this machine.
 - No spending limit by default: only the balance bounds a payment. To set
-  limits, run the setup in a terminal with `--max-payment`, `--max-session`,
-  and `--max-total` (`npx -y shinjuku-shielded help setup`).
+  limits, run the setup with `--max-payment`, `--max-session`, and
+  `--max-total` (`npx -y shinjuku-shielded help setup`).
 
-### 4. Get the wallet address
+### 3. Add the server to your agent
+
+Use one of [claude-code.md](claude-code.md), [claude-desktop.json](claude-desktop.json),
+[cursor.json](cursor.json), or [hermes.md](hermes.md). Restart the agent
+host after you change its config. If you gave `--add-to` in step 2, the
+config is done.
+
+You can also add the server first and skip step 2:
+
+| You say | The agent calls |
+|---|---|
+| "what is my balance" | `shinjuku_setup`. Your client asks you to confirm that it may create a Shinjuku Shielded wallet on this machine, with the caps. |
+
+Accept. The setup runs (with the proof-tool download of about 191 MB) and
+the same server switches to the wallet tools. If your client cannot show the
+question, run `npx -y shinjuku-shielded setup` in a terminal, then restart
+the agent host.
+
+### 4. Add funds
+
+| You say | The agent calls |
+|---|---|
+| "add 0.50 USDC to my shielded balance" | `wallet_add_funds`. The answer has a new one-time Solana address of this wallet and a `solana:` pay link. |
+
+Send the USDC (Solana SPL) to that address from any wallet or exchange.
+Amounts from 0.01 USDC work. You do not need SOL: our relayer pays every
+fee. A few minutes after the USDC arrives, it becomes private by itself
+while the MCP server runs. One round takes up to 5 USDC; a larger amount
+goes in by rounds. Use each address for one payer. The call itself moves no
+money.
+
+USDC that is already on the wallet's own address goes in with
+`wallet_shield`:
 
 | You say | The agent calls |
 |---|---|
 | "what is my wallet address?" | `wallet_balance`. The answer has `ownAddress`: the wallet's own public Solana address. |
-
-### 5. Fund the wallet
-
-Send USDC (Solana SPL) to that address from your own wallet or an
-exchange. You do not need SOL: our facilitator's relayer pays the network
-fee of the shield, and you pay the shield cost.
-
-| You say | The agent calls |
-|---|---|
-| "shield 1 USDC" | `wallet_shield {amount_atomic: "1000000", request_id: "shield-1"}` |
+| "shield 2 USDC" | `wallet_shield {amount_atomic: "2000000", request_id: "shield-1"}` |
 
 The shield takes a few minutes. The first call starts it and answers a
 `stage`. The agent calls `wallet_shield` again with the same `request_id` to
 read the stage. The same `request_id` never starts a second deposit. When
 the deposit lands, the wallet reads it from the chain and writes an
 encrypted backup to `$SHIELDED_WALLET_HOME/auto-backups/<pool>/` by itself.
-Use a whole number of USDC.
+`wallet_shield` takes any amount from 0.01 USDC, while the shielded balance stays at most 5 USDC.
 
 A shield is a public step. The chain shows USDC leave the wallet's own
 address, the amount, and the time. Payments from the shielded balance after
-that do not show this wallet. For a funding path that does not start from
-your own address, see `npx -y shinjuku-shielded help add-funds`.
+that do not show this wallet. For the exchange route in a terminal, see
+`npx -y shinjuku-shielded help add-funds`.
 
-### 6. Pay a URL
+### 5. Pay a URL
 
 | You say | The agent calls |
 |---|---|
@@ -114,7 +130,7 @@ does not take the payment, the refund comes back to your balance by itself
 within about 7 minutes. An image answer comes back as an image, and the file
 is saved.
 
-### 7. Send USDC to an address, with your confirmation
+### 6. Send USDC to an address, with your confirmation
 
 | You say | The agent calls |
 |---|---|
@@ -133,14 +149,15 @@ cannot answer this question; your client app asks you.
 - An unshield is a public step. The chain shows the amount, the receiving
   address, and the time. The pool hides which deposit paid it.
 
-### 8. Check the balance
+### 7. Check the balance
 
 | You say | The agent calls |
 |---|---|
 | "what is my balance" | `wallet_balance` |
 
 The answer shows one balance (`balanceAtomic`, what the agent can pay with)
-and UNSHIELDED (`unshieldedAtomic`, plain USDC on the wallet's own address).
+and UNSHIELDED (`unshieldedAtomic`, plain USDC on the wallet's own address),
+with `ownAddress` and `status` (`"current"` when the balance is read).
 `breakdown` names the parts of the one balance: `shieldedAtomic` (what the
 agent can send with `wallet_unshield`), `refundsInFlightAtomic`, and
 `setAsideAtomic` (pockets of an older version).

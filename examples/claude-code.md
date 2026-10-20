@@ -1,44 +1,53 @@
 # Claude Code
 
-Add Shinjuku Shielded to Claude Code with one command. You need Node.js 22
-or later, on Linux or on Windows with WSL. macOS is not supported.
+Set up Shinjuku Shielded and add it to Claude Code with one command. You
+need Node.js 22 or later, on Linux or on Windows with WSL. macOS is not
+supported.
+
+```sh
+npx -y shinjuku-shielded setup --add-to claude-code
+```
+
+Setup makes the wallet, a random passphrase file, the checked proof tools
+(about 191 MB), and `config.json` in `~/.carbon-shielded-wallet`. In our
+runs it took about 10-16 s on a fast line. It also writes a recovery file
+with the seed and the key. Copy it to two offline places, then delete it
+from this machine. `--add-to claude-code` then adds the server to Claude
+Code.
+
+Without `--add-to`, setup prints the command. Run it once:
 
 ```sh
 claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
 ```
+
+The parts of the command:
 
 | Part | What it does |
 |---|---|
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.8` to pin it. |
+| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.53` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
-## The first start
+On native Windows, the printed command puts `cmd /c` before `npx`. With a
+wallet folder that is not the default, it adds
+`-e SHIELDED_WALLET_HOME=<home>`.
 
-Start Claude Code and ask "what is my balance". The server has no wallet
-yet, so it starts in setup mode with two tools: `shinjuku_setup` and
+## Or: add the server first
+
+You can also run the `claude mcp add` command before any setup. Start
+Claude Code and ask "what is my balance". The server has no wallet yet, so
+it starts in setup mode with two tools: `shinjuku_setup` and
 `wallet_status`. Claude calls `shinjuku_setup`, and Claude Code asks you to
 confirm that it may create a Shinjuku Shielded wallet on this machine, with
 the caps.
 
-- Accept: the setup runs in the background (about 25 s in our test, with
-  the proof-tool download of about 150 MB). Then the same server switches
-  to the wallet tools. You do not restart it.
+- Accept: the setup runs in the background (with the proof-tool download of
+  about 191 MB). Then the same server switches to the wallet tools. You do
+  not restart it.
 - Decline: nothing is created.
-
-Setup writes the wallet, a random passphrase file, the checked proof tools,
-and `config.json` to `~/.carbon-shielded-wallet`. It also writes a recovery
-file with the seed and the key. Copy it to two offline places, then delete
-it from this machine.
-
-You can also run the setup in a terminal first. This form also adds the
-server to Claude Code:
-
-```sh
-npx -y shinjuku-shielded setup --add-to claude-code
-```
 
 ## Tor
 
@@ -131,14 +140,20 @@ Or give every flag yourself, as in the
 ## Check that it works
 
 1. Type `/mcp`. The list shows `shinjuku-shielded` as connected. After setup
-   it has 9 tools: `x402_discover`, `x402_preview`, `x402_pay`, `wallet_balance`,
-   `wallet_receipts`, `wallet_cancel`, `wallet_shield`, `wallet_unshield`,
-   `wallet_shield_from_elsewhere`.
+   it has 13 tools: `wallet_balance`, `wallet_add_funds`, `x402_pay`,
+   `x402_preview`, `x402_discover`, `wallet_unshield`, `wallet_cancel`,
+   `wallet_receipts`, `wallet_shield`, `wallet_receive_shielded`,
+   `wallet_transfer_token`, `wallet_transfer_token_status`, `inference_chat`.
 2. Ask: "what is my balance". Claude calls `wallet_balance`. The answer
    has `balanceAtomic` (what the agent can pay with) with its `breakdown`,
-   `unshieldedAtomic` (plain USDC on the wallet's own key), and
-   `ownAddress`.
-3. A first balance on a new wallet can take some time: the server reads the
+   `unshieldedAtomic` (plain USDC on the wallet's own key), `ownAddress`,
+   and `status` (`"current"` when the balance is read).
+3. Ask: "add 0.50 USDC to my shielded balance". Claude calls
+   `wallet_add_funds`. The answer has a one-time Solana address and a
+   `solana:` pay link. Send USDC to it from any wallet or exchange, from
+   0.01 USDC. You need no SOL. It becomes private by itself a few minutes
+   after it arrives, while the server runs.
+4. A first balance on a new wallet can take some time: the server reads the
    pool history (through our facilitator's https history proxy by default,
    about 60 s for a new wallet). After about 20 s it answers the last
    balance with `refreshing: true` and finishes in the background. Ask
