@@ -64,7 +64,6 @@ Ask your agent the way you would ask a person:
 | "pay this URL" | `x402_preview`, then `x402_pay` |
 | "ask an AI model privately" | `inference_chat` |
 | "send 2 USDC privately to <address>" | `wallet_unshield` |
-| "give me a private address to get paid" | `wallet_receive_shielded` |
 | "sell my JUP and send the value privately to <address>" | `wallet_transfer_token` |
 
 Each answer tells the agent the exact next call. The wallet reads the chain
@@ -127,8 +126,10 @@ nothing.
 one is off, it answers `"error": "mcp_tool_disabled"` and tells the agent
 what to ask you.
 
-The tool list shows the 13 tools above. Some older tools are not in the
-list, but they still answer when an agent calls them by name:
+The tool list shows 12 of the tools above: `wallet_receive_shielded` is not
+in the list from 0.3.54 (it comes back with private escrow deals), but it
+still answers when an agent calls it by name. Some older tools are not in
+the list either, and they also answer by name:
 `wallet_shield_from_elsewhere`, `wallet_pay_me`, `wallet_pay_me_status`,
 `wallet_unshield_cancel`, `wallet_move_status`, and `inference_models`.
 

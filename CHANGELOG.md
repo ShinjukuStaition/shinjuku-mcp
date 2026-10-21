@@ -39,6 +39,8 @@ of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
   that answers. A Node.js without the proxy support that `--tor` needs is
   refused at the start, before anything is sent.
   Node.js 22.21 or later, or Node.js 24 or later.
+- The tool list shows 12 tools. `wallet_receive_shielded` left the list
+  (it comes back with private escrow deals); it still answers by name.
 - No tool of the Solana Agent Kit plugin changed its name or its arguments.
 
 ## 2026-10-20: wallet release `667ac38b`, npm `shinjuku-shielded@0.3.53`
