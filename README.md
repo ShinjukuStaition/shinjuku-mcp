@@ -174,7 +174,7 @@ pay again.
 
 ## Setup
 
-You need Node.js 22 or later, on Linux, or on Windows with WSL. macOS is not
+You need Node.js 22.21 or later (or Node.js 24 or later), on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs.
 
 To update, run `npx -y shinjuku-shielded@latest setup` once; your wallet, its
@@ -216,7 +216,7 @@ Setup writes to `~/.carbon-shielded-wallet` (or `SHIELDED_WALLET_HOME`):
 
 Spending limits are optional and off by default: with none, only the balance
 bounds a payment. To set them, give `--max-payment`, `--max-session`, or
-`--max-total` (in atomic USDC: `50000` = 0.05 USDC). A setup rerun lifts the
+`--max-cumulative`, in USDC (`0.05` = 5 cents). A setup rerun lifts the
 old default caps (0.05 / 1 / 20 USDC) of earlier versions. `--prefer-tor`
 records Tor (see Privacy modes).
 
@@ -280,7 +280,7 @@ npx -y shinjuku-shielded add-funds --route exchange --amount 2000000
 
 It prints a one-time address. Withdraw exactly that amount of USDC (Solana
 SPL) from the exchange to it, and it shields the USDC by itself. `--amount`
-is in atomic units (`2000000` = 2 USDC).
+is a whole number of USDC (`2` = 2 USDC).
 
 USDC that is already on the wallet's own address (`ownAddress` in
 `wallet_balance`) goes in with `wallet_shield`. The steps are in
@@ -294,14 +294,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/667ac38b/shinjuku-wallet.mjs
-echo "667ac38b9b42b60853ea07024e81b1074105b3dbfba4346d61d86ef3aabef1b3  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/285d2c1d/shinjuku-wallet.mjs
+echo "285d2c1db3cfd9d8a5df47acc2c70e7e65816539c3f2ad216ede6a16358d762b  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.53`.
+`shinjuku-shielded@0.3.54`.
 
 ### Advanced: flags instead of config.json
 
@@ -311,7 +311,7 @@ To give the flags yourself (for example, for a wallet that you made with
 
 ```sh
 claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
-  --max-payment 50000 --max-session 200000 --tor \
+  --max-payment 0.05 --max-session 0.2 --tor \
   --pool <pool> \
   --program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1 \
   --memo-service https://pay.shinjukustaition.com \
@@ -365,18 +365,18 @@ these flags to the `mcp` command. A flag wins over `config.json`.
 
 | Flag | |
 |---|---|
-| `--max-payment <atomic>` | Optional. The most one payment may cost. Setup records it. Default: no limit. |
-| `--max-session <atomic>` | Optional. The most this server process may pay in total. When you set both, it must be at least `--max-payment`. Setup records it. Default: no limit. |
-| `--max-per-host-day <atomic>` | Optional. The most one seller host may receive in 24 hours. |
+| `--max-payment <usdc>` | Optional. The most one payment may cost, in USDC (`0.05` = 5 cents). Setup records it. Default: no limit. |
+| `--max-session <usdc>` | Optional. The most this wallet may pay in any 24 hours, from every MCP process together. When you set both, it must be at least `--max-payment`. Setup records it. Default: no limit. |
+| `--max-per-host-day <usdc>` | Optional. The most one seller host may receive in 24 hours, in USDC. |
 | `--allow-host <host>` | Optional, repeatable. Pay only these seller hosts. |
 | `--no-shield` | Optional. Turns `wallet_shield` off. It is on with `--proof-tools`. |
-| `--max-shield <atomic>` | Optional. The most one shield call may move, and the most this process may shield in total. Without it, no cap beyond the balance. |
+| `--max-shield <usdc>` | Optional. The most one shield call may move, and the most this wallet may shield in any 24 hours, in USDC. Without it, no cap beyond the balance. |
 | `--allow-shield` | Accepted for older configs. `wallet_shield` is on without it. |
 | `--exit-proof-tools <file>`, `--profile <file>` | Optional. Turn `wallet_unshield` on (with `--proof-tools`). |
 | `--unshield-to <address>` | Optional, repeatable. These addresses receive with no confirmation. Any other address needs your confirmation in the MCP client. The wallet's own key is refused: the server does not start when you name it here. |
 | `--ready-pockets <0-5>` | Accepted for older configs and ignored. Standard `exact` sellers are paid through Shinjuku, and the wallet fills no pocket. |
 | `--no-auto-pockets` | Accepted for older configs. It also stops the idle return of old pockets to the shielded balance. |
-| `--max-unshield <atomic>` | Optional. The most one unshield call may move, and the most this process may unshield in total. Without it, a send you confirm can move the whole shielded balance. |
+| `--max-unshield <usdc>` | Optional. The most one unshield call may move, and the most this wallet may unshield in any 24 hours, in USDC. Without it, a send you confirm can move the whole shielded balance. |
 | `--no-tor` | Optional. This run does not use the Tor that setup recorded. |
 | `--tor` | Optional. Every request goes through Tor; our facilitator is reached over its onion service. Needs Tor with `HTTPTunnelPort 127.0.0.1:9080` in `torrc`. See Privacy modes. |
 | `--rpc-file <file>` | Optional. Your own Solana RPC URL. Without it, reads go to our relay, which sees which accounts the wallet reads. |
@@ -441,8 +441,8 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `667ac38b` (npm
-0.3.53). Float pay paid two stock sellers on the PayAI facilitator on
+Live on Solana mainnet. The current wallet release is `285d2c1d` (npm
+0.3.54). Float pay paid two stock sellers on the PayAI facilitator on
 production on 2026-10-11, 0.10 USDC and 1.50 USDC, and a stock seller on our
 own facilitator, 0.01 USDC twice: the transactions are in
 [proof.md](https://github.com/ShinjukuStaition/shinjuku-shielded/blob/main/docs/proof.md).

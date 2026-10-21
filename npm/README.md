@@ -32,7 +32,7 @@ Claude Desktop (`claude_desktop_config.json`) or Cursor (`~/.cursor/mcp.json`):
 
 On native Windows, if the host cannot find `npx`, use `"command": "cmd"` and
 put `"/c", "npx"` at the start of `args`. To pin the version, write
-`shinjuku-shielded@0.3.53`.
+`shinjuku-shielded@0.3.54`.
 
 ## Add funds
 
@@ -45,14 +45,14 @@ SOL. The USDC becomes private by itself while the MCP server runs.
 
 Spending limits are optional and off by default: only the balance bounds a
 payment. To set them, give setup `--max-payment`, `--max-session`, or
-`--max-total` (atomic USDC: `50000` = 0.05 USDC).
+`--max-cumulative`, in USDC (`0.05` = 5 cents).
 
 `x402_discover` finds sellers in public x402 listings, `x402_preview` shows
 the price, and `x402_pay` pays.
 
 ## Needs
 
-- Node.js 22 or later.
+- Node.js 22.21 or later, or Node.js 24 or later (a `--tor` run needs `NODE_USE_ENV_PROXY`, which Node.js 23 does not have).
 - Linux, or Windows with WSL. macOS is not supported: the provers are Linux
   programs.
 

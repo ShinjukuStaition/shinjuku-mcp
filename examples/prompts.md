@@ -41,7 +41,7 @@ The agent does what `next` says. Some codes that you can see:
 | Code | Why |
 |---|---|
 | `spend_payment_cap_exceeded` | The price is above the per-payment cap. Nothing was paid. Only you can raise a cap, at launch. |
-| `mcp_session_cap_exceeded` | This server process reached `--max-session`. |
+| `mcp_session_cap_exceeded` | This wallet reached its 24-hour limit `--max-session` (all MCP processes together). |
 | `mcp_cap_argument_above_launch_cap` | The agent asked for a cap above the launch cap. |
 | `mcp_tool_disabled` | The tool is off. `next` says which flag turns it on. |
 | `mcp_unshield_declined` | You did not confirm a send (decline, cancel, or 5 minutes with no answer). Nothing was signed. |

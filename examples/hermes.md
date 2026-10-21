@@ -1,7 +1,7 @@
 # Hermes Agent
 
 Hermes Agent starts Shinjuku Shielded as a stdio MCP server. You need
-Node.js 22 or later, on Linux or on Windows with WSL. macOS is not
+Node.js 22.21 or later (or Node.js 24 or later), on Linux or on Windows with WSL. macOS is not
 supported.
 
 First, run the setup in a terminal:

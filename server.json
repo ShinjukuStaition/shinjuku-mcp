@@ -3,7 +3,7 @@
   "name": "io.github.ShinjukuStaition/shinjuku-mcp",
   "title": "Shinjuku Shielded",
   "description": "Private x402 payments on Solana: shield, pay, and unshield USDC under caps you set.",
-  "version": "0.3.53",
+  "version": "0.3.54",
   "websiteUrl": "https://shinjukustaition.com",
   "repository": {
     "url": "https://github.com/ShinjukuStaition/shinjuku-mcp",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "shinjuku-shielded",
-      "version": "0.3.53",
+      "version": "0.3.54",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -29,17 +29,17 @@
         {
           "type": "named",
           "name": "--max-payment",
-          "description": "The most one payment may cost, in atomic USDC (50000 = 0.05 USDC). Optional (default: no limit); setup writes the caps you set to config.json.",
+          "description": "The most one payment may cost, in USDC (0.05 = 5 cents). Optional (default: no limit); setup writes the caps you set to config.json.",
           "format": "number",
-          "placeholder": "50000",
+          "placeholder": "0.05",
           "isRequired": false
         },
         {
           "type": "named",
           "name": "--max-session",
-          "description": "The most this server process may pay in total, in atomic USDC. Optional (default: no limit); setup writes the caps you set to config.json.",
+          "description": "The most this wallet may pay in any 24 hours, from every MCP process together, in USDC (0.2 = 20 cents). Optional (default: no limit); setup writes the caps you set to config.json.",
           "format": "number",
-          "placeholder": "200000",
+          "placeholder": "0.2",
           "isRequired": false
         },
         {
@@ -96,19 +96,19 @@
         {
           "type": "named",
           "name": "--max-unshield",
-          "description": "The most one wallet_unshield call, and this process in total, may send, in atomic USDC.",
+          "description": "The most one wallet_unshield call may send, and the most this wallet may send in any 24 hours, in USDC (1 = 1 USDC).",
           "format": "number"
         },
         {
           "type": "named",
           "name": "--max-shield",
-          "description": "The most one wallet_shield call, and this process in total, may move, in atomic USDC.",
+          "description": "The most one wallet_shield deposit may move, and the most this wallet may shield in any 24 hours, in USDC (1 = 1 USDC).",
           "format": "number"
         },
         {
           "type": "named",
           "name": "--max-per-host-day",
-          "description": "The most one seller host may receive in 24 hours, in atomic USDC.",
+          "description": "The most one seller host may receive in 24 hours, in USDC.",
           "format": "number"
         },
         {

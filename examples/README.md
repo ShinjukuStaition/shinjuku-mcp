@@ -14,7 +14,7 @@ x402 facilitator on Solana, inside your agent.
 | [prompts.md](prompts.md) | 13 plain requests, the tool that each one calls, and the shape of the answer. |
 
 All examples run `npx -y shinjuku-shielded mcp`: the newest npm version
-(0.3.53, wallet release `667ac38b`). Write `shinjuku-shielded@0.3.53` to
+(0.3.54, wallet release `285d2c1d`). Write `shinjuku-shielded@0.3.54` to
 pin it. The commands and flags come from `help mcp` and `help setup` of that
 release.
 
@@ -30,9 +30,9 @@ release.
 ## First 10 minutes
 
 Each step shows what you do, or what you say to the agent and the tool that
-the agent calls. Amounts are in atomic USDC: 1000000 = 1 USDC.
+the agent calls. Tool arguments are in atomic USDC: 1000000 = 1 USDC. Flags you type (setup, mcp) are in USDC: 0.05 = 5 cents.
 
-### 1. Install Node.js 22 or later
+### 1. Install Node.js 22.21 or later (or Node.js 24 or later)
 
 ```sh
 node --version
@@ -58,7 +58,7 @@ Setup writes to `~/.carbon-shielded-wallet`:
   offline places, then delete it from this machine.
 - No spending limit by default: only the balance bounds a payment. To set
   limits, run the setup with `--max-payment`, `--max-session`, and
-  `--max-total` (`npx -y shinjuku-shielded help setup`).
+  `--max-cumulative`, in USDC (`npx -y shinjuku-shielded help setup`).
 
 ### 3. Add the server to your agent
 

@@ -5,6 +5,42 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-21: wallet release `285d2c1d`, npm `shinjuku-shielded@0.3.54`
+
+- Money flags take USDC. Write `--max-payment 0.05` for 5 cents and
+  `--max-session 2` for 2 USDC. `setup` and the other commands refuse a
+  whole number from 1000 up (the old atomic form) and print its USDC form.
+  `mcp` still reads an old launch line as atomic, and `wallet_balance` tells
+  you how to write it in USDC. Tool arguments stay atomic (`amount_atomic`).
+- `--max-session` is the most this wallet pays in any 24 hours, from every
+  MCP process together. `--max-shield` and `--max-unshield` count 24 hours
+  the same way.
+- "Send all my USDC" in one call. When your balance sits in more than one
+  part, `wallet_unshield` joins the parts and sends in the same call if your
+  host shows progress (our test: 0.02 USDC in 2 parts, 137 s to "Sent",
+  about 55 s of it a random privacy wait). Without progress, the answer
+  says how many more asks it needs and when.
+- A send the wallet keeps for later says when it tries again and why. It
+  stops after 8 tries in about 90 minutes, and says so.
+- Clear refusals. A send above your balance, from an empty balance, or while
+  a deposit is still on its way says the numbers, the amount that works now,
+  and when to ask again. `to` may be left out when exactly one
+  `--unshield-to` address is set.
+- `wallet_receipts`: a send that did not go says why (`not_sent` with
+  `reason`); a sent row's `at` is the time it left, and `startedAt` the
+  start.
+- A wallet that received payments but never shielded can now unshield one
+  received payment directly.
+- Every money record survives a crash in the middle of a write.
+- `x402_pay` no longer says "The page was free" for a page that refused the
+  request (for example HTTP 403 from a seller that blocks Tor exits). It
+  says the status and that nothing was paid.
+- `--tor` runs race four onions of our history service and keep the first
+  that answers. A Node.js without the proxy support that `--tor` needs is
+  refused at the start, before anything is sent.
+  Node.js 22.21 or later, or Node.js 24 or later.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-20: wallet release `667ac38b`, npm `shinjuku-shielded@0.3.53`
 
 - Simpler start. `npx -y shinjuku-shielded setup` prints the host line to

@@ -35,7 +35,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 const shinjuku = await createMCPClient({
   transport: new Experimental_StdioMCPTransport({
     command: "npx",
-    args: ["-y", "shinjuku-shielded", "mcp", "--max-payment", "50000"],
+    args: ["-y", "shinjuku-shielded", "mcp", "--max-payment", "0.05"],
   }),
 });
 
@@ -58,8 +58,8 @@ try {
   give the model only some of them, pick them by name, for example
   `{ x402_pay: tools.x402_pay, wallet_balance: tools.wallet_balance }`.
 - Every flag of `help mcp` goes in `args`. The caps (`--max-payment`,
-  `--max-session`, `--max-unshield`) are optional and in atomic USDC:
-  `50000` = 0.05 USDC. With no cap there is no limit.
+  `--max-session`, `--max-unshield`) are optional and in USDC:
+  `0.05` = 5 cents. With no cap there is no limit.
 - Windows: if Node cannot find `npx`, use `command: "cmd"` and put `"/c",
   "npx"` at the start of `args`.
 - Close the client when you are done. The server holds the wallet lease while

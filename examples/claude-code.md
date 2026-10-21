@@ -1,7 +1,7 @@
 # Claude Code
 
 Set up Shinjuku Shielded and add it to Claude Code with one command. You
-need Node.js 22 or later, on Linux or on Windows with WSL. macOS is not
+need Node.js 22.21 or later (or Node.js 24 or later), on Linux or on Windows with WSL. macOS is not
 supported.
 
 ```sh
@@ -28,7 +28,7 @@ The parts of the command:
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.53` to pin it. |
+| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.54` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
 On native Windows, the printed command puts `cmd /c` before `npx`. With a
@@ -73,14 +73,14 @@ both modes.
 
 Caps are optional. By default there is no limit: only the balance bounds a
 payment. Setup records the caps you set in `config.json`. To set them, give
-them to the first setup (in atomic USDC: `50000` = 0.05 USDC):
+them to the first setup, in USDC (`0.05` = 5 cents):
 
 ```sh
-npx -y shinjuku-shielded setup --max-payment 100000 --max-session 2000000 --max-total 50000000
+npx -y shinjuku-shielded setup --max-payment 0.1 --max-session 2 --max-cumulative 50
 ```
 
 When setup creates the wallet, it also writes `--max-payment` (the most one
-payment may cost) and `--max-total` (the most all payments may cost
+payment may cost) and `--max-cumulative` (the most all payments may cost
 together) into the wallet file. A later setup never changes the wallet file:
 
 - It records new caps in `config.json`, and `mcp` uses them as its session
@@ -99,23 +99,23 @@ Or add a flag to the server command. A flag wins over `config.json`:
 
 | Flag | What it does |
 |---|---|
-| `--max-payment <atomic>` | Optional. The most one payment to a seller may cost. A tool call can only lower it. Default: no limit. |
-| `--max-session <atomic>` | Optional. The most this server process may pay in total. When you set both, it must be at least `--max-payment` (`mcp_cap_invalid`). Default: no limit. |
-| `--max-per-host-day <atomic>` | The most one seller host may receive in 24 hours. |
+| `--max-payment <usdc>` | Optional. The most one payment to a seller may cost, in USDC (`0.05` = 5 cents). A tool call can only lower it. Default: no limit. |
+| `--max-session <usdc>` | Optional. The most this wallet may pay in any 24 hours, from every MCP process together. When you set both, it must be at least `--max-payment` (`mcp_cap_invalid`). Default: no limit. |
+| `--max-per-host-day <usdc>` | The most one seller host may receive in 24 hours, in USDC. |
 | `--allow-host <host>` | Pay only this seller host. Repeat it for more hosts. |
 | `--ready-pockets <0-5>` | Accepted for older configs and ignored. Standard `exact` sellers are paid through Shinjuku, and no pocket is filled. |
 | `--no-auto-pockets` | Accepted for older configs. It also stops the idle return of old pockets to the shielded balance. |
-| `--max-shield <atomic>` | The most one `wallet_shield` call, and this process in total, may move. |
+| `--max-shield <usdc>` | The most one `wallet_shield` call may move, and the most this wallet may shield in any 24 hours, in USDC. |
 | `--no-shield` | Turns `wallet_shield` off. |
 | `--unshield-to <address>` | A public Solana address that `wallet_unshield` sends to with no question. Repeat it for more. The wallet's own key is refused. |
-| `--max-unshield <atomic>` | The most one `wallet_unshield` call, and this process in total, may send. Without it, a send that you confirm can move the whole shielded balance. |
+| `--max-unshield <usdc>` | The most one `wallet_unshield` call may send, and the most this wallet may send in any 24 hours, in USDC. Without it, a send that you confirm can move the whole shielded balance. |
 | `--no-tor` | This run does not use the Tor that setup recorded. |
 | `--rpc-file <file>` | Your own Solana RPC URL on the first line of a private file. Without it, reads go through our relay, which sees which accounts the wallet reads. |
 
 For example:
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp --max-per-host-day 500000
+claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp --max-per-host-day 0.5
 ```
 
 `npx -y shinjuku-shielded help mcp` and `npx -y shinjuku-shielded help setup`
