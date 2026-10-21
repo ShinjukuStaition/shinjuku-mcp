@@ -5,6 +5,26 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-21: wallet release `70ff655b`, npm `shinjuku-shielded@0.3.55`
+
+- `wallet_balance` and `x402_preview` show `network`: `tor`, `proxy` or
+  `direct`, with one line that says who can see your IP address. Your agent
+  can now tell you that your payments go through Tor.
+- `setup --tor` records Tor for the MCP, the same as `--prefer-tor`. The
+  proof-tools download prints its progress every 10 s, and a setup error
+  prints the whole command that works.
+- Added funds that landed on chain show as `landingAtomic` until the wallet
+  counts them, and `wallet_balance` finishes a sent deposit within 20 s of
+  the call. This helps hosts that end the MCP server after each answer.
+- The add-funds wait says when to ask again, and that the funds become
+  private within about 1 minute of that request.
+- `wallet_transfer_token` answers name the address you gave, say that the
+  steps continue at your next request if the chat ends, and say that the
+  address already has a USDC account. A part whose time passed while the
+  wallet did not run waits again from the next start; the answer says so.
+- Terminal texts are ASCII only, so a Windows console shows them correctly.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-21: wallet release `285d2c1d`, npm `shinjuku-shielded@0.3.54`
 
 - Money flags take USDC. Write `--max-payment 0.05` for 5 cents and
