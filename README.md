@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/f7b2fe09/shinjuku-wallet.mjs
-echo "f7b2fe093da4904a611ef95fb52e7888ad1f23b2f41681474d1bd9bef75a71f8  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/f1563e53/shinjuku-wallet.mjs
+echo "f1563e53fc8d137fe44e6fb65d7247fa157b3066b7129b41ef9f99d2e3061ba7  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.64`.
+`shinjuku-shielded@0.3.65`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,13 +447,13 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `f7b2fe09` (npm
-0.3.64, 2026-10-22). New in 0.3.64:
+Live on Solana mainnet. The current wallet release is `f1563e53` (npm
+0.3.65, 2026-10-22). New in 0.3.65:
 
-- Before a payment's proof, the wallet checks its saved check of our program
-  on the chain from the pool read it already makes, not by one more round
-  trip. Over Tor that round trip took 0.3 to 0.8 seconds, and in 13 of 16
-  measured first payments the proof waited for it.
+- When the history server is a moment behind the chain right after a
+  payment, the wallet now keeps the history page that is already on its way
+  instead of cutting it and asking for it again. In one test on 0.3.64 a
+  second request right after the first payment waited 38 seconds for that.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
