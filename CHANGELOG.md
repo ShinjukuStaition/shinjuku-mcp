@@ -5,6 +5,23 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `4d9b6de2`, npm `shinjuku-shielded@0.3.67`
+
+- Over Tor, a check read of one of your own past transactions that has no
+  good answer after 4 seconds is sent once more on another Tor circuit, and
+  the first good answer is used. In one test on 0.3.65 two such reads
+  stalled for 20 seconds each on one slow circuit.
+- When two steps of one wallet process need the same full check of the
+  program's history, the second step uses the result of the check that is
+  already running and verifies it with its own reads, instead of a second
+  full check. It waits for that check for 45 seconds at most.
+- When neither main facilitator onion answers, the two spare onions join
+  after 8 seconds, not 15 seconds.
+- The wallet no longer uses one history onion that did not answer new
+  clients. Three history onions remain.
+- Each step of an unshield now writes its time to the local log.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `402e7c36`, npm `shinjuku-shielded@0.3.66`
 
 - The wallet downloads the pool's history page once at a time. When a
