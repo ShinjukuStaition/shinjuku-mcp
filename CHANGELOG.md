@@ -5,6 +5,18 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `ad143a47`, npm `shinjuku-shielded@0.3.60`
+
+- Over Tor, the facilitator also answers on two spare onion addresses. When
+  neither main onion address answers in 15 seconds, the wallet tries the
+  spares too, and one line says so. Before, setup could stop after
+  100 seconds when Tor could not look up the two main addresses.
+- When `wallet_balance` finishes your deposit and the new balance is not
+  counted yet, it says that the USDC landed and is being counted (ask again
+  in about 30 seconds). Before, it said that the balance is not known yet
+  and to ask again in a minute.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `a18f4dcc`, npm `shinjuku-shielded@0.3.59`
 
 - When `wallet_transfer_token` finishes, the answer says that no tool of
