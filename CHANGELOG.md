@@ -5,6 +5,24 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `780f6896`, npm `shinjuku-shielded@0.3.58`
+
+- `setup --tor` on a Tor that has just started: setup tries the release
+  document again for up to 110 seconds, shows a progress line every
+  10 seconds, and says that Tor has no path to the onion service yet when
+  nothing answers. Before, it stopped after about 50 seconds with "no answer".
+- Over Tor, a request to the facilitator waits for the fastest onion address
+  for at most 15 seconds. Then it tries each onion address in turn. It never
+  goes to the clearnet address.
+- `setup --tor --proxy http://127.0.0.1:<port>` keeps that port in
+  `config.json` (`torTunnel`), and `mcp` uses it.
+- When the wallet cannot read the receipt of a deposit that landed, it looks
+  for the deposit in the pool history over the history connection (its onion
+  under Tor). Each look stops after 120 seconds, and the next status call
+  tries again. Before, one look could take many minutes (19 minutes in our
+  test).
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `a5a9b7dd`, npm `shinjuku-shielded@0.3.57`
 
 - `wallet_transfer_token` closes the sold token's empty account on the
