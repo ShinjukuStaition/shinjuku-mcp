@@ -5,6 +5,22 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `f3c65200`, npm `shinjuku-shielded@0.3.63`
+
+- The setup line and every host entry are now
+  `npx -y --no-audit --no-fund shinjuku-shielded ...`. Without the two flags,
+  npx sends npm's audit request when it installs a new version, and on
+  2026-10-22 that request hung for about 5 minutes. `setup --add-to` replaces
+  an entry that an older setup wrote.
+- Over Tor, a pool history request that gets no answer moves to the next
+  history onion, and a history source that answers nothing for 60 seconds
+  ends the load with a plain error, not a wait of several minutes.
+- Over Tor, a long-running MCP can again move to a new circuit after a stall
+  once the new circuit has answered.
+- The add-funds answer says to ask once more about 1 minute after the random
+  privacy wait, for hosts that close the MCP after each answer.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `d9319f9c`, npm `shinjuku-shielded@0.3.62`
 
 - Over Tor, a tool that needs the private pocket now waits for the pool's
