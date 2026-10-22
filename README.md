@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/4d9b6de2/shinjuku-wallet.mjs
-echo "4d9b6de27c68f9fb53c414d063679fde5a62eb26a2a46f13bebfde9a4d74b042  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/3d64f9b4/shinjuku-wallet.mjs
+echo "3d64f9b47b1139c42d3a2ff22642951710beeb669bf633b934b31419e94cc843  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.67`.
+`shinjuku-shielded@0.3.68`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,22 +447,14 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `4d9b6de2` (npm
-0.3.67, 2026-10-22). New in 0.3.67:
+Live on Solana mainnet. The current wallet release is `3d64f9b4` (npm
+0.3.68, 2026-10-22). New in 0.3.68:
 
-- Over Tor, a check read of one of your own past transactions that has no
-  good answer after 4 seconds is sent once more on another Tor circuit, and
-  the first good answer is used. In one test on 0.3.65 two such reads
-  stalled for 20 seconds each on one slow circuit.
-- When two steps of one wallet process need the same full check of the
-  program's history, the second step uses the result of the check that is
-  already running and verifies it with its own reads, instead of a second
-  full check. It waits for that check for 45 seconds at most.
-- When neither main facilitator onion answers, the two spare onions join
-  after 8 seconds, not 15 seconds.
-- The wallet no longer uses one history onion that did not answer new
-  clients. Three history onions remain.
-- Each step of an unshield now writes its time to the local log.
+- An unshield, a merge or a pocket fill no longer gets refused by its own
+  check when the pool adds new records while its quote is still valid. The
+  wallet now checks a quote against the same records the facilitator and the
+  program accept. In one case a payment was refused 12 times this way until
+  its quote ran out.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
