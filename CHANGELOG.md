@@ -5,6 +5,15 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `402e7c36`, npm `shinjuku-shielded@0.3.66`
+
+- The wallet downloads the pool's history page once at a time. When a
+  payment needs that page while an earlier read of it is still on its way,
+  the payment uses that read instead of a second download on the same
+  connection. In one test on 0.3.65 a first payment after the pool moved
+  took 85 seconds because two downloads of the page slowed each other.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `f1563e53`, npm `shinjuku-shielded@0.3.65`
 
 - When the history server is a moment behind the chain right after a
