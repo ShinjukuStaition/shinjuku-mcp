@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/ff6f25bc/shinjuku-wallet.mjs
-echo "ff6f25bccfd2a50929a8dc82137b4fb42172790f9d71a6c07f166bda3e052d22  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/bf5ad0c1/shinjuku-wallet.mjs
+echo "bf5ad0c16095110ed0258b16525e55dc743dbaa36b6ba0e0738d4ab9c185ce90  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.73`.
+`shinjuku-shielded@0.3.74`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,13 +447,15 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `ff6f25bc` (npm
-0.3.73, 2026-10-22). New in 0.3.73:
+Live on Solana mainnet. The current wallet release is `bf5ad0c1` (npm
+0.3.74, 2026-10-22). New in 0.3.74:
 
-- A wallet that checked the pool history before needs only the newest part
-  of it: it reads one small page beside the full list and stops waiting for
-  the full list when the small page and its saved records pass every check.
-  Every wallet sends the same two requests and reads both to the end.
+- An unshield (a send to a normal Solana address) answers as soon as the
+  transfer is final on chain, with its transaction. The wallet then checks
+  the pool history by itself; there is nothing to do. If an MCP ends before
+  that check ends, the next MCP finishes it.
+- With `--tor`, a new wallet first tries the two facilitator onion addresses
+  that the most Tor directory relays carry. The other two stay as spares.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
