@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/3d64f9b4/shinjuku-wallet.mjs
-echo "3d64f9b47b1139c42d3a2ff22642951710beeb669bf633b934b31419e94cc843  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/c6cbe0a6/shinjuku-wallet.mjs
+echo "c6cbe0a61037f0a435f7ce448d6ff6fc6a4a97a9b7336fea33c9e7a1e56c11e7  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.68`.
+`shinjuku-shielded@0.3.69`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,14 +447,15 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `3d64f9b4` (npm
-0.3.68, 2026-10-22). New in 0.3.68:
+Live on Solana mainnet. The current wallet release is `c6cbe0a6` (npm
+0.3.69, 2026-10-22). New in 0.3.69:
 
-- An unshield, a merge or a pocket fill no longer gets refused by its own
-  check when the pool adds new records while its quote is still valid. The
-  wallet now checks a quote against the same records the facilitator and the
-  program accept. In one case a payment was refused 12 times this way until
-  its quote ran out.
+- Setup now checks the pool history and the program while it downloads the
+  proof tools, so the first balance after a deposit does not have to do that
+  check again. Setup never waits for it, and nothing it starts runs on after
+  setup ends. With `--tor` it uses its own Tor circuit, never a direct one.
+- When the history service has no record newer than the wallet's last one,
+  the wallet asks once more after 2 seconds before it reads the whole history.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
