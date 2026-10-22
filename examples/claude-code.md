@@ -5,7 +5,7 @@ need Node.js 22.21 or later (or Node.js 24 or later), on Linux or on Windows wit
 supported.
 
 ```sh
-npx -y shinjuku-shielded setup --add-to claude-code
+npx -y --no-audit --no-fund shinjuku-shielded setup --add-to claude-code
 ```
 
 Setup makes the wallet, a random passphrase file, the checked proof tools
@@ -18,7 +18,7 @@ Code.
 Without `--add-to`, setup prints the command. Run it once:
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
+claude mcp add --scope user shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shielded mcp
 ```
 
 The parts of the command:
@@ -28,7 +28,7 @@ The parts of the command:
 | `claude mcp add shinjuku-shielded` | Adds a stdio MCP server named `shinjuku-shielded` to Claude Code. |
 | `--scope user` | Makes the server available in all your projects. Without it, the scope is `local` (this project only). |
 | `--` | Ends the Claude Code options. All after it is the server command. |
-| `npx -y shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.54` to pin it. |
+| `npx -y --no-audit --no-fund shinjuku-shielded` | Gets and runs the npm package (the newest version). Write `shinjuku-shielded@0.3.54` to pin it. |
 | `mcp` | The wallet command that runs the MCP server on stdio. |
 
 On native Windows, the printed command puts `cmd /c` before `npx`. With a
@@ -52,7 +52,7 @@ the caps.
 ## Tor
 
 ```sh
-npx -y shinjuku-shielded setup --prefer-tor
+npx -y --no-audit --no-fund shinjuku-shielded setup --prefer-tor
 ```
 
 `--prefer-tor` records Tor in `config.json`. The server then sends every
@@ -76,7 +76,7 @@ payment. Setup records the caps you set in `config.json`. To set them, give
 them to the first setup, in USDC (`0.05` = 5 cents):
 
 ```sh
-npx -y shinjuku-shielded setup --max-payment 0.1 --max-session 2 --max-cumulative 50
+npx -y --no-audit --no-fund shinjuku-shielded setup --max-payment 0.1 --max-session 2 --max-cumulative 50
 ```
 
 When setup creates the wallet, it also writes `--max-payment` (the most one
@@ -89,9 +89,9 @@ together) into the wallet file. A later setup never changes the wallet file:
 - A payment above the wallet file's own per-payment limit is still refused,
   and the lifetime total stays as it was created.
 - To show, change, or remove those two limits, run
-  `npx -y shinjuku-shielded limits --pool <pool>` with `--max-payment` or
+  `npx -y --no-audit --no-fund shinjuku-shielded limits --pool <pool>` with `--max-payment` or
   `--max-cumulative` (`none` removes a limit;
-  `npx -y shinjuku-shielded help limits`).
+  `npx -y --no-audit --no-fund shinjuku-shielded help limits`).
 - Money that you send to yourself or others with `wallet_unshield` does not
   count against the lifetime total.
 
@@ -115,10 +115,10 @@ Or add a flag to the server command. A flag wins over `config.json`:
 For example:
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp --max-per-host-day 0.5
+claude mcp add --scope user shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shielded mcp --max-per-host-day 0.5
 ```
 
-`npx -y shinjuku-shielded help mcp` and `npx -y shinjuku-shielded help setup`
+`npx -y --no-audit --no-fund shinjuku-shielded help mcp` and `npx -y --no-audit --no-fund shinjuku-shielded help setup`
 print the full flag lists on your machine.
 
 ## A wallet from before 0.2.0
@@ -129,9 +129,9 @@ your wallet folder and your passphrase file. It keeps your wallet and writes
 
 ```sh
 SHIELDED_WALLET_HOME=/home/you/.shielded-wallet \
-  npx -y shinjuku-shielded setup --passphrase-file /home/you/shinjuku/passphrase.txt
+  npx -y --no-audit --no-fund shinjuku-shielded setup --passphrase-file /home/you/shinjuku/passphrase.txt
 claude mcp add --scope user -e SHIELDED_WALLET_HOME=/home/you/.shielded-wallet \
-  shinjuku-shielded -- npx -y shinjuku-shielded mcp
+  shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shielded mcp
 ```
 
 Or give every flag yourself, as in the
@@ -160,7 +160,7 @@ Or give every flag yourself, as in the
    again after 60 s.
 
 If `shinjuku-shielded` shows as failed in `/mcp`, run
-`npx -y shinjuku-shielded mcp` in a terminal. The server writes every log
+`npx -y --no-audit --no-fund shinjuku-shielded mcp` in a terminal. The server writes every log
 line to stderr, and an error names what is wrong.
 
 ## Sends to a new address

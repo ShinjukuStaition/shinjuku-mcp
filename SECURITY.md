@@ -12,7 +12,7 @@ recovery file, or a passphrase in a report. We never ask for them.
 
 Please include:
 
-- the wallet release (`npx -y shinjuku-shielded help` and the npm version, or
+- the wallet release (`npx -y --no-audit --no-fund shinjuku-shielded help` and the npm version, or
   the SHA-256 of `shinjuku-wallet.mjs`),
 - your MCP client and its version,
 - the steps that show the problem, and what you expected.
@@ -20,7 +20,7 @@ Please include:
 ## In scope
 
 The behavior of the MCP server (`shinjuku-wallet mcp`, also run as
-`npx shinjuku-shielded mcp`), for example:
+`npx -y --no-audit --no-fund shinjuku-shielded mcp`), for example:
 
 - a payment above `--max-payment`, `--max-session`, `--max-per-host-day`, or
   outside `--allow-host`;

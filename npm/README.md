@@ -7,7 +7,7 @@ local MCP server (stdio) for your agent. Your keys never leave your machine.
 ## Set up
 
 ```sh
-npx -y shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shielded setup
 ```
 
 Setup makes the wallet on this machine, a private passphrase file, and the
@@ -21,13 +21,13 @@ server to that host's config.
 Claude Code:
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
+claude mcp add --scope user shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shielded mcp
 ```
 
 Claude Desktop (`claude_desktop_config.json`) or Cursor (`~/.cursor/mcp.json`):
 
 ```json
-{ "mcpServers": { "shinjuku-shielded": { "command": "npx", "args": ["-y", "shinjuku-shielded", "mcp"] } } }
+{ "mcpServers": { "shinjuku-shielded": { "command": "npx", "args": ["-y", "--no-audit", "--no-fund", "shinjuku-shielded", "mcp"] } } }
 ```
 
 On native Windows, if the host cannot find `npx`, use `"command": "cmd"` and

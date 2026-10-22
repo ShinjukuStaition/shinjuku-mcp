@@ -7,7 +7,7 @@ examples, so you do not need another package.
 ## 1. Set up the wallet in a terminal
 
 ```sh
-npx -y shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shielded setup
 ```
 
 Setup creates the wallet only after you confirm it. An AI SDK app does not
@@ -35,7 +35,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 const shinjuku = await createMCPClient({
   transport: new Experimental_StdioMCPTransport({
     command: "npx",
-    args: ["-y", "shinjuku-shielded", "mcp", "--max-payment", "0.05"],
+    args: ["-y", "--no-audit", "--no-fund", "shinjuku-shielded", "mcp", "--max-payment", "0.05"],
   }),
 });
 

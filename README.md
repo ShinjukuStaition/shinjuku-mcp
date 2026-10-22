@@ -21,9 +21,12 @@ set.
   it. We never run it, and we never hold your money.
 - **Shielded payments.** Your agent pays from a shielded balance. Add `--tor`
   and no server sees your IP.
-- **One command to set up.** `npx -y shinjuku-shielded setup` makes the
+- **One command to set up.** `npx -y --no-audit --no-fund shinjuku-shielded setup` makes the
   wallet, a private passphrase file, and the checked proof tools, and writes
-  `config.json`. Then your agent host starts `npx -y shinjuku-shielded mcp`.
+  `config.json`. Then your agent host starts `npx -y --no-audit --no-fund shinjuku-shielded mcp`.
+  `--no-audit --no-fund` stop npx from asking npm's audit and funding
+  services when it installs a new version. Once, that request held the start for
+  5 minutes.
 - **Add funds from 0.01 USDC.** Ask your agent to add funds.
   `wallet_add_funds` gives a one-time address. Send USDC to it from any
   wallet or exchange, and it becomes private by itself.
@@ -78,7 +81,7 @@ On a machine with no wallet, the server starts in setup mode.
 
 | Tool | What it does |
 |---|---|
-| `shinjuku_setup` | Asks you to confirm in your MCP client that it may create a Shinjuku Shielded wallet on this machine, and shows the caps. Then it runs the setup and switches the same server to the wallet tools. It never asks for a secret. A client that cannot ask is told to run `npx -y shinjuku-shielded setup` in a terminal. |
+| `shinjuku_setup` | Asks you to confirm in your MCP client that it may create a Shinjuku Shielded wallet on this machine, and shows the caps. Then it runs the setup and switches the same server to the wallet tools. It never asks for a secret. A client that cannot ask is told to run `npx -y --no-audit --no-fund shinjuku-shielded setup` in a terminal. |
 | `wallet_status` | Says whether the wallet is set up, and what to do next. |
 
 In setup mode, every money tool answers `wallet_not_set_up` and does
@@ -178,13 +181,13 @@ pay again.
 You need Node.js 22.21 or later (or Node.js 24 or later), on Linux, or on Windows with WSL. macOS is not
 supported: the provers are Linux programs.
 
-To update, run `npx -y shinjuku-shielded@latest setup` once; your wallet, its
+To update, run `npx -y --no-audit --no-fund shinjuku-shielded@latest setup` once; your wallet, its
 address, and its balance stay the same.
 
 ### 1. Run the setup in a terminal
 
 ```sh
-npx -y shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shielded setup
 ```
 
 It asks for the caps (Enter keeps the default) and Tor. `--yes` asks
@@ -231,7 +234,7 @@ If you gave `--add-to`, this step is done. Setup also prints these lines.
 Claude Code:
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp
+claude mcp add --scope user shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shielded mcp
 ```
 
 On native Windows, the line that setup prints puts `cmd /c` before `npx`.
@@ -246,7 +249,7 @@ and other JSON-config hosts:
   "mcpServers": {
     "shinjuku-shielded": {
       "command": "npx",
-      "args": ["-y", "shinjuku-shielded", "mcp"]
+      "args": ["-y", "--no-audit", "--no-fund", "shinjuku-shielded", "mcp"]
     }
   }
 }
@@ -260,9 +263,9 @@ client asks you to confirm: create a Shinjuku Shielded wallet on this
 machine. Accept, and the setup runs (with the proof-tool download of about
 191 MB). Then the same server switches to the wallet tools. You do not
 restart it. A client that cannot ask is told to run
-`npx -y shinjuku-shielded setup` in a terminal.
+`npx -y --no-audit --no-fund shinjuku-shielded setup` in a terminal.
 
-In a terminal, `npx -y shinjuku-shielded mcp` asks
+In a terminal, `npx -y --no-audit --no-fund shinjuku-shielded mcp` asks
 "Set up Shinjuku Shielded now? (y/n)".
 
 ### 3. Add funds
@@ -276,7 +279,7 @@ server runs: our relayer pays every fee.
 From an exchange, in a terminal, whole USDC only:
 
 ```sh
-npx -y shinjuku-shielded add-funds --route exchange --amount 2000000
+npx -y --no-audit --no-fund shinjuku-shielded add-funds --route exchange --amount 2000000
 ```
 
 It prints a one-time address. Withdraw exactly that amount of USDC (Solana
@@ -300,7 +303,7 @@ echo "285d2c1db3cfd9d8a5df47acc2c70e7e65816539c3f2ad216ede6a16358d762b  shinjuku
 node shinjuku-wallet.mjs setup
 ```
 
-With the file, replace `npx -y shinjuku-shielded` with
+With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
 `shinjuku-shielded@0.3.54`.
 
@@ -311,7 +314,7 @@ To give the flags yourself (for example, for a wallet that you made with
 `init` before 0.2.0):
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
+claude mcp add --scope user shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shielded mcp \
   --max-payment 0.05 --max-session 0.2 --tor \
   --pool <pool> \
   --program 8PYPw3FSFTMbvSneXdcoH6jNoN4VD23nHwPY2A2riUy1 \
@@ -324,7 +327,7 @@ claude mcp add --scope user shinjuku-shielded -- npx -y shinjuku-shielded mcp \
 
 With `--pool`, `--program` and `--memo-service` are required. Setup writes the pool, the program, and the
 facilitator into `config.json`: `<pool>` is the pool in your `config.json`.
-`npx -y shinjuku-shielded help mcp` prints every flag.
+`npx -y --no-audit --no-fund shinjuku-shielded help mcp` prints every flag.
 
 Use absolute paths: a host starts the server from its own folder. On Windows,
 write `C:/Users/you/...`. `--proof-tools` turns `wallet_shield` on.

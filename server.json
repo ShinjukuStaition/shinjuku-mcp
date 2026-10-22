@@ -16,6 +16,18 @@
       "identifier": "shinjuku-shielded",
       "version": "0.3.62",
       "runtimeHint": "npx",
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "--no-audit",
+          "description": "npx skips npm's audit request when it installs a new version (that request once held the start for 5 minutes)."
+        },
+        {
+          "type": "named",
+          "name": "--no-fund",
+          "description": "npx skips npm's funding message when it installs a new version."
+        }
+      ],
       "transport": {
         "type": "stdio"
       },

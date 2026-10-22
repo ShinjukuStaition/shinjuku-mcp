@@ -7,7 +7,7 @@ supported.
 First, run the setup in a terminal:
 
 ```sh
-npx -y shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shielded setup
 ```
 
 It makes the wallet, a random passphrase file, the checked proof tools
