@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/f3c65200/shinjuku-wallet.mjs
-echo "f3c652001435e22d3e54232fe742166dd8dd5ae183b92c1a24274c7a52ed137c  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/f7b2fe09/shinjuku-wallet.mjs
+echo "f7b2fe093da4904a611ef95fb52e7888ad1f23b2f41681474d1bd9bef75a71f8  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.63`.
+`shinjuku-shielded@0.3.64`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,19 +447,13 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `f3c65200` (npm
-0.3.63, 2026-10-22). New in 0.3.63:
+Live on Solana mainnet. The current wallet release is `f7b2fe09` (npm
+0.3.64, 2026-10-22). New in 0.3.64:
 
-- The setup line and every host entry are
-  `npx -y --no-audit --no-fund shinjuku-shielded ...`, so a first start
-  after a new version does not wait on npm's audit service.
-  `setup --add-to` replaces an entry that an older setup wrote.
-- Over Tor, a history request with no answer moves to the next history
-  onion, and a silent history source ends after 60 s with a plain error.
-- Over Tor, a long-running server can replace a stalled circuit again after
-  the new circuit answers.
-- The add-funds answer tells you to ask again about 1 minute after the
-  random privacy wait, for hosts that close the server after each answer.
+- Before a payment's proof, the wallet checks its saved check of our program
+  on the chain from the pool read it already makes, not by one more round
+  trip. Over Tor that round trip took 0.3 to 0.8 seconds, and in 13 of 16
+  measured first payments the proof waited for it.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
