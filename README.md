@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/f1563e53/shinjuku-wallet.mjs
-echo "f1563e53fc8d137fe44e6fb65d7247fa157b3066b7129b41ef9f99d2e3061ba7  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/402e7c36/shinjuku-wallet.mjs
+echo "402e7c3666bf4dfe147de8229872bdf611540526a15d5fdb690392c81b878b9d  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.65`.
+`shinjuku-shielded@0.3.66`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,13 +447,14 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `f1563e53` (npm
-0.3.65, 2026-10-22). New in 0.3.65:
+Live on Solana mainnet. The current wallet release is `402e7c36` (npm
+0.3.66, 2026-10-22). New in 0.3.66:
 
-- When the history server is a moment behind the chain right after a
-  payment, the wallet now keeps the history page that is already on its way
-  instead of cutting it and asking for it again. In one test on 0.3.64 a
-  second request right after the first payment waited 38 seconds for that.
+- The wallet downloads the pool's history page once at a time. When a
+  payment needs that page while an earlier read of it is still on its way,
+  the payment uses that read instead of a second download on the same
+  connection. In one test on 0.3.65 a first payment after the pool moved
+  took 85 seconds because two downloads of the page slowed each other.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
