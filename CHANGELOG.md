@@ -5,6 +5,21 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `a5a9b7dd`, npm `shinjuku-shielded@0.3.57`
+
+- `wallet_transfer_token` closes the sold token's empty account on the
+  wallet's own key before the private send starts, so its rent comes back
+  as SOL. The done answer names the SOL that stays on the key to pay the
+  fees of your next transfer.
+- `wallet_balance` finishes an add-funds deposit that an earlier, closed
+  process started but did not sign, and one whose wait has passed.
+- `wallet_balance` lists the other tokens on the wallet's own key by mint
+  (`ownKeyTokens`), so a token you sent for `wallet_transfer_token` shows
+  before the transfer.
+- The wallet builds a part of the payment proof from its saved history on a
+  second thread at start. We did not measure the first payment yet.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-21: wallet release `e18d1d95`, npm `shinjuku-shielded@0.3.56`
 
 - Less work inside the first payment after a start. The wallet folds its
