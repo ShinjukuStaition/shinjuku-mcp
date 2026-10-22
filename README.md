@@ -143,12 +143,12 @@ What it pays:
 - **Standard Solana `exact`, through Shinjuku (float pay).** For a seller on
   any facilitator (Coinbase CDP, PayAI, or any other), `x402_pay` pays us
   privately from your shielded balance: the seller's price plus a flat fee
-  (`feeAtomic`, 0.001 USDC on 2026-10-20). We pay the seller at once from our
+  (`feeAtomic`, 0.001 USDC on 2026-10-22). We pay the seller at once from our
   own shared float. The chain shows Shinjuku paying the seller, never your
   wallet. `max_payment_atomic` must cover price plus fee. The largest price
   that one request can pay is `largestAtomic` in
   `GET https://pay.shinjukustaition.com/api/x402/float/config` (10 USDC on
-  2026-10-20).
+  2026-10-22).
 - A retry with the same `request_id` never pays twice.
 
 Hidden amounts (scheme `confidential`, the V0b vault) are retired: the V0b
@@ -175,6 +175,7 @@ pay again.
 | The seller | Sees your IP. | Does not see your IP. |
 | Speed | Faster. | About 1-2 s slower per request. |
 | Needs | Nothing extra. | Tor with `HTTPTunnelPort 127.0.0.1:9080 IsolateDestAddr` in `torrc`. |
+| When a path is slow | - | The wallet races our onion addresses and keeps the first that answers. A facilitator onion that gives no answer in 15 s brings in two spare onions. A history request with no answer moves to the next history onion, and a history source that is silent for 60 s ends with a plain error instead of a long wait. A stalled Tor circuit is replaced. A facilitator request never falls back to our clearnet address. |
 
 ## Setup
 
@@ -193,12 +194,13 @@ npx -y --no-audit --no-fund shinjuku-shielded setup
 It asks for the caps (Enter keeps the default) and Tor. `--yes` asks
 nothing. `--add-to claude-code` (or `claude-desktop`, `cursor`) also adds
 the server to that host's config. In our runs, setup took about 10-16 s on a
-fast line, with the proof-tool download of about 191 MB. At the end it
-prints a summary, for example:
+fast line, with the proof-tool download of about 191 MB. Over Tor (`--tor`),
+it took 77 s in our last test (0.3.63, 2026-10-22). At the end it prints a
+summary, for example:
 
 ```
 Shinjuku Shielded is set up.
-  limits       no limit per payment, no limit per session, no limit for the life of the wallet
+  limits       no limit per payment, no limit in any 24 hours, no limit for the life of the wallet
   config       <home>/config.json
   passphrase   <home>/passphrase.txt (a new random passphrase; only you can read the file; it is never printed)
   proof tools  <home>/proof-tools/a9af32df (29 files downloaded, every hash checked)
@@ -279,7 +281,7 @@ server runs: our relayer pays every fee.
 From an exchange, in a terminal, whole USDC only:
 
 ```sh
-npx -y --no-audit --no-fund shinjuku-shielded add-funds --route exchange --amount 2000000
+npx -y --no-audit --no-fund shinjuku-shielded add-funds --route exchange --amount 2
 ```
 
 It prints a one-time address. Withdraw exactly that amount of USDC (Solana
@@ -298,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/285d2c1d/shinjuku-wallet.mjs
-echo "285d2c1db3cfd9d8a5df47acc2c70e7e65816539c3f2ad216ede6a16358d762b  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/f3c65200/shinjuku-wallet.mjs
+echo "f3c652001435e22d3e54232fe742166dd8dd5ae183b92c1a24274c7a52ed137c  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.54`.
+`shinjuku-shielded@0.3.63`.
 
 ### Advanced: flags instead of config.json
 
@@ -445,8 +447,23 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `285d2c1d` (npm
-0.3.54). Float pay paid two stock sellers on the PayAI facilitator on
+Live on Solana mainnet. The current wallet release is `f3c65200` (npm
+0.3.63, 2026-10-22). New in 0.3.63:
+
+- The setup line and every host entry are
+  `npx -y --no-audit --no-fund shinjuku-shielded ...`, so a first start
+  after a new version does not wait on npm's audit service.
+  `setup --add-to` replaces an entry that an older setup wrote.
+- Over Tor, a history request with no answer moves to the next history
+  onion, and a silent history source ends after 60 s with a plain error.
+- Over Tor, a long-running server can replace a stalled circuit again after
+  the new circuit answers.
+- The add-funds answer tells you to ask again about 1 minute after the
+  random privacy wait, for hosts that close the server after each answer.
+
+Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
+
+Float pay paid two stock sellers on the PayAI facilitator on
 production on 2026-10-11, 0.10 USDC and 1.50 USDC, and a stock seller on our
 own facilitator, 0.01 USDC twice: the transactions are in
 [proof.md](https://github.com/ShinjukuStaition/shinjuku-shielded/blob/main/docs/proof.md).
