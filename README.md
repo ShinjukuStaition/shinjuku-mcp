@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/c6cbe0a6/shinjuku-wallet.mjs
-echo "c6cbe0a61037f0a435f7ce448d6ff6fc6a4a97a9b7336fea33c9e7a1e56c11e7  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/ae568c80/shinjuku-wallet.mjs
+echo "ae568c800e9c2e6ccaf4cad6958cf133aa07469a93428827e679d3a1be89505f  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.69`.
+`shinjuku-shielded@0.3.70`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,15 +447,15 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `c6cbe0a6` (npm
-0.3.69, 2026-10-22). New in 0.3.69:
+Live on Solana mainnet. The current wallet release is `ae568c80` (npm
+0.3.70, 2026-10-22). New in 0.3.70:
 
-- Setup now checks the pool history and the program while it downloads the
-  proof tools, so the first balance after a deposit does not have to do that
-  check again. Setup never waits for it, and nothing it starts runs on after
-  setup ends. With `--tor` it uses its own Tor circuit, never a direct one.
-- When the history service has no record newer than the wallet's last one,
-  the wallet asks once more after 2 seconds before it reads the whole history.
+- A new MCP's first payment waits less for its history check. The check now
+  uses the pool read that the payment already makes, with the same checks, and
+  sends no extra reads of its own. If that read lacks a needed field, the
+  wallet reads as before.
+- A history snapshot's age now counts from its pool read, so a snapshot that
+  took long to load is not read again at once for the proof.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
