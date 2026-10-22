@@ -5,6 +5,14 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `d9319f9c`, npm `shinjuku-shielded@0.3.62`
+
+- Over Tor, a tool that needs the private pocket now waits for the pool's
+  pocket list itself, up to 60 seconds. Before, it waited 15 seconds and then
+  refused with "Nothing was paid or moved" when a slow Tor circuit made the
+  list arrive later.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `fd8f40cf`, npm `shinjuku-shielded@0.3.61`
 
 - A new MCP process now builds the private balance's spent-note tree from its
