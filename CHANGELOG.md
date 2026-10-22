@@ -5,6 +5,18 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `a18f4dcc`, npm `shinjuku-shielded@0.3.59`
+
+- When `wallet_transfer_token` finishes, the answer says that no tool of
+  this wallet moves the SOL on the wallet's own key out yet, and that no
+  private route for that SOL exists yet. The SOL pays the fees of your next
+  sells.
+- When USDC arrives at an add-funds address, `wallet_balance` says that the
+  wait before the deposit is a random privacy wait (0 to 5 minutes). The
+  wait hides the link between your deposit and your private balance. The
+  wait did not change.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `780f6896`, npm `shinjuku-shielded@0.3.58`
 
 - `setup --tor` on a Tor that has just started: setup tries the release
