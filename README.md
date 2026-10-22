@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/61674c4e/shinjuku-wallet.mjs
-echo "61674c4e8c6309ae6c93338211bf57a674837f572e498215300031a65b9aa743  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/07990722/shinjuku-wallet.mjs
+echo "07990722e8c34815b7af576fe293f456c602895b74cbe6f75d5ea3d8b5a1d578  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.71`.
+`shinjuku-shielded@0.3.72`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,16 +447,12 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `61674c4e` (npm
-0.3.71, 2026-10-22). New in 0.3.71:
+Live on Solana mainnet. The current wallet release is `07990722` (npm
+0.3.72, 2026-10-22). New in 0.3.72:
 
-- When money you added has landed but is not counted yet, the balance answer
-  now tells you that nothing is needed from you, and tells the agent to check
-  again in the same turn. Before, some agents stopped and waited for you.
-- The wallet reuses its saved program check for a slightly older pool view when
-  the program did not change, so a send-back does not repeat that check.
-- With `--tor`, a pool read that gets no answer in 5 seconds goes once more on
-  another Tor circuit; the first answer wins.
+- With `--tor`, a new MCP's first payment asks for the pool history at the
+  same time as its pool read, not after it. When the pool moved since the
+  wallet's last check, the payment waits less.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
