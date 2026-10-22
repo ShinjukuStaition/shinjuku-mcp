@@ -5,6 +5,16 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-22: wallet release `c6cbe0a6`, npm `shinjuku-shielded@0.3.69`
+
+- Setup now checks the pool history and the program while it downloads the
+  proof tools, so the first balance after a deposit does not have to do that
+  check again. Setup never waits for it, and nothing it starts runs on after
+  setup ends. With `--tor` it uses its own Tor circuit, never a direct one.
+- When the history service has no record newer than the wallet's last one,
+  the wallet asks once more after 2 seconds before it reads the whole history.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-22: wallet release `3d64f9b4`, npm `shinjuku-shielded@0.3.68`
 
 - An unshield, a merge or a pocket fill no longer gets refused by its own
