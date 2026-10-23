@@ -146,11 +146,13 @@ jobs:
           node shinjuku-wallet.mjs help mcp > /dev/null
           npm pack --dry-run
 
+      # --loglevel verbose: a refused trusted publisher shows only as E404 on the PUT; the verbose "oidc" line gives
+      # npm's reason. npm redacts tokens in its logs.
       - name: Publish shinjuku-shielded with provenance (npm trusted publishing; no token)
         run: |
           set -euo pipefail
           if npm view "shinjuku-shielded@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
-          npm publish --provenance --access public --tag "$DIST_TAG"
+          npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose
 
       - name: Publish the same files as shinjuku-shield
         run: |
@@ -158,7 +160,7 @@ jobs:
           npm pkg set "name=shinjuku-shield"
           jq '{name, version, shinjukuRelease, shinjukuSha256, bin}' package.json
           if npm view "shinjuku-shield@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
-          npm publish --provenance --access public --tag "$DIST_TAG"
+          npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose
 
       - name: Publish the shinjuku command at the same version (it runs shinjuku-shield exactly)
         working-directory: names/shinjuku
@@ -177,4 +179,4 @@ jobs:
           node "$RUNNER_TEMP/try/node_modules/shinjuku/shinjuku.mjs" version | tee "$RUNNER_TEMP/version.txt"
           grep -q "$VERSION" "$RUNNER_TEMP/version.txt" || { echo "::error::shinjuku did not run the wallet at $VERSION"; exit 1; }
           if npm view "shinjuku@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
-          npm publish --provenance --access public --tag "$DIST_TAG"
+          npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose
