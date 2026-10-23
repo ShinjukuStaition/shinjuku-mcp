@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/2b67ac65/shinjuku-wallet.mjs
-echo "2b67ac65c0b0dbe5bb41d3c393c8c44970fdd9c43e7e84a96c6a9e373ad5c957  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/98296ff0/shinjuku-wallet.mjs
+echo "98296ff0ef88ddfa494d9e1f46963a55563d92b1ec6fc29cfc1b0f18debe81e0  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.79`.
+`shinjuku-shielded@0.3.80`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,20 +447,18 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `2b67ac65` (npm
-0.3.79, 2026-10-23). New in 0.3.79:
+Live on Solana mainnet. The current wallet release is `98296ff0` (npm
+0.3.80, 2026-10-23). New in 0.3.80:
 
-- A seller that takes the payment and then refuses the data: the wallet
-  resends the same proof once, then says the seller keeps it. It never
-  shows a refund that will not come.
-- A seller that answers an error: the answer says so, and says that the
-  money comes back by itself if the transfer to the seller never lands.
-- `wallet_receipts` lists a payment the seller has not served yet, with
-  the seller and the state of its refund.
-- A seller that is not x402 v2 gets a clear refusal; nothing is paid.
-- The add-funds answer gives the new balance, and the balance answer names
-  all the USDC you added.
-- Write `version` to print the version.
+- A private send in parts now finishes in every agent host. In a host
+  that ends the wallet after each answer (such as `claude -p`), a small
+  background wallet process sends each part at its planned time, then
+  ends. The agent does not need to ask again in a loop.
+- `wallet_receipts` shows each part of a private send and the minutes
+  until the next part goes, and lists token transfers.
+- A payment the seller served shows the transfer to the seller, also when
+  the seller sends no receipt header.
+- A refund that has landed leaves the "on its way" balance at once.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
