@@ -188,7 +188,7 @@ A later stable version gets its own row in the
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases): run its setup once and
 put its version in your host's config. Your wallet, its address, and its balance stay the same.
 
-A candidate is out for testing: `shinjuku-shield@0.3.82` (npm tag `next`, 2026-10-23). It adds private
+A candidate is out for testing: `shinjuku-shield@0.3.83` (npm tag `next`, 2026-10-23). It adds private
 AI in the terminal and for agent apps, and the short command `shinjuku`; see the [changelog](CHANGELOG.md).
 It is not the stable version yet, so the commands here still name 0.3.80.
 
