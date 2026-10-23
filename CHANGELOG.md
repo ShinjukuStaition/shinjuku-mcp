@@ -5,6 +5,20 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `654041bc`, npm `shinjuku-shield@0.3.85` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.80` (wallet release `98296ff0`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- `shinjuku unshield --amount all --to <wallet address>` sends a balance
+  held in several parts in one command: it says how long the join takes,
+  joins the parts, then sends all of it. No `merge` command first.
+- `shinjuku add-funds`: when the answer to a deposit is lost on the way,
+  the wallet finds the deposit on the chain and finishes it. Each new try
+  prints one line that says what it waits for and when it tries again.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `b73f57e5`, npm `shinjuku-shield@0.3.84` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
