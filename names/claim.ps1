@@ -9,7 +9,9 @@ $reg = 'https://registry.npmjs.org/'
 $names = @('shinjuku', 'shinjuku-shield', 'shinpay', 'shinai')
 # npm 11.13.0 has `npm trust` (step 3); this machine's npm can be older.
 function Invoke-Npm {
-  & npx -y npm@11.13.0 @args --registry $reg
+  # npx.ps1 drops arguments splatted with @args: call npx.cmd with one array.
+  $a = @('-y', 'npm@11.13.0') + $args + @('--registry', $reg)
+  & npx.cmd @a
   if ($LASTEXITCODE -ne 0) { throw "npm $($args -join ' ') failed (exit $LASTEXITCODE)" }
 }
 # A read that may fail (a name not published yet): its errors stay out of the window.
