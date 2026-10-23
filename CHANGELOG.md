@@ -5,6 +5,34 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `eaf7063e`, npm `shinjuku-shield@0.3.82` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.80` (wallet release `98296ff0`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- A seller that writes its own URL in another encoding (for example `%2C`
+  for a comma) can now be paid.
+- `x402_discover` answers within about 10 s. A list that is still
+  downloading is searched in its older copy or in the pages downloaded so
+  far, and a later search goes on from those pages.
+- After you send USDC to an add-funds address, ask for your balance once:
+  the wallet then makes it private by itself.
+- Receipts list a deposit made with `shinjuku add-funds`.
+- The balance counts every refund on its way.
+- A token transfer or a private send in parts goes on by itself when
+  another wallet process holds the wallet for a moment.
+- Clearer answers when a seller cannot receive a payment, when a seller
+  refuses after it was paid, and for a refund on its way.
+- `shinjuku infer "your question"` needs no flags after setup.
+  `shinjuku chat` shows one line about Tor and no progress lines
+  (`--verbose` shows them). `shinjuku add-funds` and
+  `shinjuku funds-status` end with a short summary in a terminal.
+- The local AI address serves the OpenAI Chat Completions API and
+  `/v1/models`. Apps that use the OpenAI Responses API do not work with it
+  yet.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `63f08b62`, npm `shinjuku-shield@0.3.81` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
