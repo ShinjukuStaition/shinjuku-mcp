@@ -1,10 +1,14 @@
-name: Publish shinjuku-shielded to npm
+name: Publish shinjuku-shield, shinjuku-shielded and shinjuku to npm
+
+# One wallet release goes out under both package names (shinjuku-shield is the main name from 0.3.81;
+# shinjuku-shielded stays, so installed wallets that update through it keep working) and as the shinjuku command
+# (names/shinjuku: it runs shinjuku-shield at the same exact version). Each has its npm Trusted Publisher on this file.
 
 on:
   workflow_dispatch:
     inputs:
       release:
-        description: "Wallet release (sha8). Must be the release that /api/wallet/release of the chosen site serves now."
+        description: "Wallet release (sha8). latest: the release /api/wallet/release of the site serves now (the pin). next: a release the site serves at /wallet/<sha8>/ (a candidate beside the pin)."
         required: true
         type: string
       version:
@@ -48,6 +52,7 @@ jobs:
       RELEASE: ${{ inputs.release }}
       VERSION: ${{ inputs.version }}
       SITE: ${{ inputs.site == 'staging' && 'https://staging.shinjukustaition.com' || 'https://shinjukustaition.com' }}
+      DIST_TAG: ${{ inputs.dist_tag }}
       HASH_README_API: https://api.github.com/repos/ShinjukuStaition/shinjuku-shielded/readme
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -67,9 +72,11 @@ jobs:
           set -euo pipefail
           [[ "$RELEASE" =~ ^[0-9a-f]{8}$ ]] || { echo "::error::release must be 8 lowercase hex characters"; exit 1; }
           [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || { echo "::error::version must be x.y.z"; exit 1; }
-          if npm view "shinjuku-shielded@$VERSION" version >/dev/null 2>&1; then
-            echo "::error::shinjuku-shielded@$VERSION is already published"; exit 1
-          fi
+          for pkg in shinjuku-shielded shinjuku-shield shinjuku; do
+            if npm view "$pkg@$VERSION" version >/dev/null 2>&1; then
+              echo "::error::$pkg@$VERSION is already published"; exit 1
+            fi
+          done
 
       - name: Read the hash from the facilitator and from the GitHub Releases table
         id: hash
@@ -77,11 +84,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          curl -fsS --proto '=https' --tlsv1.2 "$SITE/api/wallet/release" -o "$RUNNER_TEMP/release.json"
-          served_dir=$(jq -r '.wallet.dir' "$RUNNER_TEMP/release.json")
-          served_sha=$(jq -r '.wallet.sha256' "$RUNNER_TEMP/release.json")
-          served_bytes=$(jq -r '.wallet.bytes' "$RUNNER_TEMP/release.json")
-          [[ "$served_dir" == "$RELEASE" ]] || { echo "::error::the site serves release $served_dir, not $RELEASE"; exit 1; }
+          if [[ "$DIST_TAG" == "latest" ]]; then
+            # The pin: the release the site names as its current one.
+            curl -fsS --proto '=https' --tlsv1.2 "$SITE/api/wallet/release" -o "$RUNNER_TEMP/release.json"
+            served_dir=$(jq -r '.wallet.dir' "$RUNNER_TEMP/release.json")
+            served_sha=$(jq -r '.wallet.sha256' "$RUNNER_TEMP/release.json")
+            served_bytes=$(jq -r '.wallet.bytes' "$RUNNER_TEMP/release.json")
+            [[ "$served_dir" == "$RELEASE" ]] || { echo "::error::the site serves release $served_dir, not $RELEASE"; exit 1; }
+          else
+            # A candidate: served in its own folder beside the pin; the site's current release stays the pin, so wallets
+            # on the pin get no update notice for it.
+            curl -fsS --proto '=https' --tlsv1.2 "$SITE/wallet/$RELEASE/manifest.json" -o "$RUNNER_TEMP/release.json"
+            served_sha=$(jq -r '.sha256' "$RUNNER_TEMP/release.json")
+            served_bytes=$(jq -r '.bytes' "$RUNNER_TEMP/release.json")
+          fi
           [[ "$served_sha" =~ ^[0-9a-f]{64}$ && "$served_sha" == "$RELEASE"* ]] || { echo "::error::site sha256 $served_sha does not start with $RELEASE"; exit 1; }
           [[ "$served_bytes" =~ ^[0-9]+$ ]] || { echo "::error::site bytes is not a number"; exit 1; }
 
@@ -128,7 +144,30 @@ jobs:
           node shinjuku-wallet.mjs help mcp > /dev/null
           npm pack --dry-run
 
-      - name: Publish with provenance (npm trusted publishing; no token)
-        env:
-          DIST_TAG: ${{ inputs.dist_tag }}
+      - name: Publish shinjuku-shielded with provenance (npm trusted publishing; no token)
         run: npm publish --provenance --access public --tag "$DIST_TAG"
+
+      - name: Publish the same files as shinjuku-shield
+        run: |
+          set -euo pipefail
+          npm pkg set "name=shinjuku-shield"
+          jq '{name, version, shinjukuRelease, shinjukuSha256, bin}' package.json
+          npm publish --provenance --access public --tag "$DIST_TAG"
+
+      - name: Publish the shinjuku command at the same version (it runs shinjuku-shield exactly)
+        working-directory: names/shinjuku
+        run: |
+          set -euo pipefail
+          npm pkg set "version=$VERSION"
+          jq --arg v "$VERSION" '.dependencies = {"shinjuku-shield": $v}' package.json > "$RUNNER_TEMP/shinjuku.json"
+          mv "$RUNNER_TEMP/shinjuku.json" package.json
+          jq '{name, version, dependencies, bin}' package.json
+          # The new wallet version can still be in npm's check (a few minutes), so the smoke test lays out both packages
+          # by hand: the packed shinjuku and the wallet files of this run as shinjuku-shield.
+          npm pack --pack-destination "$RUNNER_TEMP"
+          mkdir -p "$RUNNER_TEMP/try/node_modules/shinjuku" "$RUNNER_TEMP/try/node_modules/shinjuku-shield"
+          tar -xzf "$RUNNER_TEMP/shinjuku-$VERSION.tgz" -C "$RUNNER_TEMP/try/node_modules/shinjuku" --strip-components=1
+          cp ../../npm/package.json ../../npm/shinjuku-wallet.mjs ../../npm/manifest.json "$RUNNER_TEMP/try/node_modules/shinjuku-shield/"
+          node "$RUNNER_TEMP/try/node_modules/shinjuku/shinjuku.mjs" version | tee "$RUNNER_TEMP/version.txt"
+          grep -q "$VERSION" "$RUNNER_TEMP/version.txt" || { echo "::error::shinjuku did not run the wallet at $VERSION"; exit 1; }
+          npm publish --provenance --access public --tag "$DIST_TAG"
