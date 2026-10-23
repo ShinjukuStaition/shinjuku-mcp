@@ -139,6 +139,9 @@ jobs:
           set -euo pipefail
           npm pkg set "version=$VERSION" "shinjukuRelease=$RELEASE" "shinjukuSha256=$SHA256"
           jq '{name, version, shinjukuRelease, shinjukuSha256, bin}' package.json
+          # The README names this exact version in its install lines.
+          sed -i "s/{{VERSION}}/$VERSION/g" README.md
+          ! grep -n '{{' README.md || { echo "::error::README.md still has a {{ }} token"; exit 1; }
 
       - name: Smoke test and pack list
         run: |
@@ -173,6 +176,8 @@ jobs:
           jq --arg v "$VERSION" '.dependencies = {"shinjuku-shield": $v}' package.json > "$RUNNER_TEMP/shinjuku.json"
           mv "$RUNNER_TEMP/shinjuku.json" package.json
           jq '{name, version, dependencies, bin}' package.json
+          sed -i "s/{{VERSION}}/$VERSION/g" README.md
+          ! grep -n '{{' README.md || { echo "::error::README.md still has a {{ }} token"; exit 1; }
           # The new wallet version can still be in npm's check (a few minutes), so the smoke test lays out both packages
           # by hand: the packed shinjuku and the wallet files of this run as shinjuku-shield.
           npm pack --pack-destination "$RUNNER_TEMP"
