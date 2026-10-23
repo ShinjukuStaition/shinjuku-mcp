@@ -26,6 +26,7 @@
     "shielded"
   ],
   "bin": {
+    "shinjuku-shield": "shinjuku-wallet.mjs",
     "shinjuku-shielded": "shinjuku-wallet.mjs",
     "shinjuku-wallet": "shinjuku-wallet.mjs"
   },
