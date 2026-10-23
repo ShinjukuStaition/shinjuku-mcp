@@ -5,6 +5,31 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `b73f57e5`, npm `shinjuku-shield@0.3.84` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.80` (wallet release `98296ff0`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- A payment stopped by the `max_payment` of that one call now says so, and
+  names the amount that would work. It no longer tells you to run setup.
+  The private AI chat names the smallest `max_payment` it accepts.
+- Asking again for a send that already finished answers "already sent",
+  with how long ago it finished. Nothing is sent twice.
+- A balance check while the wallet still reads the chain shows the last
+  full balance and how old it is. A history read over Tor waits for the
+  onion route before its time limit starts.
+- The wallet keeps the payment notes it already read, so the next start
+  reads less from the chain.
+- A balance held in several parts: your agent says how long the join takes
+  BEFORE it starts a send of all of it.
+- `shinjuku unshield --amount <usdc|all> --to <wallet address>` is the whole
+  command after `shinjuku setup`. It prints plain lines and your new private
+  balance (`--json` prints JSON). `shinjuku balance` prints one line.
+- Every `shinjuku` command uses Tor when setup chose Tor. `--no-tor` turns
+  it off for one command. The Node warning about the proxy is gone.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `a59aa27b`, npm `shinjuku-shield@0.3.83` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
