@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/e2b3bd72/shinjuku-wallet.mjs
-echo "e2b3bd72ce01876258900e8683258e3d1606c598f9757c882fe49f57ac2868e5  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/b840ab22/shinjuku-wallet.mjs
+echo "b840ab22b761c3a08caa1fc73f7e9d0b4ae0139a21aeca10fdf71086a0092704  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.77`.
+`shinjuku-shielded@0.3.78`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,16 +447,20 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `e2b3bd72` (npm
-0.3.77, 2026-10-23). New in 0.3.77:
+Live on Solana mainnet. The current wallet release is `b840ab22` (npm
+0.3.78, 2026-10-23). New in 0.3.78:
 
-- While new USDC waits out its random privacy wait, the wallet tells you
-  when to ask about your balance again. That ask starts the deposit if it
-  has not started yet. It no longer says "no step from you".
-- When the wallet stops a payment before it pays (for example over your
-  limit), Shinjuku's server gets no request for that payment.
-- The first payment reads the pool history checks sooner, and the wallet
-  keeps each pool's name on disk, so a new session skips one read.
+- `wallet_receipts` shows the private transaction of every payment, also
+  when the app ended the wallet right after the payment.
+- A token transfer reports its progress in fewer, slower answers, names the
+  exact SOL it needs, and sends a total rounded down to 0.01 USDC. The rest
+  stays in your private balance, so the parts do not match the sale.
+- A balance split into parts joins by itself across sessions, and the
+  balance answer says when a send of everything must join parts first.
+- Limit refusals say how to raise the limit, and where.
+- Each payment, shield or send answer gives your new balance, and "show my
+  wallet" gives a short wallet card.
+- `--version` prints the version, and MCP apps show the real version.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 

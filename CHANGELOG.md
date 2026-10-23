@@ -5,6 +5,21 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `b840ab22`, npm `shinjuku-shielded@0.3.78`
+
+- `wallet_receipts` shows the private transaction of every payment, also
+  when the app ended the wallet right after the payment.
+- A token transfer reports its progress in fewer, slower answers, names the
+  exact SOL it needs, and sends a total rounded down to 0.01 USDC. The rest
+  stays in your private balance, so the parts do not match the sale.
+- A balance split into parts joins by itself across sessions, and the
+  balance answer says when a send of everything must join parts first.
+- Limit refusals say how to raise the limit, and where.
+- Each payment, shield or send answer gives your new balance, and "show my
+  wallet" gives a short wallet card.
+- `--version` prints the version, and MCP apps show the real version.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `e2b3bd72`, npm `shinjuku-shielded@0.3.77`
 
 - While new USDC waits out its random privacy wait, the wallet tells you
