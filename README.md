@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/57e0bc6a/shinjuku-wallet.mjs
-echo "57e0bc6a687a2bfdd99fe9ff69834c53f842829dac245c756dc02a49cc1bd0fa  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/6d58045e/shinjuku-wallet.mjs
+echo "6d58045e00745225ce82558f7a464bd8ad3379915ac3d909a4cd1c9a2ab7c84c  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.75`.
+`shinjuku-shielded@0.3.76`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,19 +447,14 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `57e0bc6a` (npm
-0.3.75, 2026-10-23). New in 0.3.75:
+Live on Solana mainnet. The current wallet release is `6d58045e` (npm
+0.3.76, 2026-10-23). New in 0.3.76:
 
-- When a paid request fails after the money left, the refund is visible:
-  the answer names the refund, `wallet_receipts` says "refund pending"
-  until the money is back in the balance, and the balance says how much of
-  it is a refund on its way.
-- `wallet_balance` right after a payment answers at once with the new
-  number.
-- Closing the MCP no longer waits for background work that did not start.
-- With `--tor`, every command uses the Tor setup the wallet recorded.
-- Setup's background read of the pool history now also runs from the npm
-  package.
+- A payment to a seller whose price names an old Solana blockhash no
+  longer fails: when that blockhash is about to expire, the wallet signs
+  with a fresh one.
+- While the wallet reads a long pool history, it still answers your other
+  requests (the read runs in small steps).
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
