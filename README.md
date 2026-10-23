@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/bf5ad0c1/shinjuku-wallet.mjs
-echo "bf5ad0c16095110ed0258b16525e55dc743dbaa36b6ba0e0738d4ab9c185ce90  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/57e0bc6a/shinjuku-wallet.mjs
+echo "57e0bc6a687a2bfdd99fe9ff69834c53f842829dac245c756dc02a49cc1bd0fa  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.74`.
+`shinjuku-shielded@0.3.75`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,15 +447,19 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `bf5ad0c1` (npm
-0.3.74, 2026-10-22). New in 0.3.74:
+Live on Solana mainnet. The current wallet release is `57e0bc6a` (npm
+0.3.75, 2026-10-23). New in 0.3.75:
 
-- An unshield (a send to a normal Solana address) answers as soon as the
-  transfer is final on chain, with its transaction. The wallet then checks
-  the pool history by itself; there is nothing to do. If an MCP ends before
-  that check ends, the next MCP finishes it.
-- With `--tor`, a new wallet first tries the two facilitator onion addresses
-  that the most Tor directory relays carry. The other two stay as spares.
+- When a paid request fails after the money left, the refund is visible:
+  the answer names the refund, `wallet_receipts` says "refund pending"
+  until the money is back in the balance, and the balance says how much of
+  it is a refund on its way.
+- `wallet_balance` right after a payment answers at once with the new
+  number.
+- Closing the MCP no longer waits for background work that did not start.
+- With `--tor`, every command uses the Tor setup the wallet recorded.
+- Setup's background read of the pool history now also runs from the npm
+  package.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
