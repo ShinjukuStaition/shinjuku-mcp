@@ -5,6 +5,15 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `6d58045e`, npm `shinjuku-shielded@0.3.76`
+
+- A payment to a seller whose price names an old Solana blockhash no
+  longer fails: when that blockhash is about to expire, the wallet signs
+  with a fresh one.
+- While the wallet reads a long pool history, it still answers your other
+  requests (the read runs in small steps).
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `57e0bc6a`, npm `shinjuku-shielded@0.3.75`
 
 - When a paid request fails after the money left, the refund is visible:
