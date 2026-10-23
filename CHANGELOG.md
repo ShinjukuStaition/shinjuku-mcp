@@ -5,6 +5,27 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `a59aa27b`, npm `shinjuku-shield@0.3.83` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.80` (wallet release `98296ff0`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- A payment that the seller kept is no longer reported as a refund on its
+  way, also when the seller refused a late retry, and the balance no longer
+  counts such a refund.
+- Receipts name each refund step in plain words and agree with the balance.
+- A balance held in several parts: before a send of all of it, your agent
+  can tell you how long the wallet needs to join the parts, and the answer
+  says why the send took that long. The answer comes as soon as the send is
+  final.
+- A new send while a private send in parts is open no longer stops right
+  after a deposit: the wallet reads its history again and goes on.
+- `shinjuku add-funds` in a terminal shows one line per step and a short
+  summary. `--verbose` shows every progress line, and `--json` prints the
+  status as JSON (also for `shinjuku funds-status`).
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `eaf7063e`, npm `shinjuku-shield@0.3.82` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
