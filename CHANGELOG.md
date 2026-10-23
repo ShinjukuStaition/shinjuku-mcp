@@ -5,6 +5,25 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `17d8275d`, npm `shinjuku-shield@0.3.88` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fix of
+0.3.87 (known issue 1) and two more:
+
+- Known issue 2 of 0.3.86 is fixed: the terminal send no longer prints the
+  internal `SELLER_STORE` line.
+- Known issue 4 of 0.3.86 is fixed: when a payment is over your spending
+  limit, the answer names the place that set the limit. When your host's
+  MCP entry holds `--max-payment` (or `--max-session`), it tells you to
+  change it there and restart the host; setup does not change that limit.
+  When the entry has no such flag, it names setup, as before.
+- When a seller fails before it takes the money, the answer says the money
+  comes back "within about 7 minutes" (in a live test it came back in
+  under 2 minutes).
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `c0b0b77b`, npm `shinjuku-shield@0.3.87` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays

@@ -383,8 +383,8 @@ supported: the provers are Linux programs.
 
 The stable version is `shinjuku-shield@0.3.86` (pinned 2026-10-23; the same files are on npm as
 `shinjuku-shielded@0.3.86`), and every command here names it. Setup prints host lines that name this exact
-version. A candidate is out for testing: `shinjuku-shield@0.3.87` (npm tag `next`,
-2026-10-23). It fixes known issue 1 of 0.3.86 only; see the [changelog](CHANGELOG.md). A later stable version gets its own row in the
+version. A candidate is out for testing: `shinjuku-shield@0.3.88` (npm tag `next`,
+2026-10-23). It fixes known issues 1, 2 and 4 of 0.3.86; see the [changelog](CHANGELOG.md). A later stable version gets its own row in the
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases): run its setup once and
 put its version in your host's config. Your wallet, its address, and its balance stay the same.
 
