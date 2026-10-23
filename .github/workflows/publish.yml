@@ -11,6 +11,14 @@ on:
         description: "npm version for this release (x.y.z, higher than the last published version)"
         required: true
         type: string
+      dist_tag:
+        description: "npm dist-tag. latest = the stable pin, only for a version the owner confirmed as the pin; next = any other release"
+        required: true
+        default: next
+        type: choice
+        options:
+          - next
+          - latest
 
 permissions:
   contents: read
@@ -113,4 +121,6 @@ jobs:
           npm pack --dry-run
 
       - name: Publish with provenance (npm trusted publishing; no token)
-        run: npm publish --provenance --access public
+        env:
+          DIST_TAG: ${{ inputs.dist_tag }}
+        run: npm publish --provenance --access public --tag "$DIST_TAG"
