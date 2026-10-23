@@ -17,7 +17,8 @@ of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 - Limit refusals say how to raise the limit, and where.
 - Each payment, shield or send answer gives your new balance, and "show my
   wallet" gives a short wallet card.
-- `--version` prints the version, and MCP apps show the real version.
+- `npx -y shinjuku-shielded version` prints the version (npx answers
+  `--version` itself), and MCP apps show the real version.
 - No tool of the Solana Agent Kit plugin changed its name or its arguments.
 
 ## 2026-10-23: wallet release `e2b3bd72`, npm `shinjuku-shielded@0.3.77`

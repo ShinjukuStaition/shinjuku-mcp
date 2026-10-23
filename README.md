@@ -460,7 +460,8 @@ Live on Solana mainnet. The current wallet release is `b840ab22` (npm
 - Limit refusals say how to raise the limit, and where.
 - Each payment, shield or send answer gives your new balance, and "show my
   wallet" gives a short wallet card.
-- `--version` prints the version, and MCP apps show the real version.
+- `npx -y shinjuku-shielded version` prints the version (npx answers
+  `--version` itself), and MCP apps show the real version.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
