@@ -5,6 +5,36 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `63f08b62`, npm `shinjuku-shield@0.3.81` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.80` (wallet release `98296ff0`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- Shinjuku Shield is the main name. The npm package `shinjuku-shield` holds
+  the same files as `shinjuku-shielded`, and the npm package `shinjuku`
+  gives the short command `shinjuku` at the same version
+  (`npm install -g shinjuku@0.3.81`).
+- Private AI in the terminal: `shinjuku chat`. Each answer is paid from the
+  shielded balance, through Tor, with a cap of 0.05 USDC an answer and
+  1 USDC a chat by default. The wallet keeps no copy of the conversation.
+- A local AI address for an agent app that speaks the OpenAI API:
+  `shinjuku infer start` prints the `base_url` and an api key. The address
+  keeps running after the terminal closes; `shinjuku infer status` shows it
+  and `shinjuku infer stop` stops it. Answers can stream (`stream: true`).
+- New MCP tool `inference_server`: your agent starts, checks or stops that
+  address. Its caps are never above the caps of setup or of the MCP launch.
+- A private AI call is paid only in a way that keeps no copy of its request.
+- A pay right after a part of a private send goes through.
+- A private send in parts also finishes when the host closes all its child
+  processes as it ends (Windows).
+- A deposit made in a host that ends the wallet after each answer goes on
+  in the background.
+- The shield receipt says when the shield is done.
+- `help` prints the real version, and `shinjuku` alone opens with a short
+  animation in a real terminal (any key skips it).
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `98296ff0`, npm `shinjuku-shielded@0.3.80`
 
 - A private send in parts now finishes in every agent host. In a host
