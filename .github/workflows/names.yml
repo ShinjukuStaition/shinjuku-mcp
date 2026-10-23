@@ -1,0 +1,95 @@
+name: Publish a names/ package to npm
+
+# The small packages under names/: `shinjuku` (the shinjuku command; it runs shinjuku-shielded at its own version) and
+# the pointer packages that keep our names (each prints how to install the wallet). A package with its npm Trusted
+# Publisher set publishes through OIDC; the first publish of a new name cannot (npm sets a Trusted Publisher per package),
+# so npm falls back to the NPM_TOKEN repository secret.
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "The folder under names/ to publish (its package.json names the version)"
+        required: true
+        type: choice
+        options:
+          - shinjuku
+          - shinpay
+          - shinai
+          - shinjuku-shield
+      dist_tag:
+        description: "npm dist-tag. latest = the stable pin (or a pointer package); next = any other release"
+        required: true
+        default: latest
+        type: choice
+        options:
+          - latest
+          - next
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-names
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+        working-directory: names/${{ inputs.package }}
+    env:
+      PACKAGE: ${{ inputs.package }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: npm with trusted publishing (OIDC needs npm 11.5.1 or later)
+        run: npm install -g npm@11.13.0 && npm --version
+
+      - name: Check the package
+        run: |
+          set -euo pipefail
+          name=$(jq -r '.name' package.json)
+          version=$(jq -r '.version' package.json)
+          [[ "$name" == "$PACKAGE" ]] || { echo "::error::package.json name $name is not $PACKAGE"; exit 1; }
+          [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] || { echo "::error::version must be x.y.z"; exit 1; }
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "::error::$name@$version is already published"; exit 1
+          fi
+          if [[ "$name" == "shinjuku" ]]; then
+            # The shinjuku command runs shinjuku-shielded at the same version, named exactly.
+            dep=$(jq -r '.dependencies["shinjuku-shielded"]' package.json)
+            [[ "$dep" == "$version" ]] || { echo "::error::shinjuku $version must depend on shinjuku-shielded $version exactly, not $dep"; exit 1; }
+            npm view "shinjuku-shielded@$dep" version >/dev/null || { echo "::error::shinjuku-shielded@$dep is not published"; exit 1; }
+          fi
+
+      - name: Smoke test the packed package and its bin
+        run: |
+          set -euo pipefail
+          npm pack --pack-destination "$RUNNER_TEMP"
+          npm install -g --prefix "$RUNNER_TEMP/try" --no-audit --no-fund "$RUNNER_TEMP"/*.tgz
+          if [[ "$PACKAGE" == "shinjuku" ]]; then
+            "$RUNNER_TEMP/try/bin/shinjuku" help mcp > /dev/null
+            "$RUNNER_TEMP/try/bin/shinjuku" version | tee "$RUNNER_TEMP/version.txt"
+            grep -q "shinjuku-shielded $(jq -r '.version' package.json)" "$RUNNER_TEMP/version.txt" || { echo "::error::the wallet did not report its version"; exit 1; }
+          else
+            "$RUNNER_TEMP/try/bin/$PACKAGE" | grep -q "shinjuku-shielded@" || { echo "::error::the pointer did not print the install line"; exit 1; }
+          fi
+          npm pack --dry-run
+
+      - name: Publish with provenance (OIDC when the package has its Trusted Publisher; else the NPM_TOKEN secret)
+        env:
+          DIST_TAG: ${{ inputs.dist_tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public --tag "$DIST_TAG"

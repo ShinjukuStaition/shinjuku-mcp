@@ -1,0 +1,39 @@
+{
+  "name": "shinjuku-shield",
+  "version": "0.0.1",
+  "description": "The coming package name of Shinjuku Shield. It prints how to install the wallet, npm shinjuku-shielded.",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "author": "Shinjuku Shield",
+  "homepage": "https://github.com/ShinjukuStaition/shinjuku-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShinjukuStaition/shinjuku-mcp.git",
+    "directory": "names/shinjuku-shield"
+  },
+  "bugs": {
+    "url": "https://github.com/ShinjukuStaition/shinjuku-mcp/issues"
+  },
+  "keywords": [
+    "x402",
+    "mcp",
+    "solana",
+    "usdc",
+    "wallet",
+    "privacy"
+  ],
+  "type": "module",
+  "bin": {
+    "shinjuku-shield": "index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "LICENSE.txt"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

@@ -1,0 +1,4 @@
+Shinjuku Shield: the shinjuku command
+Copyright (c) 2026 Shinjuku Shield. All rights reserved.
+
+This package only starts the wallet package shinjuku-shielded, which has its own license (its LICENSE.txt).

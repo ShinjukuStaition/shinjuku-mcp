@@ -1,0 +1,2 @@
+Shinjuku Shield: shinjuku-shield
+Copyright (c) 2026 Shinjuku Shield. All rights reserved.
