@@ -15,7 +15,6 @@ on:
         options:
           - shinjuku
           - shinpay
-          - shinai
           - shinjuku-shield
       dist_tag:
         description: "npm dist-tag. latest = the stable pin (or a pointer package); next = any other release"
