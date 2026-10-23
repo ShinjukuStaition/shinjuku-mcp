@@ -77,7 +77,10 @@ which wallet paid. The wallet keeps no copy of a conversation.
   the OpenAI API. It prints the `base_url` (`http://127.0.0.1:11402/v1`) and
   an api key. It keeps running in the background after the terminal closes;
   `shinjuku infer status` shows it, and `shinjuku infer stop` stops it. Your
-  agent can also start it with the MCP tool `inference_server`.
+  agent can also start it with the MCP tool `inference_server`. It serves
+  the OpenAI Chat Completions API (`/v1/chat/completions`, streaming too)
+  and `/v1/models`. Apps that use the OpenAI Responses API
+  (`/v1/responses`) do not work with it yet.
 - `inference_chat` (MCP): one answer for your agent.
 
 ## Needs
