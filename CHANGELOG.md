@@ -5,6 +5,26 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `b650bf06`, npm `shinjuku-shield@0.3.86` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.80` (wallet release `98296ff0`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- Unshield: when the facilitator answers that its exit transaction has not
+  landed yet, the wallet sends the same exit again by itself (it never sends
+  twice). When the exit proof's time window ends first, the wallet makes a
+  new proof once and sends it. Every refusal of the exit relay now says what
+  it means and what to run.
+- `shinjuku unshield --amount all --unshield-id <id>` finishes an unshield
+  that started earlier, with the amount it started with. `shinjuku balance`
+  names an unshield that has not finished and the command that finishes it.
+- `inference_chat`: a refusal for a low `max_payment` says that the cap is
+  only a limit, not the price, and what the call pays.
+- A run through Tor or a proxy no longer prints Node's proxy warning many
+  times.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `654041bc`, npm `shinjuku-shield@0.3.85` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
