@@ -5,6 +5,18 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `c0b0b77b`, npm `shinjuku-shield@0.3.87` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version.
+
+- Known issue 1 of 0.3.86 is fixed: when a seller fails before it takes the
+  money, the answer starts with "Not paid yet", not "Paid". It says to ask
+  again with the same request_id, and that the money otherwise comes back
+  by itself in about 7 minutes. This release fixes nothing else.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: npm `shinjuku-shielded@0.3.86` is the stable version (wallet release `b650bf06`, pinned)
 
 The stable version is now 0.3.86, on npm under the tag `latest` as
