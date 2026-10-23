@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/6d58045e/shinjuku-wallet.mjs
-echo "6d58045e00745225ce82558f7a464bd8ad3379915ac3d909a4cd1c9a2ab7c84c  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/e2b3bd72/shinjuku-wallet.mjs
+echo "e2b3bd72ce01876258900e8683258e3d1606c598f9757c882fe49f57ac2868e5  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.76`.
+`shinjuku-shielded@0.3.77`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,14 +447,16 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `6d58045e` (npm
-0.3.76, 2026-10-23). New in 0.3.76:
+Live on Solana mainnet. The current wallet release is `e2b3bd72` (npm
+0.3.77, 2026-10-23). New in 0.3.77:
 
-- A payment to a seller whose price names an old Solana blockhash no
-  longer fails: when that blockhash is about to expire, the wallet signs
-  with a fresh one.
-- While the wallet reads a long pool history, it still answers your other
-  requests (the read runs in small steps).
+- While new USDC waits out its random privacy wait, the wallet tells you
+  when to ask about your balance again. That ask starts the deposit if it
+  has not started yet. It no longer says "no step from you".
+- When the wallet stops a payment before it pays (for example over your
+  limit), Shinjuku's server gets no request for that payment.
+- The first payment reads the pool history checks sooner, and the wallet
+  keeps each pool's name on disk, so a new session skips one read.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
