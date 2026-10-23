@@ -300,14 +300,14 @@ current file and hash are also in the
 and in section 7b of https://shinjukustaition.com/skill.md.
 
 ```sh
-curl -fsSLO https://shinjukustaition.com/wallet/b840ab22/shinjuku-wallet.mjs
-echo "b840ab22b761c3a08caa1fc73f7e9d0b4ae0139a21aeca10fdf71086a0092704  shinjuku-wallet.mjs" | sha256sum -c -
+curl -fsSLO https://shinjukustaition.com/wallet/2b67ac65/shinjuku-wallet.mjs
+echo "2b67ac65c0b0dbe5bb41d3c393c8c44970fdd9c43e7e84a96c6a9e373ad5c957  shinjuku-wallet.mjs" | sha256sum -c -
 node shinjuku-wallet.mjs setup
 ```
 
 With the file, replace `npx -y --no-audit --no-fund shinjuku-shielded` with
 `node /abs/path/shinjuku-wallet.mjs`. To pin the npm version, write
-`shinjuku-shielded@0.3.78`.
+`shinjuku-shielded@0.3.79`.
 
 ### Advanced: flags instead of config.json
 
@@ -447,22 +447,20 @@ Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v
 as `io.github.ShinjukuStaition/shinjuku-mcp`. npm: [`shinjuku-shielded`](https://www.npmjs.com/package/shinjuku-shielded),
 published from this repository's workflow with npm provenance (from 0.1.1).
 
-Live on Solana mainnet. The current wallet release is `b840ab22` (npm
-0.3.78, 2026-10-23). New in 0.3.78:
+Live on Solana mainnet. The current wallet release is `2b67ac65` (npm
+0.3.79, 2026-10-23). New in 0.3.79:
 
-- `wallet_receipts` shows the private transaction of every payment, also
-  when the app ended the wallet right after the payment.
-- A token transfer reports its progress in fewer, slower answers, names the
-  exact SOL it needs, and sends a total rounded down to 0.01 USDC. The rest
-  stays in your private balance, so the parts do not match the sale.
-- A balance split into parts joins by itself across sessions, and the
-  balance answer says when a send of everything must join parts first.
-- Limit refusals say how to raise the limit, and where.
-- Each payment, shield or send answer gives your new balance, and "show my
-  wallet" gives a short wallet card.
-- `npx -y --no-audit --no-fund shinjuku-shielded version` prints the
-  version (in that line npm answers `--version` itself), and MCP apps show
-  the real version.
+- A seller that takes the payment and then refuses the data: the wallet
+  resends the same proof once, then says the seller keeps it. It never
+  shows a refund that will not come.
+- A seller that answers an error: the answer says so, and says that the
+  money comes back by itself if the transfer to the seller never lands.
+- `wallet_receipts` lists a payment the seller has not served yet, with
+  the seller and the state of its refund.
+- A seller that is not x402 v2 gets a clear refusal; nothing is paid.
+- The add-funds answer gives the new balance, and the balance answer names
+  all the USDC you added.
+- Write `version` to print the version.
 
 Every release and its changes: [CHANGELOG.md](CHANGELOG.md).
 
