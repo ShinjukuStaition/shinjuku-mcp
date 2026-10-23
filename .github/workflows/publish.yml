@@ -166,6 +166,9 @@ jobs:
         working-directory: names/shinjuku
         run: |
           set -euo pipefail
+          # Before the smoke test: a wallet older than 0.3.81 knows only the name shinjuku-shielded, so its version line
+          # under shinjuku-shield fails the test below although shinjuku at that version is already on npm.
+          if npm view "shinjuku@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
           npm pkg set "version=$VERSION"
           jq --arg v "$VERSION" '.dependencies = {"shinjuku-shield": $v}' package.json > "$RUNNER_TEMP/shinjuku.json"
           mv "$RUNNER_TEMP/shinjuku.json" package.json
@@ -178,5 +181,4 @@ jobs:
           cp ../../npm/package.json ../../npm/shinjuku-wallet.mjs ../../npm/manifest.json "$RUNNER_TEMP/try/node_modules/shinjuku-shield/"
           node "$RUNNER_TEMP/try/node_modules/shinjuku/shinjuku.mjs" version | tee "$RUNNER_TEMP/version.txt"
           grep -q "$VERSION" "$RUNNER_TEMP/version.txt" || { echo "::error::shinjuku did not run the wallet at $VERSION"; exit 1; }
-          if npm view "shinjuku@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
           npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose
