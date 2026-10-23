@@ -5,6 +5,83 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: npm `shinjuku-shielded@0.3.86` is the stable version (wallet release `b650bf06`, pinned)
+
+The stable version is now 0.3.86, on npm under the tag `latest` as
+`shinjuku-shielded`, `shinjuku-shield` and the `shinjuku` command. It
+replaces 0.3.80 (wallet release `98296ff0`). The wallet file is the file of
+the 0.3.86 candidate below. To move from an older version, run
+`npx -y --no-audit --no-fund shinjuku@0.3.86 setup` once and put
+`shinjuku-shield@0.3.86` in your host's MCP entry. Your wallet, its address
+and its balance stay the same. How to use each feature: the
+[0.3.86 release notes](README.md#release-0386).
+
+Every feature passed a live run on the published 0.3.86 package, on
+production, with real USDC, on 2026-10-23:
+
+- Add funds (`wallet_add_funds`, `shinjuku add-funds`): 1 USDC sent at
+  21:54:31 UTC was private by 21:56:55 UTC, after the agent app had closed.
+- Make public USDC private (`wallet_shield`): 0.01 USDC private in one 34 s
+  agent turn.
+- Send any token privately (`wallet_transfer_token`): 0.132573 JUP sold;
+  0.04 USDC arrived in 2 parts (22:10:51 and 22:24:32 UTC).
+- Pay any x402 endpoint (`x402_pay`, `shinjuku pay`, `shinjuku curl`): the
+  first payment to sellers the wallet never paid took 4.85 s and 11.31 s
+  direct, 9.94 s and 18.14 s over Tor.
+- Price preview (`x402_preview`): the price and the fee in 2.9 s, nothing
+  paid.
+- Find paid APIs (`x402_discover`): 15 paid APIs in 0.75 s.
+- Automatic refunds: two failed sellers refunded in full; one seller that
+  kept the money is named in the receipt.
+- Slow sellers, never paid twice: sellers that answer after 30 s and 60 s,
+  one payment each, and the data arrived.
+- Images and files: a 1,797-byte PNG saved for 0.002 USDC.
+- Cancel (`wallet_cancel`, `shinjuku cancel`): an unknown request and a paid
+  one both answered correctly; nothing changed.
+- Send to an address (`wallet_unshield`, `shinjuku unshield`): 0.974 USDC in
+  one 48 s agent turn; 1 USDC from the terminal in 49 s.
+- Send in parts at random times: 2 parts landed at 22:03:52 and 22:06:04 UTC,
+  after the app had closed.
+- Automatic join: 3 parts joined and sent in one call; 2 parts joined in one
+  terminal command (106 s).
+- Spend a received payment: a direct exit and a change exit, one transaction
+  each.
+- Balance (`wallet_balance`, `shinjuku balance`): answered in every run.
+- Receipts (`wallet_receipts`): 6 receipts with both refunds and their
+  transactions; the totals are right.
+- Spending limits (`--max-payment`, `--max-session`, `shinjuku limits`): a
+  0.011 USDC payment refused under a 0.001 USDC limit, nothing paid.
+- Version pin and update notice: no false update notice in 11 answers.
+- Ask an AI model (`inference_chat`): an answer for 0.001136 USDC in 15.1 s.
+- Terminal chat (`shinjuku chat`): two answers with the context kept,
+  0.002539 USDC in all.
+- One question (`shinjuku infer`): both forms answered, 0.001266 USDC.
+- Private AI address for your apps (`shinjuku infer start`,
+  `inference_server`): the official OpenAI client streamed an answer; no
+  prompt words in any log.
+- Tor (`setup --tor`, `--tor`, `--no-tor`): every run of this release ran
+  over Tor.
+- Self-custody (`shinjuku setup`, `backup-export`): setup took 89 s; 5 min
+  over Tor with the full proof download.
+- The shinjuku command (`npm i -g shinjuku@0.3.86`): setup, add-funds,
+  balance and send-all passed in a real terminal.
+
+Known issues (none of them loses money; each one gets its own fix release,
+tested live before the next):
+
+1. When a seller fails before it takes the money, the answer starts with
+   "Paid". The money is not taken and comes back by itself.
+2. The terminal send prints one internal line that starts with
+   `SELLER_STORE`.
+3. `shinjuku chat` can print raw Tor lines while Tor is slow.
+4. When the spending limit comes from the host's MCP entry, the refusal names
+   setup as the place to change it.
+5. Before a send that must first join parts, the agent may not tell you it
+   takes about 2 minutes.
+6. In a terminal, balance, infer and unshield print internal Tor, RPC and
+   history lines.
+7. A plain `shinjuku balance` right after a deposit can show no number.
+   `shinjuku balance --refresh` shows it.
 ## 2026-10-23: wallet release `b650bf06`, npm `shinjuku-shield@0.3.86` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
