@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release:
-        description: "Wallet release (sha8). Must be the release that /api/wallet/release serves now: production for latest, staging for next."
+        description: "Wallet release (sha8). Must be the release that /api/wallet/release of the chosen site serves now."
         required: true
         type: string
       version:
@@ -19,6 +19,14 @@ on:
         options:
           - next
           - latest
+      site:
+        description: "The site that serves this release: production (default), or staging (only after the stable pin is proved on production)"
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+          - staging
 
 permissions:
   contents: read
@@ -39,8 +47,7 @@ jobs:
     env:
       RELEASE: ${{ inputs.release }}
       VERSION: ${{ inputs.version }}
-      # latest = the stable pin, served by production; next = a release on staging (tested there before the owner confirms it).
-      SITE: ${{ inputs.dist_tag == 'latest' && 'https://shinjukustaition.com' || 'https://staging.shinjukustaition.com' }}
+      SITE: ${{ inputs.site == 'staging' && 'https://staging.shinjukustaition.com' || 'https://shinjukustaition.com' }}
       HASH_README_API: https://api.github.com/repos/ShinjukuStaition/shinjuku-shielded/readme
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
