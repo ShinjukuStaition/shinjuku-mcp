@@ -5,6 +5,21 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-23: wallet release `2b67ac65`, npm `shinjuku-shielded@0.3.79`
+
+- A seller that takes the payment and then refuses the data: the wallet
+  resends the same proof once, then says the seller keeps it. It never
+  shows a refund that will not come.
+- A seller that answers an error: the answer says so, and says that the
+  money comes back by itself if the transfer to the seller never lands.
+- `wallet_receipts` lists a payment the seller has not served yet, with
+  the seller and the state of its refund.
+- A seller that is not x402 v2 gets a clear refusal; nothing is paid.
+- The add-funds answer gives the new balance, and the balance answer names
+  all the USDC you added.
+- Write `version` to print the version.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `b840ab22`, npm `shinjuku-shielded@0.3.78`
 
 - `wallet_receipts` shows the private transaction of every payment, also
