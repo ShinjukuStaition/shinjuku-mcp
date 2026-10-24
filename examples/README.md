@@ -13,10 +13,9 @@ x402 facilitator on Solana, inside your agent.
 | [Solana Agent Kit plugin](https://github.com/ShinjukuStaition/shinjuku-sak-plugin) | npm `solana-agent-kit-plugin-shinjuku`: the wallet as Solana Agent Kit v2 actions (`SHINJUKU_X402_PAY` and others). |
 | [prompts.md](prompts.md) | 13 plain requests, the tool that each one calls, and the shape of the answer. |
 
-All examples run `npx -y --no-audit --no-fund shinjuku-shielded mcp`: the newest npm version
-(0.3.54, wallet release `285d2c1d`). Write `shinjuku-shielded@0.3.54` to
-pin it. The commands and flags come from `help mcp` and `help setup` of that
-release.
+All examples run `npx -y --no-audit --no-fund shinjuku-shield@0.3.86 mcp`: the stable version
+(pinned 2026-10-23, wallet release `b650bf06`). The commands and flags come
+from `help mcp` and `help setup` of that release.
 
 ## Where it runs
 
@@ -43,7 +42,7 @@ The output must be `v22` or higher.
 ### 2. Set it up in a terminal
 
 ```sh
-npx -y --no-audit --no-fund shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shield@0.3.86 setup
 ```
 
 In our runs, setup took about 10-16 s on a fast line, with the proof-tool
@@ -58,7 +57,7 @@ Setup writes to `~/.carbon-shielded-wallet`:
   offline places, then delete it from this machine.
 - No spending limit by default: only the balance bounds a payment. To set
   limits, run the setup with `--max-payment`, `--max-session`, and
-  `--max-cumulative`, in USDC (`npx -y --no-audit --no-fund shinjuku-shielded help setup`).
+  `--max-cumulative`, in USDC (`npx -y --no-audit --no-fund shinjuku-shield@0.3.86 help setup`).
 
 ### 3. Add the server to your agent
 
@@ -75,7 +74,7 @@ You can also add the server first and skip step 2:
 
 Accept. The setup runs (with the proof-tool download of about 191 MB) and
 the same server switches to the wallet tools. If your client cannot show the
-question, run `npx -y --no-audit --no-fund shinjuku-shielded setup` in a terminal, then restart
+question, run `npx -y --no-audit --no-fund shinjuku-shield@0.3.86 setup` in a terminal, then restart
 the agent host.
 
 ### 4. Add funds
@@ -109,7 +108,7 @@ encrypted backup to `$SHIELDED_WALLET_HOME/auto-backups/<pool>/` by itself.
 A shield is a public step. The chain shows USDC leave the wallet's own
 address, the amount, and the time. Payments from the shielded balance after
 that do not show this wallet. For the exchange route in a terminal, see
-`npx -y --no-audit --no-fund shinjuku-shielded help add-funds`.
+`npx -y --no-audit --no-fund shinjuku-shield@0.3.86 help add-funds`.
 
 ### 5. Pay a URL
 
@@ -141,7 +140,8 @@ If `<address>` is not in `--unshield-to`, your client shows a question:
 sends. A decline, or no answer in 5 minutes, sends nothing. The model
 cannot answer this question; your client app asks you.
 
-- The receiving address must already have a USDC token account.
+- The receiving address must already have its USDC token address (a wallet
+  that holds USDC has one).
 - The wallet's own address is refused: it made the deposits, so a send there
   would link them.
 - Our facilitator pays every network fee. The send takes minutes (one
@@ -158,7 +158,7 @@ cannot answer this question; your client app asks you.
 The answer shows one balance (`balanceAtomic`, what the agent can pay with)
 and UNSHIELDED (`unshieldedAtomic`, plain USDC on the wallet's own address),
 with `ownAddress` and `status` (`"current"` when the balance is read).
-`breakdown` names the parts of the one balance: `shieldedAtomic` (what the
+`breakdown` names what the one balance holds: `shieldedAtomic` (what the
 agent can send with `wallet_unshield`), `refundsInFlightAtomic`, and
 `setAsideAtomic` (pockets of an older version).
 

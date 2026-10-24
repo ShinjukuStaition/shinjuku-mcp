@@ -7,7 +7,7 @@ command runs a local MCP server (stdio) for your agent. Your keys never
 leave your machine.
 
 This is version {{VERSION}}. The npm packages `shinjuku-shield` and
-`shinjuku-shielded` hold the same files; `shinjuku` is the short command.
+`shinjuku-shielded` hold the same files. The command is `shinjuku`.
 
 ## Set up
 
@@ -24,7 +24,7 @@ server to that host's config.
 ## The `shinjuku` command
 
 ```sh
-npm install -g shinjuku@{{VERSION}}
+npm install -g --no-audit --no-fund shinjuku-shield@{{VERSION}}
 shinjuku help
 ```
 
@@ -36,18 +36,18 @@ Every wallet command works after `shinjuku`, for example `shinjuku balance`,
 Claude Code:
 
 ```sh
-claude mcp add --scope user shinjuku-shielded -- npx -y --no-audit --no-fund shinjuku-shield@{{VERSION}} mcp
+claude mcp add --scope user shinjuku -- npx -y --no-audit --no-fund shinjuku-shield@{{VERSION}} mcp
 ```
 
 Claude Desktop (`claude_desktop_config.json`) or Cursor (`~/.cursor/mcp.json`):
 
 ```json
-{ "mcpServers": { "shinjuku-shielded": { "command": "npx", "args": ["-y", "--no-audit", "--no-fund", "shinjuku-shield@{{VERSION}}", "mcp"] } } }
+{ "mcpServers": { "shinjuku": { "command": "npx", "args": ["-y", "--no-audit", "--no-fund", "shinjuku-shield@{{VERSION}}", "mcp"] } } }
 ```
 
 On native Windows, if the host cannot find `npx`, use `"command": "cmd"` and
-put `"/c", "npx"` at the start of `args`. The server keeps the name
-`shinjuku-shielded` in host configs.
+put `"/c", "npx"` at the start of `args`. The server's name in host
+configs is `shinjuku`.
 
 ## Add funds
 
@@ -97,11 +97,11 @@ keys.
 This package holds one wallet release, unchanged. The `shinjukuRelease` and
 `shinjukuSha256` fields in `package.json` name that release. Compare the hash
 with the Releases table in
-[ShinjukuStaition/shinjuku-shielded](https://github.com/ShinjukuStaition/shinjuku-shielded#releases).
+[ShinjukuStaition/shinjuku-shield](https://github.com/ShinjukuStaition/shinjuku-shield#releases).
 Versions are published from GitHub Actions with npm provenance.
 
 The full guide is
-[ShinjukuStaition/shinjuku-mcp](https://github.com/ShinjukuStaition/shinjuku-mcp).
+[ShinjukuStaition/shinjuku-shield](https://github.com/ShinjukuStaition/shinjuku-shield).
 
 ## License
 

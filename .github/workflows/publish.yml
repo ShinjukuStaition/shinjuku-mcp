@@ -3,6 +3,8 @@ name: Publish shinjuku-shield, shinjuku-shielded and shinjuku to npm
 # One wallet release goes out under both package names (shinjuku-shield is the main name from 0.3.81;
 # shinjuku-shielded stays, so installed wallets that update through it keep working) and as the shinjuku command
 # (names/shinjuku: it runs shinjuku-shield at the same exact version). Each has its npm Trusted Publisher on this file.
+# From 0.3.98 shinjuku-shield also has the bin `shinjuku` (the command users run); shinjuku-shielded does not, so a
+# machine with both installed globally has one `shinjuku` command file.
 
 on:
   workflow_dispatch:
@@ -53,7 +55,7 @@ jobs:
       VERSION: ${{ inputs.version }}
       SITE: ${{ inputs.site == 'staging' && 'https://staging.shinjukustaition.com' || 'https://shinjukustaition.com' }}
       DIST_TAG: ${{ inputs.dist_tag }}
-      HASH_README_API: https://api.github.com/repos/ShinjukuStaition/shinjuku-shielded/readme
+      HASH_README_API: https://api.github.com/repos/ShinjukuStaition/shinjuku-shield/readme
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -109,7 +111,7 @@ jobs:
           # Releases table row: | date | `sha8` or [`sha8`](url) | `sha256` | bytes | ...
           rows=$(awk -F'|' -v tag="\`$RELEASE\`" '/^\|/ && index($3, tag) { print $4 }' "$RUNNER_TEMP/hash-readme.md")
           count=$(printf '%s' "$rows" | grep -c . || true)
-          [[ "$count" == "1" ]] || { echo "::error::expected 1 row for $RELEASE in the shinjuku-shielded Releases table, found $count"; exit 1; }
+          [[ "$count" == "1" ]] || { echo "::error::expected 1 row for $RELEASE in the Releases table of the shinjuku-shield README, found $count"; exit 1; }
           readme_sha=$(printf '%s' "$rows" | grep -oE '[0-9a-f]{64}' || true)
           [[ "$readme_sha" == "$served_sha" ]] || { echo "::error::GitHub table sha256 '$readme_sha' differs from site sha256 $served_sha"; exit 1; }
 
@@ -160,7 +162,9 @@ jobs:
       - name: Publish the same files as shinjuku-shield
         run: |
           set -euo pipefail
-          npm pkg set "name=shinjuku-shield"
+          # The command users run is `shinjuku` (from 0.3.98); npx still runs the bin named like the package.
+          npm pkg set "name=shinjuku-shield" "bin.shinjuku=shinjuku-wallet.mjs"
+          [[ "$(jq -r '.bin["shinjuku-shield"]' package.json)" == "shinjuku-wallet.mjs" ]] || { echo "::error::shinjuku-shield has no bin named like the package"; exit 1; }
           jq '{name, version, shinjukuRelease, shinjukuSha256, bin}' package.json
           if npm view "shinjuku-shield@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
           npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose

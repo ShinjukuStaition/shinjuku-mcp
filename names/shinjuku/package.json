@@ -4,14 +4,14 @@
   "description": "The shinjuku command: runs the Shinjuku Shield wallet (npm shinjuku-shield) at this exact version. Pay x402 URLs and AI answers privately from a shielded USDC balance on Solana.",
   "license": "SEE LICENSE IN LICENSE.txt",
   "author": "Shinjuku Shield",
-  "homepage": "https://github.com/ShinjukuStaition/shinjuku-mcp#readme",
+  "homepage": "https://github.com/ShinjukuStaition/shinjuku-shield#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShinjukuStaition/shinjuku-mcp.git",
+    "url": "git+https://github.com/ShinjukuStaition/shinjuku-shield.git",
     "directory": "names/shinjuku"
   },
   "bugs": {
-    "url": "https://github.com/ShinjukuStaition/shinjuku-mcp/issues"
+    "url": "https://github.com/ShinjukuStaition/shinjuku-shield/issues"
   },
   "keywords": [
     "x402",

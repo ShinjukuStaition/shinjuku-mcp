@@ -4,14 +4,14 @@
   "description": "A name of Shinjuku Shield (private x402 payments). It prints how to install the wallet, npm shinjuku-shielded.",
   "license": "SEE LICENSE IN LICENSE.txt",
   "author": "Shinjuku Shield",
-  "homepage": "https://github.com/ShinjukuStaition/shinjuku-mcp#readme",
+  "homepage": "https://github.com/ShinjukuStaition/shinjuku-shield#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShinjukuStaition/shinjuku-mcp.git",
+    "url": "git+https://github.com/ShinjukuStaition/shinjuku-shield.git",
     "directory": "names/shinpay"
   },
   "bugs": {
-    "url": "https://github.com/ShinjukuStaition/shinjuku-mcp/issues"
+    "url": "https://github.com/ShinjukuStaition/shinjuku-shield/issues"
   },
   "keywords": [
     "x402",

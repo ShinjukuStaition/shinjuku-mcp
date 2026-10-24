@@ -1,13 +1,13 @@
 # Vercel AI SDK
 
 The [Vercel AI SDK](https://ai-sdk.dev) reads MCP servers through
-`@ai-sdk/mcp`. It runs the same `shinjuku-shielded mcp` server as the other
+`@ai-sdk/mcp`. It runs the same `shinjuku-shield@0.3.86 mcp` server as the other
 examples, so you do not need another package.
 
 ## 1. Set up the wallet in a terminal
 
 ```sh
-npx -y --no-audit --no-fund shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shield@0.3.86 setup
 ```
 
 Setup creates the wallet only after you confirm it. An AI SDK app does not
@@ -35,7 +35,7 @@ import { anthropic } from "@ai-sdk/anthropic";
 const shinjuku = await createMCPClient({
   transport: new Experimental_StdioMCPTransport({
     command: "npx",
-    args: ["-y", "--no-audit", "--no-fund", "shinjuku-shielded", "mcp", "--max-payment", "0.05"],
+    args: ["-y", "--no-audit", "--no-fund", "shinjuku-shield@0.3.86", "mcp", "--max-payment", "0.05"],
   }),
 });
 
@@ -82,5 +82,5 @@ const result = await tools.wallet_balance.execute({}, { toolCallId: "check", mes
 console.log(result.content[0].text);
 ```
 
-The answer is JSON. It holds `balanceAtomic` (1000000 = 1 USDC) and its parts
+The answer is JSON. It holds `balanceAtomic` (1000000 = 1 USDC) and what it holds
 under `breakdown`.

@@ -1,19 +1,19 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.ShinjukuStaition/shinjuku-mcp",
-  "title": "Shinjuku Shielded",
+  "title": "Shinjuku Shield",
   "description": "Private x402 payments on Solana: shield, pay, and unshield USDC under caps you set.",
   "version": "0.3.86",
   "websiteUrl": "https://shinjukustaition.com",
   "repository": {
-    "url": "https://github.com/ShinjukuStaition/shinjuku-mcp",
+    "url": "https://github.com/ShinjukuStaition/shinjuku-shield",
     "source": "github"
   },
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "shinjuku-shielded",
+      "identifier": "shinjuku-shield",
       "version": "0.3.86",
       "runtimeHint": "npx",
       "runtimeArguments": [

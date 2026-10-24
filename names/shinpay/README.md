@@ -10,4 +10,4 @@ npm install -g shinjuku-shielded@0.3.80
 shinjuku-shielded setup
 ```
 
-Docs and host configs: https://github.com/ShinjukuStaition/shinjuku-mcp
+Docs and host configs: https://github.com/ShinjukuStaition/shinjuku-shield

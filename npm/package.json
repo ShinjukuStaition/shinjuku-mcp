@@ -7,14 +7,14 @@
   "shinjukuSha256": "",
   "license": "SEE LICENSE IN LICENSE.txt",
   "author": "Shinjuku Shielded",
-  "homepage": "https://github.com/ShinjukuStaition/shinjuku-mcp#readme",
+  "homepage": "https://github.com/ShinjukuStaition/shinjuku-shield#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShinjukuStaition/shinjuku-mcp.git",
+    "url": "git+https://github.com/ShinjukuStaition/shinjuku-shield.git",
     "directory": "npm"
   },
   "bugs": {
-    "url": "https://github.com/ShinjukuStaition/shinjuku-mcp/issues"
+    "url": "https://github.com/ShinjukuStaition/shinjuku-shield/issues"
   },
   "keywords": [
     "x402",

@@ -4,7 +4,7 @@ Talk to your agent the way you talk to a person. The server tells the agent
 which tool fits each request. Every answer is JSON text with a `next` field
 that names the next call, or says that there is nothing to do.
 
-Amounts are atomic USDC: 1000000 = 1 USDC. The `<...>` parts below are
+Amounts are atomic USDC: 1000000 = 1 USDC. The `<...>` values below are
 placeholders, not real values.
 
 | # | You say | The agent calls | The answer |
@@ -20,7 +20,7 @@ placeholders, not real values.
 | 9 | "ask an AI model privately" | `inference_chat` | One AI answer from usePod's x402 chat endpoint, paid privately from the shielded balance. A short `qwen3-8-flash` answer costs about 0.0011 USDC: the provider price plus the 0.001 USDC Shinjuku fee. It needs `--tor` or a proxy. |
 | 10 | "send 2 USDC to <address>" | `wallet_unshield {amount_atomic: "2000000", to: "<address>", request_id: "send-1"}` | Your client asks you first: "Send 2 USDC from your shielded balance to <address>?" (not for an `--unshield-to` address). Then a `stage` (`confirming`, `queued`, `refreshing`, `self-pay`, `exit`, `done`). At `done`: `exitTransaction` and `backupPath`. |
 | 11 | "show my receipts" | `wallet_receipts {}` | `{ok, count, total, facilitatorNote, receipts}`. Each receipt has `kind` (`x402`, `inference`, or a move), the host (never the full URL), `amountAtomic`, and `transaction`. |
-| 12 | "cancel the payment that is stuck" | `wallet_cancel {request_id}` | Closes one unfinished payment so its reserved balance comes back. It also closes the parts of a private send that did not start, or an add-funds link that no USDC reached. A payment that never left the wallet closes at once. A sent one closes only after its quote expired and the pool history shows it never landed. It pays nothing. |
+| 12 | "cancel the payment that is stuck" | `wallet_cancel {request_id}` | Closes one unfinished payment so its reserved balance comes back. It also closes the pieces of a private send that did not start, or an add-funds link that no USDC reached. A payment that never left the wallet closes at once. A sent one closes only after its quote expired and the pool history shows it never landed. It pays nothing. |
 | 13 | "find a seller of satellite images" | `x402_discover` | Matching sellers from public x402 listings (Coinbase x402 Bazaar, PayAI, Dexter, and others). The search runs on your machine. It pays nothing. The first call takes about 15 s. |
 
 ## Refusals
@@ -51,6 +51,6 @@ The agent does what `next` says. Some codes that you can see:
 | `confidential_retired` | The seller offers only scheme `confidential` (hidden amounts). Those payments are retired. Nothing was paid. |
 | `p03_float_price_above_capacity` | The price is above the largest price that our float pays for one request. Nothing was paid. |
 | `p03_float_busy_retry_later`, `p03_float_not_ready_retry_later` | Our float is busy or is being filled. Nothing was paid. Call again later with the same `request_id`. |
-| `p03_merchant_respend_insufficient_recovered_value` | With "merge" in `next`: the balance covers the price only in total, over several accounts. Run `shinjuku-wallet merge`, wait for the next pool anchor (usually within a minute), then pay again. |
+| `p03_merchant_respend_insufficient_recovered_value` | The balance covers the price only in total, over several deposits. Run the command that `next` names (it readies the balance for one payment), wait for the next pool anchor (usually within a minute), then pay again. |
 | `wallet_spend_refused_per_payment_cap_exceeded` | A cap in the wallet file refused it. You change it with `shinjuku-wallet limits`. |
 | a code that ends in `_retry_same_request` | Call `x402_pay` again with the same `request_id`. It never pays twice. |

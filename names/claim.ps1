@@ -40,7 +40,7 @@ try {
   Write-Host 'Step 3 of 3: let the public GitHub workflows publish later versions (then a release needs no passkey).'
   $workflow = @{ 'shinjuku' = 'publish.yml'; 'shinjuku-shield' = 'publish.yml'; 'shinpay' = 'names.yml' }
   foreach ($p in $names) {
-    try { Invoke-Npm trust github $p --file $workflow[$p] --repo ShinjukuStaition/shinjuku-mcp --yes; Write-Host "$p trusts $($workflow[$p])." }
+    try { Invoke-Npm trust github $p --file $workflow[$p] --repo ShinjukuStaition/shinjuku-shield --yes; Write-Host "$p trusts $($workflow[$p])." }
     catch { Write-Host "$p trust was not set ($($_.Exception.Message)). The name is still ours; tell the release session." }
   }
 } finally {

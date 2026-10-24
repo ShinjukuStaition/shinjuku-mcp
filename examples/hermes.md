@@ -7,7 +7,7 @@ supported.
 First, run the setup in a terminal:
 
 ```sh
-npx -y --no-audit --no-fund shinjuku-shielded setup
+npx -y --no-audit --no-fund shinjuku-shield@0.3.86 setup
 ```
 
 It makes the wallet, a random passphrase file, the checked proof tools
@@ -22,7 +22,9 @@ mcp_servers:
     command: npx
     args:
       - "-y"
-      - "shinjuku-shielded"
+      - "--no-audit"
+      - "--no-fund"
+      - "shinjuku-shield@0.3.86"
       - "mcp"
     timeout: 600
     connect_timeout: 60

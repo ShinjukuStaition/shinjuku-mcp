@@ -2,8 +2,39 @@
 
 The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 `shinjuku-wallet.mjs`. Each wallet release has its SHA-256 in the
-[Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
-of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
+[Releases table](README.md#releases) of this repository. Dates are UTC.
+
+## 2026-10-24: wallet release `1fe3c2f7`, npm `shinjuku-shield@0.3.98` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.97 and these:
+
+- The terminal command is `shinjuku`. Install it with
+  `npm install -g --no-audit --no-fund shinjuku-shield@0.3.98`, then run
+  `shinjuku help`. Setup asks to install it for you, over Tor when you chose
+  Tor, and it updates an older `shinjuku` command.
+- A command that the wallet prints starts with `shinjuku` when that command
+  is on your computer. Otherwise it is a one-time line,
+  `npx -y --no-audit --no-fund shinjuku-shield@0.3.98 <command>`, that works
+  with nothing installed.
+- The lines for your agent app name `shinjuku-shield@0.3.98`. The app entry
+  stays `shinjuku`, so the slash commands stay `/shinjuku:<name>`: type / and
+  pick a command, then add its value, or press Enter and the agent asks.
+- When a seller refuses a payment at once, the answer gives the time when
+  the refund lands, not "about 7 minutes". Your balance shows the refund soon
+  after.
+- When Tor stops, the wallet's answer gives the command that starts Tor
+  again, and the steps to reconnect name the app entry `shinjuku`.
+- A limit refusal names the limit that refused, and each text that raises a
+  limit names `shinjuku limits`, which asks for each limit.
+- Setup prints no onion line. After `--add-to` added your agent app, setup
+  prints no manual lines for that app.
+- A `curl` rerun with the same `--request-id` asks the price that the wallet
+  kept for it.
+- The model list says that nothing was asked or paid.
+- The Releases link names this repository, `shinjuku-shield`.
 
 ## 2026-10-24: wallet release `7438f0e3`, npm `shinjuku@0.3.97` (candidate, npm tag `next`)
 

@@ -11,6 +11,6 @@ process.stdout.write([
   "Or run setup once without installing:",
   `  npx -y --no-audit --no-fund shinjuku-shielded@${PIN} setup`,
   "",
-  "Docs and host configs: https://github.com/ShinjukuStaition/shinjuku-mcp",
+  "Docs and host configs: https://github.com/ShinjukuStaition/shinjuku-shield",
   "",
 ].join("\n"));

@@ -4,7 +4,7 @@
 
 Report it privately on GitHub: open the **Security** tab of this repository
 and select **Report a vulnerability**
-(https://github.com/ShinjukuStaition/shinjuku-mcp/security/advisories/new).
+(https://github.com/ShinjukuStaition/shinjuku-shield/security/advisories/new).
 Only the maintainers see the report.
 
 Do not open a public issue for a vulnerability. Do not put a private key, a
@@ -12,7 +12,7 @@ recovery file, or a passphrase in a report. We never ask for them.
 
 Please include:
 
-- the wallet release (`npx -y --no-audit --no-fund shinjuku-shielded help` and the npm version, or
+- the wallet release (`npx -y --no-audit --no-fund shinjuku-shield help` and the npm version, or
   the SHA-256 of `shinjuku-wallet.mjs`),
 - your MCP client and its version,
 - the steps that show the problem, and what you expected.
@@ -20,7 +20,7 @@ Please include:
 ## In scope
 
 The behavior of the MCP server (`shinjuku-wallet mcp`, also run as
-`npx -y --no-audit --no-fund shinjuku-shielded mcp`), for example:
+`npx -y --no-audit --no-fund shinjuku-shield mcp`), for example:
 
 - a payment above `--max-payment`, `--max-session`, `--max-per-host-day`, or
   outside `--allow-host`;
@@ -55,6 +55,6 @@ two offline places. If you think a key is exposed, move your funds to a new
 wallet.
 
 Check the wallet file before you run it: its SHA-256 is in the
-[Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
+[Releases table](README.md#releases)
 and in section 7b of https://shinjukustaition.com/skill.md. A match proves
 that your copy is complete, not who made it.
