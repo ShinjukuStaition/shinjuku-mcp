@@ -5,6 +5,34 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `1d784246`, npm `shinjuku-shield@0.3.91` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.90 (known issues 1 to 6, the deposit QR code) and these:
+
+- Known issue 7 of 0.3.86 is fixed: a plain `shinjuku balance` right after a
+  deposit or a send reads the chain once and shows the number. The
+  `wallet_balance` tool checks a refund from an old read before it calls the
+  refund "on its way".
+- Add money in a terminal in any amount from 0.01 USDC:
+  `shinjuku add-funds --route exchange --amount 0.05` (with the QR code). Until
+  now the terminal took whole USDC only.
+- Your own wallet address, for sending money back to yourself: setup asks for
+  it in a terminal (Enter skips it; setup asks again when you run it again).
+  Your agent then sends to it without asking each time, also in an agent app
+  that cannot show a question. Setup takes the address only in a real
+  terminal, never from a script or an agent's tool, so an agent cannot
+  approve an address by itself.
+- In an agent app that cannot show the send question, the answer says that
+  nothing was sent and tells you to run setup in a terminal to add your own
+  wallet address.
+- Plainer answers: a finished deposit or send says that a backup of the
+  wallet was saved (not its folder), and the balance says nothing about
+  spending limits when you set none.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `4cda1792`, npm `shinjuku-shield@0.3.90` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
