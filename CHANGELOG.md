@@ -5,6 +5,26 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `af5b54d5`, npm `shinjuku-shield@0.3.94` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.93 and these:
+
+- When your agent app sets up the wallet, the setup call waits for your answer
+  in the setup box and gives the result in the same answer. Your agent goes on
+  by itself after you answer: you do not type "I approved it".
+- After you answer the setup box, the wallet status gives the result of setup,
+  not "waiting for your answer".
+- If Tor Browser is open, the first line of the setup answer now says that Tor
+  Browser does not give the connection the wallet needs, the same as the rest of
+  the answer. Before, it said "Tor is not running".
+- If you close a confirmation box (Esc), the wallet takes it as your answer
+  and sends nothing. Before, a fast close could read "this app could not show
+  you the address".
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `6048ca61`, npm `shinjuku-shield@0.3.93` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays

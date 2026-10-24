@@ -383,10 +383,11 @@ supported: the provers are Linux programs.
 
 The stable version is `shinjuku-shield@0.3.86` (pinned 2026-10-23; the same files are on npm as
 `shinjuku-shielded@0.3.86`), and every command here names it. Setup prints host lines that name this exact
-version. A candidate is out for testing: `shinjuku-shield@0.3.93` (npm tag `next`,
+version. A candidate is out for testing: `shinjuku-shield@0.3.94` (npm tag `next`,
 2026-10-24). It fixes known issues 1 to 7 of 0.3.86, shows a QR code for a
-deposit, asks for your own wallet address in setup, and asks "Use Tor?" when
-your agent app sets up the wallet; see the [changelog](CHANGELOG.md). A later stable version gets its own row in the
+deposit, asks for your own wallet address in setup, asks "Use Tor?" when
+your agent app sets up the wallet, and waits for your answer in the setup
+box; see the [changelog](CHANGELOG.md). A later stable version gets its own row in the
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases): run its setup once and
 put its version in your host's config. Your wallet, its address, and its balance stay the same.
 
