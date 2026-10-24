@@ -5,6 +5,23 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `9af59797`, npm `shinjuku-shield@0.3.89` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 and 0.3.88 (known issues 1, 2 and 4) and two more:
+
+- Known issues 3 and 6 of 0.3.86 are fixed: in a terminal, `shinjuku chat`,
+  `shinjuku balance`, `shinjuku infer` and `shinjuku unshield` show only
+  the result lines. The wallet's own Tor, RPC and history lines show only
+  with `--verbose`. When Tor is slow, one plain line says so, for example
+  "Tor was slow, so the wallet switched to another Tor route. This can add
+  a few seconds." Errors and warnings always show.
+- In a terminal, `shinjuku unshield` says once that the send takes about a
+  minute, so a quiet terminal does not look stuck.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-23: wallet release `17d8275d`, npm `shinjuku-shield@0.3.88` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
