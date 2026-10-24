@@ -5,6 +5,35 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `7438f0e3`, npm `shinjuku@0.3.97` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.96 and these:
+
+- Slash commands: in Claude Code, type `/` to see the wallet's eight
+  commands: `/shinjuku:setup`, `/shinjuku:balance`, `/shinjuku:add-funds`,
+  `/shinjuku:pay`, `/shinjuku:send`, `/shinjuku:receipts`,
+  `/shinjuku:find-sellers` and `/shinjuku:ask-ai`. Each one puts a plain
+  request for your agent in the chat.
+- The wallet's name in your agent app is now `shinjuku`. Setup writes that
+  name and removes an older `shinjuku-shielded` or `shinjuku-shield` entry of
+  this wallet, so your app never starts two wallets.
+- Add funds fills the private balance up to 5 USDC. When your balance leaves
+  less room than the amount you ask for, add funds tells you before you
+  send, and the payment link and its QR code ask only for the amount that
+  fits.
+- In a terminal, the wallet asks instead of taking flags. The setup question
+  "Send every request through Tor?" takes Enter as yes. `add-funds`,
+  `unshield` and `limits` ask for their values. `curl` shows the seller's
+  price first and pays only after you answer y. `unshield` sends only after
+  you answer y.
+- The wallet card says "Last payments to sellers". Your sends and deposits
+  are in your receipts.
+- The wallet's instructions to your agent name the private AI tools too.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `4a3321b0`, npm `shinjuku@0.3.96` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
