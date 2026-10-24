@@ -5,6 +5,26 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `4cda1792`, npm `shinjuku-shield@0.3.90` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.89 (known issues 1, 2, 3, 4 and 6) and these:
+
+- Add money from your phone: `shinjuku add-funds` in a terminal and the
+  `wallet_add_funds` tool show a QR code of the one-time deposit address (a
+  Solana Pay link). Scan it with a phone wallet such as Phantom or Solflare.
+  The wallet makes the code on your machine; no other server sees the address.
+- Known issue 5 of 0.3.86 is fixed: before a send that must first get your
+  balance ready, the agent tells you how long it takes (about 2 minutes).
+- Plainer texts for a first-time user: `shinjuku chat` starts with two short
+  lines, and `/help` shows the details. `shinjuku infer` and `shinjuku unshield`
+  show their id only when a run stops. The texts say "the AI provider". One
+  plain line says when Tor is slow to reach the payment service. A refused
+  command line after setup shows short examples.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `9af59797`, npm `shinjuku-shield@0.3.89` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
