@@ -5,6 +5,32 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `6304f680`, npm `shinjuku-shield@0.3.95` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.94 and these:
+
+- When setup ends in your agent app, the first line of the answer names your
+  recovery file, so your agent tells you to copy it in the same turn. This is
+  also true when setup stops after the wallet was made.
+- One setup call waits until setup has ended, so your agent does not stop
+  half way through the downloads.
+- After you accept the setup box, every setup answer names your choices.
+  Before, your agent could tell you the setup box never showed.
+- After you accept a send in its confirmation box, every answer of that send
+  says that you confirmed it. Before, your agent could tell you that no
+  confirmation was shown.
+- The texts use plain words for the step that gets your balance ready to
+  send. The wallet does this step by itself; the terminal command for it is
+  now `shinjuku prepare`, and the old command name still works.
+- When Tor is not running, the terminal gives one sentence and then the
+  command that starts Tor, alone on its line, for the port that setup
+  recorded.
+- Each command that a hint shows now runs as shown.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `af5b54d5`, npm `shinjuku-shield@0.3.94` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
