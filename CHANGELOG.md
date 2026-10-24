@@ -4,6 +4,30 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 `shinjuku-wallet.mjs`. Each wallet release has its SHA-256 in the
 [Releases table](README.md#releases) of this repository. Dates are UTC.
 
+## 2026-10-24: wallet release `1c3d204e`, npm `shinjuku@0.3.101` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.100 and these:
+
+- Install the terminal command with `npm install -g --no-audit --no-fund shinjuku@0.3.101`.
+- An AI answer gets 4096 tokens by default (512 for `claude-opus-5`) in
+  `shinjuku chat`, `shinjuku infer`, the private AI address and the
+  `inference_chat` tool. At 2048 tokens a 300-word `qwen3-8-flash` answer
+  stopped before its end: the model thinks before it answers, and those
+  tokens are paid too. At 4096 tokens the same answer was complete and
+  cost 0.00312 USDC in a live test. The price follows the token limit, not
+  the length of the answer.
+- `shinjuku chat`: after you add funds in another terminal, `/balance`
+  starts from the newer balance, or says that money came in.
+- `shinjuku add-funds`: the ready line and the stop line name no internal
+  run name.
+- Ctrl+C at a question in a terminal stops the command with one line: it
+  says that nothing was sent or paid.
+- `shinjuku unshield all` and `shinjuku unshield 0.5` take the word as the
+  amount.
+
 ## 2026-10-24: wallet release `fe6cb068`, npm `shinjuku@0.3.100` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
@@ -14,8 +38,9 @@ one. To try the candidate, install its exact version. It has the fixes of
 - Install the terminal command with `npm install -g --no-audit --no-fund shinjuku@0.3.100`.
 - One default AI model, `qwen3-8-flash`, for `shinjuku chat`, `shinjuku infer`,
   the private AI address and the `inference_chat` tool. An answer pays for
-  up to 2048 tokens (512 for `claude-opus-5`); a 300-word answer cost
-  0.002175 USDC in a live test. `deepseek-v4-1-flash` stays available
+  up to 2048 tokens (512 for `claude-opus-5`). Correction: in a later live
+  test a 300-word answer stopped at this 2048-token limit (it paid
+  0.002062 USDC); 0.3.101 gives 4096 tokens. `deepseek-v4-1-flash` stays available
   (`/model deepseek-v4-1-flash` in the chat): in that test its AI provider
   took the payment and answered an error instead of a long answer.
 - `shinjuku chat`: when the AI provider keeps a payment and sends an error
