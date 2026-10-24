@@ -165,7 +165,7 @@ jobs:
           if npm view "shinjuku-shield@$VERSION" version >/dev/null 2>&1; then echo "already published"; exit 0; fi
           npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose
 
-      - name: Publish the shinjuku command at the same version (it runs shinjuku-shield exactly)
+      - name: Publish the shinjuku command at the same version, last (it runs shinjuku-shield exactly)
         working-directory: names/shinjuku
         run: |
           set -euo pipefail
@@ -186,4 +186,12 @@ jobs:
           cp ../../npm/package.json ../../npm/shinjuku-wallet.mjs ../../npm/manifest.json "$RUNNER_TEMP/try/node_modules/shinjuku-shield/"
           node "$RUNNER_TEMP/try/node_modules/shinjuku/shinjuku.mjs" version | tee "$RUNNER_TEMP/version.txt"
           grep -q "$VERSION" "$RUNNER_TEMP/version.txt" || { echo "::error::shinjuku did not run the wallet at $VERSION"; exit 1; }
+          # Published last, only once npm lists shinjuku-shield at this version: shinjuku depends on that exact version,
+          # so a shinjuku listed first cannot be installed until it is (0.3.88: shinjuku listed 23:44:52 UTC,
+          # shinjuku-shield 23:45:58 UTC).
+          for try in $(seq 1 90); do
+            if npm view "shinjuku-shield@$VERSION" version --prefer-online >/dev/null 2>&1; then echo "npm lists shinjuku-shield@$VERSION (check $try)"; break; fi
+            [ "$try" -lt 90 ] || { echo "::error::npm does not list shinjuku-shield@$VERSION after 15 minutes, so shinjuku was not published; run this workflow again"; exit 1; }
+            sleep 10
+          done
           npm publish --provenance --access public --tag "$DIST_TAG" --loglevel verbose
