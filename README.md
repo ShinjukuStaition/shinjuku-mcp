@@ -418,7 +418,7 @@ yet.
 
 The stable version is `shinjuku-shield@0.3.86` (pinned 2026-10-23; the same files are on npm as
 `shinjuku-shielded@0.3.86`), and every command here names it. Setup prints host lines that name this exact
-version. A candidate is out for testing: `shinjuku-shield@0.3.102` (npm tag `next`,
+version. A candidate is out for testing: `shinjuku-shield@0.3.103` (npm tag `next`,
 2026-10-24). It fixes known issues 1 to 7 of 0.3.86, shows a QR code for a
 deposit, asks for your own wallet address in setup, asks "Use Tor?" when
 your agent app sets up the wallet, waits for your answer in the setup box,
@@ -426,7 +426,7 @@ names your recovery file when setup ends, says when you confirmed a send,
 and asks for each value in a terminal instead of a flag. It adds slash
 commands in Claude Code: type / and pick a command, then add its value, or
 press Enter and the agent asks. It gives you the `shinjuku` command for a
-terminal (`npm install -g --no-audit --no-fund shinjuku@0.3.102`, then
+terminal (`npm install -g --no-audit --no-fund shinjuku@0.3.103`, then
 `shinjuku help`). The private AI chat and the private AI address use one
 default model, `qwen3-8-flash`, with 4096 tokens for an answer; the address
 names its model and says what to do after a restart. When a seller refuses a payment at once, it
@@ -730,8 +730,8 @@ our first customer and our live demo.
   [0.3.86 release notes](#release-0386).
   Hash: the `b650bf06` row of [Releases](#releases).
 - The stable version before it: wallet release `98296ff0` (npm 0.3.80).
-- Candidate (2026-10-24, not the stable version): wallet release `3a984162`, npm
-  `shinjuku-shield@0.3.102` under the tag `next`. It fixes known issues 1 to 7 of
+- Candidate (2026-10-24, not the stable version): wallet release `b5da74cb`, npm
+  `shinjuku-shield@0.3.103` under the tag `next`. It fixes known issues 1 to 7 of
   0.3.86, shows a QR code for a deposit, takes any amount from 0.01 USDC in a
   terminal, keeps every tool text short enough for agent apps to read in full,
   asks "Use Tor?" when an agent app sets up the wallet, waits for your answer
@@ -739,7 +739,7 @@ our first customer and our live demo.
   confirmed a send, and asks for each value in a terminal instead of a flag.
   It adds slash commands in Claude Code (type / and pick a command, then add
   its value, or press Enter and the agent asks), the `shinjuku` command for a
-  terminal (`npm install -g --no-audit --no-fund shinjuku@0.3.102`), one default AI model
+  terminal (`npm install -g --no-audit --no-fund shinjuku@0.3.103`), one default AI model
   (`qwen3-8-flash`, 4096 tokens for an answer) for the chat and the private AI address, and the
   time when a refund lands after a seller refuses at once.
 - `shielded-exact` payments from the shielded balance: live on mainnet.
@@ -956,6 +956,7 @@ is in the [changelog](CHANGELOG.md).
 | 2026-10-24 (candidate, npm `next`) | [`fe6cb068`](https://shinjukustaition.com/wallet/fe6cb068/shinjuku-wallet.mjs) | `fe6cb068e76316bd9c4fab329dbd3586d980d69f6fe42a0f01fa1a254abb4410` | 12,791,175 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
 | 2026-10-24 (candidate, npm `next`) | [`1c3d204e`](https://shinjukustaition.com/wallet/1c3d204e/shinjuku-wallet.mjs) | `1c3d204e7ba114b9d80654035efb4a244ac607f038e1961f23663b7af9b45dc5` | 12,794,106 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
 | 2026-10-24 (candidate, npm `next`) | [`3a984162`](https://shinjukustaition.com/wallet/3a984162/shinjuku-wallet.mjs) | `3a9841626e4a97d756f610278b4e03f2571b556a7b06207c418a850b2b5200bf` | 12,797,194 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
+| 2026-10-24 (candidate, npm `next`) | [`b5da74cb`](https://shinjukustaition.com/wallet/b5da74cb/shinjuku-wallet.mjs) | `b5da74cb566cf4df5a7381cbb3eb28797aff16377f170472b6fcefce230db2a2` | 12,800,520 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
 
 Beside each wallet file, the website also serves `LICENSE.txt` (the
 copyright notice), `THIRD_PARTY_NOTICES.txt` (the open-source licenses inside
