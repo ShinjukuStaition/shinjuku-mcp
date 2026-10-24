@@ -5,6 +5,33 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `4a3321b0`, npm `shinjuku@0.3.96` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.95 and these:
+
+- The npm name you use is now `shinjuku`. Setup and the update texts write
+  `shinjuku@0.3.96` in the lines for your agent app. The names
+  `shinjuku-shield` and `shinjuku-shielded` run the same wallet, and lines
+  that name them keep working.
+- To put money in, every answer offers one way: add funds, which gives you a
+  one-time address. With the Shinjuku relay (the default), setup no longer
+  offers the wallet's own public address: deposits to one public address
+  can be linked to each other.
+- After you send USDC to an add-funds address, the wallet watches that
+  address. It no longer says that your balance is empty or asks you to add
+  funds again while the deposit is on its way.
+- The privacy wait after a deposit now reads "up to 5 minutes".
+- Before setup, each tool says in one line what it does after setup, so your
+  agent can tell you what the wallet offers.
+- A wallet that runs without the Shinjuku relay says what the chain shows
+  before you deposit to its own address.
+- In a terminal, the add-funds command that an empty balance shows now runs
+  as shown.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `6304f680`, npm `shinjuku-shield@0.3.95` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
