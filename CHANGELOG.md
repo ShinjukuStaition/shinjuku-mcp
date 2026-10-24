@@ -4,6 +4,50 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 `shinjuku-wallet.mjs`. Each wallet release has its SHA-256 in the
 [Releases table](README.md#releases) of this repository. Dates are UTC.
 
+## 2026-10-24: wallet release `5023a291`, npm `shinjuku@0.3.99` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.98 and these:
+
+- Install the terminal command with
+  `npm install -g --no-audit --no-fund shinjuku@0.3.99`, then run `shinjuku help`.
+  The lines for your agent app still name `shinjuku-shield@0.3.99`.
+- One default AI model, `deepseek-v4-1-flash`, for `shinjuku chat`,
+  `shinjuku infer`, the private AI address and the `inference_chat` tool.
+  `qwen3-8-flash` stays available (`/model qwen3-8-flash` in the chat).
+- `shinjuku chat`: an answer can be up to 2048 tokens long when your limits
+  and your private balance allow it (else 512). The chat prints a line when
+  it sends a paid question again, and a "still waiting" line after 20
+  seconds. When the AI provider answers with an error, the chat says so and
+  tells you to type `/retry`, which never pays twice. The first Ctrl+C keeps
+  the chat open. `/balance` shows your private balance, and a command that
+  does not exist gets a plain answer.
+- `shinjuku chat` and `shinjuku infer start` read your private balance when
+  they start. When it is below the price of one answer, they say so and give
+  the line that adds funds.
+- `shinjuku infer start` and `shinjuku infer status` give the model line for
+  your app, and say that the address stops when the computer restarts: then
+  run `shinjuku infer start` again. The `inference_server` tool says the
+  same. `--verbose` prints every line.
+- Setup ends with short next steps (add money, chat, the private AI address,
+  your agent app) and prints no API key.
+- `shinjuku help` is short. `shinjuku help all` lists every command.
+- Every wallet text says "private balance".
+- `shinjuku unshield`: press Enter to send to your own address. Before you
+  confirm a send of all, it names the amount. `--split` spreads the amount
+  over several exits.
+- A deposit starts as soon as the wallet sees its USDC (no random wait of up
+  to 5 minutes).
+- A limit refusal names the 24-hour limit or the per-payment limit.
+- When a seller refuses the request itself (an HTTP 4xx with a reason), the
+  answer says to fix the request and pay with a new request id.
+- A quiet terminal prints no line about the RPC relay.
+- After a seller refuses a payment at once, the refund time uses the block
+  pace that our facilitator measures, and your balance shows the refund
+  from that time.
+
 ## 2026-10-24: wallet release `1fe3c2f7`, npm `shinjuku-shield@0.3.98` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays

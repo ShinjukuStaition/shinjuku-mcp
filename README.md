@@ -235,8 +235,9 @@ production, with real USDC, on 2026-10-23.
   `inference_server`). A local OpenAI-compatible address
   (`http://127.0.0.1:11402/v1`) with an API key. Any app that speaks the
   OpenAI chat API, streaming included, gets private paid answers. It runs in
-  the background after the terminal closes. Ask: "Start my local private AI
-  address." Terminal: `shinjuku-shield infer start`, `shinjuku-shield infer status`,
+  the background after the terminal closes, but not after the computer
+  restarts: then run `shinjuku-shield infer start` again (the API key
+  stays the same). Ask: "Start my local private AI address." Terminal: `shinjuku-shield infer start`, `shinjuku-shield infer status`,
   `shinjuku-shield infer stop`
 
 **Privacy and setup**
@@ -412,12 +413,12 @@ to pay again.
 
 ## Setup
 
-You need Node.js 22.21 or later (or Node.js 24 or later), on Linux, or on Windows with WSL. macOS is not
-supported: the provers are Linux programs.
+You need Node.js 22.21 or later (or Node.js 24 or later), on Windows or Linux. macOS is not supported
+yet.
 
 The stable version is `shinjuku-shield@0.3.86` (pinned 2026-10-23; the same files are on npm as
 `shinjuku-shielded@0.3.86`), and every command here names it. Setup prints host lines that name this exact
-version. A candidate is out for testing: `shinjuku-shield@0.3.98` (npm tag `next`,
+version. A candidate is out for testing: `shinjuku-shield@0.3.99` (npm tag `next`,
 2026-10-24). It fixes known issues 1 to 7 of 0.3.86, shows a QR code for a
 deposit, asks for your own wallet address in setup, asks "Use Tor?" when
 your agent app sets up the wallet, waits for your answer in the setup box,
@@ -425,9 +426,11 @@ names your recovery file when setup ends, says when you confirmed a send,
 and asks for each value in a terminal instead of a flag. It adds slash
 commands in Claude Code: type / and pick a command, then add its value, or
 press Enter and the agent asks. It gives you the `shinjuku` command for a
-terminal (`npm install -g --no-audit --no-fund shinjuku-shield@0.3.98`,
-then `shinjuku help`). When a seller refuses a payment at once, it says
-when the refund lands. See the [changelog](CHANGELOG.md).
+terminal (`npm install -g --no-audit --no-fund shinjuku@0.3.99`, then
+`shinjuku help`). The private AI chat and the private AI address use one
+default model, `deepseek-v4-1-flash`; the address names its model and says
+what to do after a restart. When a seller refuses a payment at once, it
+says when the refund lands. See the [changelog](CHANGELOG.md).
 
 A later stable version gets its own row in the
 [Releases table](#releases): run its setup once and
@@ -727,8 +730,8 @@ our first customer and our live demo.
   [0.3.86 release notes](#release-0386).
   Hash: the `b650bf06` row of [Releases](#releases).
 - The stable version before it: wallet release `98296ff0` (npm 0.3.80).
-- Candidate (2026-10-24, not the stable version): wallet release `1fe3c2f7`, npm
-  `shinjuku-shield@0.3.98` under the tag `next`. It fixes known issues 1 to 7 of
+- Candidate (2026-10-24, not the stable version): wallet release `5023a291`, npm
+  `shinjuku-shield@0.3.99` under the tag `next`. It fixes known issues 1 to 7 of
   0.3.86, shows a QR code for a deposit, takes any amount from 0.01 USDC in a
   terminal, keeps every tool text short enough for agent apps to read in full,
   asks "Use Tor?" when an agent app sets up the wallet, waits for your answer
@@ -736,7 +739,9 @@ our first customer and our live demo.
   confirmed a send, and asks for each value in a terminal instead of a flag.
   It adds slash commands in Claude Code (type / and pick a command, then add
   its value, or press Enter and the agent asks), the `shinjuku` command for a
-  terminal, and the time when a refund lands after a seller refuses at once.
+  terminal (`npm install -g --no-audit --no-fund shinjuku@0.3.99`), one default AI model
+  (`deepseek-v4-1-flash`) for the chat and the private AI address, and the
+  time when a refund lands after a seller refuses at once.
 - `shielded-exact` payments from the shielded balance: live on mainnet.
 - Float pay to any Solana x402 `exact` endpoint that takes USDC: live on
   mainnet since 2026-10-11 (wallet release `e3348092` and later). On
@@ -947,6 +952,7 @@ is in the [changelog](CHANGELOG.md).
 | 2026-10-24 (candidate, npm `next`) | [`4a3321b0`](https://shinjukustaition.com/wallet/4a3321b0/shinjuku-wallet.mjs) | `4a3321b081e721e8815c614b5e68bb8bf31405cda64ff0b1b9f3b98e62958bab` | 12,723,643 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
 | 2026-10-24 (candidate, npm `next`) | [`7438f0e3`](https://shinjukustaition.com/wallet/7438f0e3/shinjuku-wallet.mjs) | `7438f0e355051a345b05c050dcc5f2aac8a676e3972b1cf195cc48bb41883790` | 12,750,584 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
 | 2026-10-24 (candidate, npm `next`) | [`1fe3c2f7`](https://shinjukustaition.com/wallet/1fe3c2f7/shinjuku-wallet.mjs) | `1fe3c2f76f93108cbe16d3ca665e14e298d03ec14f081a9660f82e114011e87d` | 12,772,279 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
+| 2026-10-24 (candidate, npm `next`) | [`5023a291`](https://shinjukustaition.com/wallet/5023a291/shinjuku-wallet.mjs) | `5023a2917ba9f9f802a955c0782826c061664754b9b463c59aca590154c1539e` | 12,786,716 | [`a9af32df`](https://shinjukustaition.com/proof-tools/a9af32df/SHA256SUMS) | `a9af32df6b7ff7e3243bd607b7ff582da5732fa422f28afd9b8bc3e9f0d6c741` | 30 (191,112,305 bytes) |
 
 Beside each wallet file, the website also serves `LICENSE.txt` (the
 copyright notice), `THIRD_PARTY_NOTICES.txt` (the open-source licenses inside

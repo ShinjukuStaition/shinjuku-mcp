@@ -4,11 +4,10 @@ The `shinjuku` command of Shinjuku Shield: a self-custody wallet that pays
 x402 URLs privately from a shielded USDC balance on Solana, and pays for AI
 answers privately. This package runs the wallet package `shinjuku-shield` at
 the exact version it names (the same version number as this package). Your
-keys never leave your machine. The wallet package gives you the same
-`shinjuku` command:
+keys never leave your machine.
 
 ```sh
-npm install -g --no-audit --no-fund shinjuku-shield@{{VERSION}}
+npm install -g --no-audit --no-fund shinjuku@{{VERSION}}
 shinjuku setup
 ```
 

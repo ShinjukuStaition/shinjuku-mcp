@@ -24,7 +24,7 @@ server to that host's config.
 ## The `shinjuku` command
 
 ```sh
-npm install -g --no-audit --no-fund shinjuku-shield@{{VERSION}}
+npm install -g --no-audit --no-fund shinjuku@{{VERSION}}
 shinjuku help
 ```
 
