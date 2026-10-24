@@ -4,6 +4,36 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 `shinjuku-wallet.mjs`. Each wallet release has its SHA-256 in the
 [Releases table](README.md#releases) of this repository. Dates are UTC.
 
+## 2026-10-24: wallet release `fe6cb068`, npm `shinjuku@0.3.100` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.99 and these:
+
+- Install the terminal command with `npm install -g --no-audit --no-fund shinjuku@0.3.100`.
+- One default AI model, `qwen3-8-flash`, for `shinjuku chat`, `shinjuku infer`,
+  the private AI address and the `inference_chat` tool. An answer pays for
+  up to 2048 tokens (512 for `claude-opus-5`); a 300-word answer cost
+  0.002175 USDC in a live test. `deepseek-v4-1-flash` stays available
+  (`/model deepseek-v4-1-flash` in the chat): in that test its AI provider
+  took the payment and answered an error instead of a long answer.
+- `shinjuku chat`: when the AI provider keeps a payment and sends an error
+  instead of an answer, the chat says so, says that the payment does not
+  come back, and counts it in `/cost` and at the end. Ask again or pick
+  another model with `/model`. When an answer is only late, `/retry` still
+  asks again with the same payment and never pays twice.
+- `shinjuku chat`: the wait is one line that counts the seconds. `/balance`
+  counts down from the last balance it read. `/quit` and `/q` end the chat.
+  A balance too low for an answer says that nothing was paid: add funds in
+  another terminal, then type `/retry`.
+- Setup no longer asks about private inference, and its next step names the
+  chat first.
+- `shinjuku add-funds` prints shorter lines in a terminal.
+- `shinjuku unshield`: the confirm of a send of all names the amount, and
+  no line shows an internal step name.
+- `shinjuku help infer --verbose` lists every flag of `infer`.
+
 ## 2026-10-24: wallet release `5023a291`, npm `shinjuku@0.3.99` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
