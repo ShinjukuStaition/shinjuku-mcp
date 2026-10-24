@@ -5,6 +5,33 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `6048ca61`, npm `shinjuku-shield@0.3.93` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.92 and these:
+
+- Setup in your agent app asks "Use Tor?", ticked by default. Tor hides your
+  IP address from the payment service and from sellers. With Tor, setup
+  downloads the wallet's files over Tor, and the wallet then runs over Tor in
+  the same session: you do not restart the app.
+- If you choose Tor and Tor is not running on your computer, setup makes
+  nothing and gives one command that downloads Tor and starts it. On Windows
+  the command checks the Tor download against its published SHA-256 before it
+  runs it. Tor Browser alone does not give the connection the wallet needs.
+- Before you answer the setup question, the wallet sends nothing: no update
+  check and no seller search. The seller search (`x402_discover`) works after
+  setup.
+- If the wallet runs over Tor and Tor stops (for example after your computer
+  restarts), each answer says why and gives the start command and the steps
+  to reconnect the wallet in your app.
+- A second run of setup in a terminal prints a short text that says to
+  reconnect the wallet in your agent app, not the whole first-setup text.
+- A wallet set up without Tor gives the whole setup command to turn Tor on
+  later, not a flag.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `afa037c8`, npm `shinjuku-shield@0.3.92` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
