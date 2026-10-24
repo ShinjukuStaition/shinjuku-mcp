@@ -5,6 +5,25 @@ The Shinjuku Shielded MCP server is the `mcp` command of the wallet file
 [Releases table](https://github.com/ShinjukuStaition/shinjuku-shielded#releases)
 of `ShinjukuStaition/shinjuku-shielded`. Dates are UTC.
 
+## 2026-10-24: wallet release `afa037c8`, npm `shinjuku-shield@0.3.92` (candidate, npm tag `next`)
+
+A candidate: npm publishes it under the tag `next`. The stable version stays
+`0.3.86` (wallet release `b650bf06`, npm tag `latest`) until we name a new
+one. To try the candidate, install its exact version. It has the fixes of
+0.3.87 to 0.3.91 and these:
+
+- Some agent apps read only the first 4096 characters of a tool's description
+  and of the server's instructions. The description of `wallet_unshield` (5218
+  characters) and the instructions before setup (4599) were longer, so the agent
+  never read their last rules. Both are shorter now, and every release checks
+  that no text is over the limit.
+- The send question shows the amount as "0.01 USDC", not "0.010000 USDC".
+- The check of the receiving address before the send question waits at most
+  8 seconds; a slow network no longer holds the question for minutes.
+- `shinjuku add-funds` and setup show amounts as "0.05 USDC", not
+  "0.050000 USDC", and no longer show an internal deposit-size warning.
+- No tool of the Solana Agent Kit plugin changed its name or its arguments.
+
 ## 2026-10-24: wallet release `1d784246`, npm `shinjuku-shield@0.3.91` (candidate, npm tag `next`)
 
 A candidate: npm publishes it under the tag `next`. The stable version stays
